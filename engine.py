@@ -269,22 +269,31 @@ def build_rich_trades(ind, sigs, p, ticker):
                 in_t=False
     return trades
 
-def check_alert(ind, sigs, p, ticker, name):
-    """Detecta señal activa en los últimos 3 días."""
+def check_alert(ind, sigs, p, ticker, name, trades=None):
+    """Detecta señal activa en los últimos 3 días.
+    No devuelve alerta si el trade ya cerró (SL, TP, Trail, Tiempo)."""
+    # Fechas de entrada de trades ya cerrados
+    closed_dates = {t['entry_date'] for t in trades} if trades else set()
+
     n = len(ind['c'])
     for i in range(n-1, max(n-4, 35), -1):
         if sigs[i] != 1: continue
-        price = float(ind['c'][i])
-        a     = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else price*0.02
-        today = ind['index'][-1]
-        date  = ind['index'][i]
+        price    = float(ind['c'][i])
+        a        = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else price*0.02
+        today    = ind['index'][-1]
+        date     = ind['index'][i]
+        date_str = str(date)[:10]
         days_ago = (pd.Timestamp(today) - pd.Timestamp(date)).days
         atr_pct  = a/price*100
+
+        # Si esta señal ya generó un trade que cerró, no es alerta activa
+        if date_str in closed_dates:
+            return None
 
         return {
             "ticker":      ticker,
             "name":        name,
-            "date":        str(date)[:10],
+            "date":        date_str,
             "urgency":     "HOY" if days_ago==0 else f"HACE {days_ago}d",
             "days_ago":    days_ago,
             "price":       round(price,2),
@@ -297,7 +306,6 @@ def check_alert(ind, sigs, p, ticker, name):
             "rsi":         round(float(ind['rsi'][i]),1) if not np.isnan(ind['rsi'][i]) else None,
             "adx":         round(float(ind['adx'][i]),1) if not np.isnan(ind['adx'][i]) else None,
             "vol_ratio":   round(float(ind['vol_r'][i]),2) if not np.isnan(ind['vol_r'][i]) else None,
-            # Info adicional para la alerta
             "max_days":    p['max_days'],
             "trail_act":   p['trail_act'],
             "trail_atr":   p['trail_atr'],
@@ -876,7 +884,7 @@ def main():
             print_trades(trades, ticker)
 
         # Alerta
-        alert = check_alert(ind, sigs, p, ticker, name)
+        alert = check_alert(ind, sigs, p, ticker, name, trades)
         if alert:
             alerts.append(alert)
             print_alert(alert)
