@@ -272,14 +272,19 @@ def build_rich_trades(ind, sigs, p, ticker):
 def check_alert(ind, sigs, p, ticker, name, trades=None):
     """Detecta señal activa en los últimos 3 días.
     No devuelve alerta si el trade ya cerró (SL, TP, Trail, Tiempo)."""
-    # Filtrar alertas cuyo trade ya cerró: entry_date == fecha señal Y exit_date < hoy
+    # Fechas de entrada de trades que ya cerraron
     closed_dates = set()
     if trades:
         today_str = str(ind['index'][-1])[:10]
-        closed_dates = {
-            t['entry_date'] for t in trades
-            if t['exit_date'] < today_str
-        }
+        for t in trades:
+            # Solo considerar trades cuya entrada fue en los últimos 4 días
+            # y que ya tienen fecha de salida (es decir, ya cerraron)
+            entry = t['entry_date']
+            exit_  = t['exit_date']
+            entry_ts = pd.Timestamp(entry)
+            today_ts = pd.Timestamp(today_str)
+            if (today_ts - entry_ts).days <= 4 and exit_ <= today_str:
+                closed_dates.add(entry)
 
     n = len(ind['c'])
     for i in range(n-1, max(n-4, 35), -1):
