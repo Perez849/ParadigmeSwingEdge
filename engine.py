@@ -2,7 +2,7 @@
 ╔══════════════════════════════════════════════════════════════════════╗
 ║  SWING EDGE ENGINE  v2.0                                             ║
 ║  Usa EXACTAMENTE las mismas funciones que optimizer.py               ║
-║  → Win Rate garantizado idéntico                                     ║
+║  → Métricas del resumen tomadas del OOS (honest metrics)             ║
 ╚══════════════════════════════════════════════════════════════════════╝
 
 USO (Jupyter):
@@ -34,7 +34,6 @@ C="\033[96m"; M="\033[95m"; DIM="\033[90m"; BOLD="\033[1m"; RST="\033[0m"
 
 # ══════════════════════════════════════════════════════════════════
 # BLOQUE COMPARTIDO — COPIA EXACTA DE optimizer.py
-# (mismas funciones = mismo resultado garantizado)
 # ══════════════════════════════════════════════════════════════════
 
 def _rsi(s, p):
@@ -79,11 +78,9 @@ def calc_ind(df, p, invert=False):
     out['slope']  = ((ema_fs-ema_fs.shift(3))/ema_fs.shift(3)*100).values
     out['roc5']   = c.pct_change(5).values*100
     out['roc20']  = c.pct_change(20).values*100
-    # Bollinger band width para detectar squeeze
     bb_std = c.rolling(20).std()
     bb_mid = c.rolling(20).mean()
     out['bb_w']   = (4*bb_std/bb_mid*100).values
-    # Extra para dashboard
     out['close']  = out['c']
     out['high']   = h.values.astype(float)
     out['low']    = l.values.astype(float)
@@ -91,71 +88,37 @@ def calc_ind(df, p, invert=False):
     out['volume'] = v.values.astype(float)
     out['index']  = df.index
     return out
-
-# ── Sistema de puntuación (0-100) ─────────────────────────────────
-    out['close']  = out['c']
-    out['high']   = h.values.astype(float)
-    out['low']    = l.values.astype(float)
-    out['open']   = df['Open'].squeeze().values.astype(float) if 'Open' in df.columns else out['c']
-    out['volume'] = v.values.astype(float)
-    out['index']  = df.index
-    return out
-
 
 def score_bar(ind, i, p):
-    """
-    Suma puntos por cada señal alcista.
-    Más flexible que condiciones AND — basta con score ≥ score_min.
-    """
     def g(k): v=ind[k][i]; return float(v) if not np.isnan(v) else 0.0
     sc = 0
-
-    # RSI: 0-20 pts
     rsi = g('rsi')
     if p['rsi_lo'] <= rsi <= p['rsi_hi']:     sc += 15
     elif rsi > p['rsi_lo'] - 5:              sc +=  7
-
-    # Estructura EMA: 0-25 pts
     c = g('c')
     if c > g('ema_t'):                        sc += 10
     if c > g('ema_s'):                        sc +=  8
     if g('ema_f') > g('ema_s'):              sc +=  7
-
-    # MACD: 0-20 pts
     mh = g('macd_h')
     mh1 = float(ind['macd_h'][i-1]) if i > 0 and not np.isnan(ind['macd_h'][i-1]) else 0.0
     if mh > 0 and mh > mh1:                  sc += 20
     elif mh > 0:                             sc += 12
     elif mh > mh1:                           sc +=  5
-
-    # ADX/tendencia: 0-15 pts
     if g('adx') >= p['adx_min'] and g('pdi') > 0: sc += 15
     elif g('adx') >= p['adx_min'] - 5:            sc +=  7
-
-    # Volumen: 0-10 pts
     vr = g('vol_r')
     if vr >= p['vol_min'] * 1.3:             sc += 10
     elif vr >= p['vol_min']:                 sc +=  6
     elif vr >= p['vol_min'] * 0.85:         sc +=  3
-
-    # Stoch (filtro sobrecompra): 0-5 pts
     if g('stoch') <= p['stoch_hi']:          sc +=  5
-
-    # Slope EMA: 0-5 pts
     if g('slope') > 0.2:                     sc +=  5
     elif g('slope') > 0:                    sc +=  2
-
-    # Penalizaciones
-    if g('dist') > p['dist_max']:            sc -= 15   # sobreextendido
-    if g('dist') < 0:                        sc -= 10   # bajo EMA_S
-    if g('roc5') < -5:                       sc -= 12   # caída reciente
-    if rsi > p['rsi_hi']:                    sc -= 15   # sobrecomprado
-    if mh < 0 and mh < mh1:                 sc -= 10   # MACD deteriorando
-
+    if g('dist') > p['dist_max']:            sc -= 15
+    if g('dist') < 0:                        sc -= 10
+    if g('roc5') < -5:                       sc -= 12
+    if rsi > p['rsi_hi']:                    sc -= 15
+    if mh < 0 and mh < mh1:                 sc -= 10
     return max(0, min(100, sc))
-
-# ── Señales ───────────────────────────────────────────────────────
-
 
 def get_signals(ind, p, macro=None, invert_macro=False):
     n = len(ind['c']); sigs = np.zeros(n, dtype=np.int8); last = -6
@@ -169,9 +132,6 @@ def get_signals(ind, p, macro=None, invert_macro=False):
         if sc >= p['score_min'] and macro_ok:
             sigs[i] = 1; last = i
     return sigs
-
-# ── Backtest rápido ───────────────────────────────────────────────
-
 
 def run_bt(ind, sigs, p):
     c=ind['c']; atr=ind['atr']; n=len(c)
@@ -197,11 +157,7 @@ def run_bt(ind, sigs, p):
                 in_t=False
     return trades
 
-# ── Score compuesto de métricas ───────────────────────────────────
-
-
 def score_metrics(trades):
-    """Idéntico a optimizer.py — NO modificar."""
     if len(trades) < 4: return None
     pnls = np.array([t[2] for t in trades])
     wins = pnls[pnls>0]; loss = pnls[pnls<=0]
@@ -220,11 +176,10 @@ def score_metrics(trades):
                 total=float(pnls.sum()), score=sc)
 
 # ══════════════════════════════════════════════════════════════════
-# FUNCIONES EXCLUSIVAS DEL ENGINE (dashboard, alertas, output)
+# FUNCIONES EXCLUSIVAS DEL ENGINE
 # ══════════════════════════════════════════════════════════════════
 
 def build_rich_trades(ind, sigs, p, ticker):
-    """Versión enriquecida de run_bt con más metadatos para el dashboard."""
     c=ind['c']; atr=ind['atr']; idx=ind['index']; n=len(c)
     trades=[]; in_t=False; ep=sl=tp=pk=0.0; entry_i=0
 
@@ -270,15 +225,10 @@ def build_rich_trades(ind, sigs, p, ticker):
     return trades
 
 def check_alert(ind, sigs, p, ticker, name, trades=None):
-    """Detecta señal activa en los últimos 3 días.
-    No devuelve alerta si el trade ya cerró (SL, TP, Trail, Tiempo)."""
-    # Fechas de entrada de trades que ya cerraron
     closed_dates = set()
     if trades:
         today_str = str(ind['index'][-1])[:10]
         for t in trades:
-            # Solo considerar trades cuya entrada fue en los últimos 4 días
-            # y que ya tienen fecha de salida (es decir, ya cerraron)
             entry = t['entry_date']
             exit_  = t['exit_date']
             entry_ts = pd.Timestamp(entry)
@@ -297,7 +247,6 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
         days_ago = (pd.Timestamp(today) - pd.Timestamp(date)).days
         atr_pct  = a/price*100
 
-        # Si esta señal ya generó un trade que cerró, no es alerta activa
         if date_str in closed_dates:
             return None
 
@@ -325,7 +274,6 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
     return None
 
 def build_price_history(ind, sigs, scores):
-    """Últimos 90 días para el gráfico del dashboard."""
     n = len(ind['c'])
     start = max(0, n-90)
     hist = []
@@ -351,18 +299,19 @@ def build_price_history(ind, sigs, scores):
 # ══════════════════════════════════════════════════════════════════
 
 def print_summary(ticker, name, m, p):
-    col = G if m['total']>0 else R
+    """m son las métricas OOS del optimizer — las únicas honestas."""
+    col = G if m.get('total',0)>0 else R
     print(f"\n{BOLD}  {'─'*62}{RST}")
     print(f"  {C}{BOLD}{ticker}{RST}  {DIM}{name}{RST}")
     rows = [
-        ("Trades",        f"{m['n']}",                          True),
-        ("Win Rate",       f"{m['wr']:.1f}%",                   m['wr']>=50),
-        ("Profit Factor",  f"{m['pf']:.2f}",                    m['pf']>=1.5),
-        ("Avg Win / Loss", f"+{m['avg_w']:.2f}% / {m['avg_l']:.2f}%", m['avg_w']>=3),
-        ("Sharpe",         f"{m['sharpe']:.2f}",                m['sharpe']>=1.0),
-        ("Max Drawdown",   f"{m['dd']:.1f}%",                   m['dd']>=-20),
-        ("≥3% / ≥5%",     f"{m['p3']:.0f}% / {m['p5']:.0f}%", m['p3']>=30),
-        ("Retorno total",  f"{col}{m['total']:+.1f}%{RST}",     m['total']>0),
+        ("Trades (OOS)",    f"{int(m.get('n',0))}",                         True),
+        ("Win Rate (OOS)",  f"{m.get('wr',0):.1f}%",                        m.get('wr',0)>=50),
+        ("Profit Factor",   f"{m.get('pf',0):.2f}",                         m.get('pf',0)>=1.5),
+        ("Avg Win / Loss",  f"+{m.get('avg_w',0):.2f}% / {m.get('avg_l',0):.2f}%", m.get('avg_w',0)>=3),
+        ("Sharpe",          f"{m.get('sharpe',0):.2f}",                     m.get('sharpe',0)>=1.0),
+        ("Max Drawdown",    f"{m.get('dd',0):.1f}%",                        m.get('dd',0)>=-20),
+        ("≥3% / ≥5%",      f"{m.get('p3',0):.0f}% / {m.get('p5',0):.0f}%",m.get('p3',0)>=30),
+        ("Retorno OOS",     f"{col}{m.get('total',0):+.1f}%{RST}",          m.get('total',0)>0),
     ]
     for label, val, good in rows:
         ic = G if good else Y
@@ -374,7 +323,7 @@ def print_summary(ticker, name, m, p):
 
 def print_trades(trades, ticker):
     print(f"\n  {DIM}{'─'*74}{RST}")
-    print(f"  {BOLD}Historial — {ticker}{RST}")
+    print(f"  {BOLD}Historial completo — {ticker}{RST}")
     print(f"  {DIM}{'─'*74}{RST}")
     print(f"  {'Entrada':<12}{'Salida':<12}{'Ent$':>8}{'Sal$':>8}{'P&L':>9}  {'d':>4}{'Sc':>4}  Razón")
     print(f"  {DIM}{'─'*74}{RST}")
@@ -403,39 +352,28 @@ def print_alert(a):
           f"{DIM}({'bueno ✓' if rr != '?' and rr >= 1.5 else 'ajustado ⚠' if rr != '?' and rr >= 1.0 else 'bajo ✗'}){RST}")
 
 # ══════════════════════════════════════════════════════════════════
-# MAIN
+# UNIVERSE
 # ══════════════════════════════════════════════════════════════════
 
 UNIVERSE = {
-    # ── Metales preciosos ──────────────────────────────────────────
     "GLDM.PA":  "Amundi Gold Bugs UCIT ETF",
     "IS0E.DE":  "iShares Gold Producers UCIT ETF",
     "SLVR.DE":  "Global X Silver Miners UCIT ETF",
     "VVMX.DE":  "VanEck Rare Earth & Strategic Metals UCIT",
-    # ── Nuclear / Uranio ──────────────────────────────────────────
     "URNU.DE":  "Global X Uranium UCIT ETF",
-    # ── Tecnología y semiconductores ──────────────────────────────
     "VVSM.DE":  "VanEck Semiconductor UCIT ETF",
     "SEC0.DE":  "iShares MSCI Global Semiconductors UCIT",
-    # ── Índices apalancados ───────────────────────────────────────
     "NDXH.PA":  "Amundi Nasdaq 100 EUR Hedge UCIT ETF",
     "LQQ.PA":   "Amundi Nasdaq 100 Daily 2x Lev UCIT",
     "IBCF.DE":  "iShares S&P 500 EUR Hedge UCIT ETF",
     "DBPG.DE":  "Xtrackers S&P 500 2x Leveraged Daily UCIT",
-    # ── Sectoriales USA ───────────────────────────────────────────
     "ZPDE.DE":  "SPDR S&P US Energy Select Sector UCIT",
     "ZPDJ.DE":  "SPDR S&P US Industrials Select Sector UCIT",
-    # ── Sectoriales Europa ────────────────────────────────────────
     "EXV1.DE":  "iShares STOXX Europe 600 Banks UCIT ETF",
-    # ── Emergentes ────────────────────────────────────────────────
     "EMXC.DE":  "Amundi MSCI Emerging ex China UCIT",
-    # ── España ────────────────────────────────────────────────────
     "IBEXA.MC": "Amundi IBEX 35 Doble UCIT ETF",
-    # ── Japón ─────────────────────────────────────────────────────
     "WTIF.DE":  "WisdomTree Japan Equity EUR Hedged UCIT",
-    # ── Defensa ───────────────────────────────────────────────────
     "DFEN.DE":  "VanEck Defense UCIT ETF",
-    # ── Acciones USA — momentum alto ─────────────────────────────
     "WPM":      "Wheaton Precious Metals",
     "CCJ":      "Cameco Corp (Uranium)",
     "VST":      "Vistra Energy Corp",
@@ -443,14 +381,14 @@ UNIVERSE = {
     "SMCI":     "Super Micro Computer Inc",
     "CELH":     "Celsius Holdings Inc",
     "RCL":      "Royal Caribbean Group",
-    "MELI":     "MercadoLibre Inc",
+    "F":        "Ford Motor Company",
+    "ENR.DE":   "Siemens Energy AG",
+    "KRW.PA":   "Amundi MSCI Korea UCITS ETF",
     "NIO":      "NIO Inc. ADR (EV China)",
     "OSCR":     "Oscar Health Inc.",
     "BABA":     "Alibaba Group ADR",
     "ASTS":     "AST SpaceMobile Inc.",
-    "GME":      "GameStop Corp.",
     "EVGO":     "EVgo Inc.",
-    # ── Inversos / VIX ───────────────────────────────────────────
     "DBPK.DE":  "Xtrackers S&P 500 2x Inverse Daily UCIT",
     "2INVE.MC": "Amundi IBEX 35 Doble Inverso -2x UCIT",
     "LVO.MI":   "Amundi S&P 500 VIX Futures Enhanced Roll",
@@ -460,7 +398,6 @@ INVERSE_TICKERS = {"DBPK.DE", "2INVE.MC"}
 VIX_TICKERS     = {"LVO.MI"}
 
 def _generate_dashboard(data, out_path):
-    """Genera un HTML autocontenido con los datos incrustados — no requiere servidor."""
     import json as _json
     data_js = _json.dumps(data, ensure_ascii=False)
 
@@ -483,7 +420,6 @@ header{border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-i
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.5)}}
 .hm{font-size:.68rem;color:var(--muted);text-align:right}
 main{max-width:1600px;margin:0 auto;padding:2rem;display:grid;gap:1.5rem}
-/* ALERTS */
 .ab{background:linear-gradient(135deg,rgba(255,71,87,.07),rgba(255,179,0,.04));border:1px solid rgba(255,71,87,.25);border-radius:12px;padding:1.2rem 1.5rem;display:none}
 .ab.on{display:block}
 .ab-h{font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;color:var(--warn);text-transform:uppercase;letter-spacing:.1em;margin-bottom:1rem}
@@ -503,17 +439,15 @@ main{max-width:1600px;margin:0 auto;padding:2rem;display:grid;gap:1.5rem}
 .rrb{margin-top:.45rem;font-size:.67rem;color:var(--accent2)}
 .chips{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.55rem}
 .chip{font-size:.58rem;padding:.12rem .38rem;border-radius:4px;background:rgba(77,159,255,.08);border:1px solid rgba(77,159,255,.18);color:var(--accent2)}
-/* STATS */
 .sr{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
 .sc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.9rem 1.1rem}
 .sl{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.38rem}
 .sv{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:700}
 .sv.g{color:var(--green)}.sv.r{color:var(--red)}.sv.y{color:var(--yellow)}.sv.b{color:var(--accent2)}.sv.m{color:var(--muted)}
 .ss{font-size:.6rem;color:var(--muted);margin-top:.18rem}
-/* SECTION TITLE */
 .st{font-family:'Syne',sans-serif;font-weight:700;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 .st::after{content:'';flex:1;height:1px;background:var(--border)}
-/* TABLE */
+.oos-note{font-size:.6rem;color:var(--accent2);margin-bottom:1rem;padding:.4rem .7rem;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:6px;display:inline-block}
 .tw{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse}
 thead th{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,.018)}
@@ -531,7 +465,6 @@ tbody td:not(:first-child){text-align:right}
 .br{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.18)}
 .ba{background:var(--red);color:#fff;animation:pulse 1.5s infinite}
 .pos{color:var(--green)}.neg{color:var(--red)}
-/* DETAIL */
 .dp{display:none;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .dp.open{display:block}
 .ph{padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.018)}
@@ -574,9 +507,11 @@ canvas{display:block;width:100%;height:100%}
 <main>
   <div class="ab" id="ab"><div class="ab-h">🚨 Señales de compra activas</div><div class="ac" id="ac"></div></div>
   <div><div class="st">Resumen global</div><div class="sr" id="sr"></div></div>
-  <div><div class="st">Universo de activos optimizados</div>
+  <div>
+    <div class="st">Universo de activos optimizados</div>
+    <div class="oos-note">⚡ Métricas OOS — período de validación fuera de muestra (parámetros nunca vistos)</div>
     <div class="tw"><table>
-      <thead><tr><th>Activo</th><th>Win%</th><th>PF</th><th>Sharpe</th><th>Avg W</th><th>Avg L</th><th>≥3%</th><th>Max DD</th><th>Total</th><th>Trades</th><th>Estado</th></tr></thead>
+      <thead><tr><th>Activo</th><th>Win% OOS</th><th>PF</th><th>Sharpe</th><th>Avg W</th><th>Avg L</th><th>≥3%</th><th>Max DD</th><th>Total OOS</th><th>Trades OOS</th><th>Estado</th></tr></thead>
       <tbody id="atb"></tbody>
     </table></div>
   </div>
@@ -586,14 +521,15 @@ canvas{display:block;width:100%;height:100%}
       <button class="pc" onclick="closePanel()">✕</button>
     </div>
     <div class="pb">
+      <div style="margin-bottom:1rem"><span class="oos-note">⚡ Métricas OOS · Historial completo de trades abajo</span></div>
       <div class="ms" id="mss"></div>
       <div class="pg">
         <div><div class="st" style="margin-bottom:.7rem">Precio 90d + EMAs</div><div class="cw"><canvas id="pc2"></canvas></div></div>
         <div><div class="st" style="margin-bottom:.7rem">RSI · ADX</div><div class="cw"><canvas id="rc2"></canvas></div></div>
       </div>
-      <div style="margin-bottom:1.4rem"><div class="st" style="margin-bottom:.55rem">Distribución P&L</div><div class="dc" id="dcc"></div></div>
+      <div style="margin-bottom:1.4rem"><div class="st" style="margin-bottom:.55rem">Distribución P&L (historial completo)</div><div class="dc" id="dcc"></div></div>
       <div style="margin-bottom:1.4rem">
-        <div class="st" style="margin-bottom:.7rem">Historial de trades</div>
+        <div class="st" style="margin-bottom:.7rem">Historial completo de trades</div>
         <div style="overflow-x:auto"><table class="tt2">
           <thead><tr><th>Entrada</th><th>Salida</th><th>Ent$</th><th>Sal$</th><th>SL</th><th>TP</th><th>P&L</th><th>Días</th><th>Razón</th></tr></thead>
           <tbody id="ttb"></tbody>
@@ -607,7 +543,6 @@ canvas{display:block;width:100%;height:100%}
 <script>
 """ + "const D=" + r"""__DATA__;
 
-// ── Charts ───────────────────────────────────────────────────────
 function drawChart(id,datasets,opts){
   const cv=document.getElementById(id);if(!cv)return;
   const ctx=cv.getContext('2d');
@@ -635,10 +570,8 @@ function drawChart(id,datasets,opts){
   if(opts.dates){const step=Math.ceil(opts.dates.length/5);opts.dates.forEach((d,i)=>{if(i%step!==0)return;ctx.fillStyle='rgba(90,106,138,.7)';ctx.fillText(d.slice(5),xp(i,opts.dates.length)-10,H-5);});}
 }
 
-// ── Render ───────────────────────────────────────────────────────
 if(D.generated_at){const d=new Date(D.generated_at);document.getElementById('gt').textContent='Actualizado: '+d.toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'});}
 
-// Alerts
 const al=D.alerts||[];
 if(al.length){
   document.getElementById('ab').classList.add('on');
@@ -653,13 +586,10 @@ if(al.length){
       </div>
       <div class="rrb" style="color:${a.rr_ratio>=1.5?'var(--green)':a.rr_ratio>=1.0?'var(--yellow)':'var(--red)'}">
         ⚖ R/R ${a.rr_ratio??'?'}:1
-        <span style="opacity:.6;font-size:.6rem">
-          ${a.rr_ratio>=1.5?' bueno ✓':a.rr_ratio>=1.0?' ajustado ⚠':' bajo ✗'}
-        </span>
+        <span style="opacity:.6;font-size:.6rem">${a.rr_ratio>=1.5?' bueno ✓':a.rr_ratio>=1.0?' ajustado ⚠':' bajo ✗'}</span>
       </div>
       <div style="font-size:.63rem;color:var(--muted);margin-top:.4rem;line-height:1.8">
-        <span style="color:var(--accent2)">Trailing:</span> activa tras +${a.trail_act??'?'}% →
-        stop ${a.trail_atr??'?'}×ATR del máximo<br>
+        <span style="color:var(--accent2)">Trailing:</span> activa tras +${a.trail_act??'?'}% → stop ${a.trail_atr??'?'}×ATR del máximo<br>
         <span style="color:var(--accent2)">Tiempo máx:</span> ${a.max_days??'?'} días hábiles
       </div>
       <div class="chips">
@@ -669,40 +599,35 @@ if(al.length){
         <span class="chip">Score ${a.score}/100</span>
       </div>
     </div>`).join('');
-}
-
-// R/R legend note (appended to alert banner if alerts exist)
-if(al.length){
-  const note = document.createElement('div');
-  note.style.cssText = 'font-size:.62rem;color:var(--muted);margin-top:.8rem;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.06)';
-  note.innerHTML = '⚖ <b style="color:var(--text)">R/R (Ratio Riesgo/Beneficio)</b>: cuánto ganas por cada euro arriesgado. '
-    + '<span style="color:var(--green)">≥1.5 bueno</span> · '
-    + '<span style="color:var(--yellow)">1.0-1.5 ajustado</span> · '
-    + '<span style="color:var(--red)">&lt;1.0 desfavorable</span> &nbsp;|&nbsp; '
-    + '<b style="color:var(--text)">Score</b>: calidad técnica de la señal HOY (0-100). '
-    + 'Distinto del Win Rate histórico.';
+  const note=document.createElement('div');
+  note.style.cssText='font-size:.62rem;color:var(--muted);margin-top:.8rem;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.06)';
+  note.innerHTML='⚖ <b style="color:var(--text)">R/R</b>: cuánto ganas por cada euro arriesgado. <span style="color:var(--green)">≥1.5 bueno</span> · <span style="color:var(--yellow)">1.0-1.5 ajustado</span> · <span style="color:var(--red)">&lt;1.0 desfavorable</span>';
   document.getElementById('ab').appendChild(note);
 }
 
-// Global stats
+// Global stats — usa métricas OOS
 const assets=Object.values(D.assets||{});
 let nt=0,nw=0,tp=0,na=0,ss=[],ps=[];
-assets.forEach(a=>{const m=a.metrics_bt||{};if(m.n){nt+=m.n;nw+=Math.round((m.wr||0)/100*m.n);tp+=m.total||0;if(m.sharpe)ss.push(m.sharpe);if(m.pf)ps.push(m.pf);}if(a.alert)na++;});
+assets.forEach(a=>{
+  const m=a.metrics_oos||{};
+  if(m.n){nt+=m.n;nw+=Math.round((m.wr||0)/100*m.n);tp+=m.total||0;if(m.sharpe)ss.push(m.sharpe);if(m.pf)ps.push(m.pf);}
+  if(a.alert)na++;
+});
 const ash=ss.length?ss.reduce((a,b)=>a+b)/ss.length:0,apf=ps.length?ps.reduce((a,b)=>a+b)/ps.length:0,wr=nt?nw/nt*100:0;
 const stats=[
   {l:'Activos',v:assets.length,c:'b',s:'en universo'},
   {l:'Alertas activas',v:na,c:na?'r':'m',s:'señales de compra'},
-  {l:'Win Rate global',v:wr.toFixed(1)+'%',c:wr>=50?'g':'y',s:`${nw}/${nt} trades`},
-  {l:'Profit Factor',v:apf.toFixed(2),c:apf>=1.5?'g':'y',s:'promedio'},
-  {l:'Sharpe',v:ash.toFixed(2),c:ash>=1?'g':'y',s:'promedio'},
-  {l:'Retorno sumado',v:(tp>=0?'+':'')+tp.toFixed(1)+'%',c:tp>=0?'g':'r',s:'suma backtest'},
+  {l:'Win Rate OOS',v:wr.toFixed(1)+'%',c:wr>=50?'g':'y',s:`${nw}/${nt} trades OOS`},
+  {l:'Profit Factor',v:apf.toFixed(2),c:apf>=1.5?'g':'y',s:'promedio OOS'},
+  {l:'Sharpe',v:ash.toFixed(2),c:ash>=1?'g':'y',s:'promedio OOS'},
+  {l:'Retorno OOS',v:(tp>=0?'+':'')+tp.toFixed(1)+'%',c:tp>=0?'g':'r',s:'suma OOS'},
 ];
 document.getElementById('sr').innerHTML=stats.map(s=>`<div class="sc"><div class="sl">${s.l}</div><div class="sv ${s.c}">${s.v}</div><div class="ss">${s.s}</div></div>`).join('');
 
-// Asset table
-assets.sort((a,b)=>((b.metrics_bt||{}).sharpe||0)-((a.metrics_bt||{}).sharpe||0));
+// Asset table — usa métricas OOS
+assets.sort((a,b)=>((b.metrics_oos||{}).sharpe||0)-((a.metrics_oos||{}).sharpe||0));
 document.getElementById('atb').innerHTML=assets.map(a=>{
-  const m=a.metrics_bt||{},ha=!!a.alert;
+  const m=a.metrics_oos||{},ha=!!a.alert;
   const wc=m.wr>=55?'bg':m.wr>=45?'by':'br';
   const pc=m.pf>=1.5?'bg':m.pf>=1?'by':'br';
   const sc=m.sharpe>=1?'bg':m.sharpe>=0.5?'by':'br';
@@ -722,26 +647,25 @@ document.getElementById('atb').innerHTML=assets.map(a=>{
   </tr>`;
 }).join('');
 
-// Detail panel
 function openAsset(ticker){
   const a=D.assets[ticker];if(!a)return;
   document.getElementById('ptk').textContent=ticker;
   document.getElementById('ptn').textContent=a.name||'';
-  const m=a.metrics_bt||{},p=a.params||{};
-  // Mini stats
+  // Panel usa métricas OOS
+  const m=a.metrics_oos||{},p=a.params||{};
   const minis=[
-    {v:(m.wr||0).toFixed(1)+'%',l:'Win Rate',c:m.wr>=50?'var(--green)':'var(--yellow)'},
+    {v:(m.wr||0).toFixed(1)+'%',l:'Win Rate OOS',c:m.wr>=50?'var(--green)':'var(--yellow)'},
     {v:(m.pf||0).toFixed(2),l:'Profit Factor',c:m.pf>=1.5?'var(--green)':'var(--yellow)'},
     {v:(m.sharpe||0).toFixed(2),l:'Sharpe',c:m.sharpe>=1?'var(--green)':'var(--yellow)'},
-    {v:'+'+(m.avg_w||0).toFixed(2)+'%',l:'Avg Win',c:'var(--green)'},
-    {v:(m.avg_l||0).toFixed(2)+'%',l:'Avg Loss',c:'var(--red)'},
-    {v:(m.dd||0).toFixed(1)+'%',l:'Max DD',c:'var(--red)'},
+    {v:'+'+(m.avg_w||0).toFixed(2)+'%',l:'Avg Win OOS',c:'var(--green)'},
+    {v:(m.avg_l||0).toFixed(2)+'%',l:'Avg Loss OOS',c:'var(--red)'},
+    {v:(m.dd||0).toFixed(1)+'%',l:'Max DD OOS',c:'var(--red)'},
     {v:(m.p3||0).toFixed(0)+'%',l:'≥3% trades',c:m.p3>=30?'var(--green)':'var(--yellow)'},
     {v:(m.p5||0).toFixed(0)+'%',l:'≥5% trades',c:'var(--accent2)'},
-    {v:(m.n||0).toString(),l:'N trades',c:'var(--accent2)'},
+    {v:(m.n||0).toString(),l:'Trades OOS',c:'var(--accent2)'},
   ];
   document.getElementById('mss').innerHTML=minis.map(s=>`<div class="ms-c"><div class="mv" style="color:${s.c}">${s.v}</div><div class="ml">${s.l}</div></div>`).join('');
-  // Trades table
+  // Historial completo de trades
   const trades=a.trades||[];
   document.getElementById('ttb').innerHTML=trades.map(t=>{
     const c=t.pnl>=0?'var(--green)':'var(--red)';
@@ -757,10 +681,8 @@ function openAsset(ticker){
       <td style="font-size:.6rem;color:var(--muted)">${t.reason}</td>
     </tr>`;
   }).join('');
-  // Params
   const kp=['rsi_p','rsi_lo','rsi_hi','ema_f','ema_s','ema_t','macd_f','macd_s','adx_min','score_min','tp_pct','atr_stop','max_days','vol_min','trail_act','trail_atr'];
   document.getElementById('prg').innerHTML=kp.filter(k=>p[k]!==undefined).map(k=>`<div class="pri"><div class="prk">${k}</div><div class="prv">${p[k]}</div></div>`).join('');
-  // Distribution
   if(trades.length){
     const pnls=trades.map(t=>t.pnl);
     const bins=[[-99,-10],[-10,-5],[-5,-3],[-3,0],[0,3],[3,5],[5,10],[10,99]];
@@ -799,30 +721,25 @@ function closePanel(){document.getElementById('dp').classList.remove('open');}
 </body>
 </html>"""
 
-    # Inject data
     html = html.replace('__DATA__', data_js)
     out_path.write_text(html, encoding='utf-8')
     print(f"  Dashboard: {out_path}")
 
 
 def main():
-    # ── Configuración — edita aquí ────────────────────────────────
-    TICKER_SOLO  = None    # None = todos | "SMH" = solo ese ticker
-    SOLO_ALERTAS = False   # True = solo alertas (sin imprimir historial)
-    # ─────────────────────────────────────────────────────────────
+    TICKER_SOLO  = None
+    SOLO_ALERTAS = False
 
     if not CACHE_FILE.exists():
         print(f"{R}Error: optimal_params.json no encontrado.{RST}")
-        print(f"  Ejecuta optimizer.py primero.")
         return
 
     cache = json.loads(CACHE_FILE.read_text())
     print(f"\n{B}{'═'*65}{RST}")
     print(f"{BOLD}{C}  ⚡  SWING EDGE ENGINE  v2{RST}")
-    print(f"{DIM}  {len(cache)} activos · misma lógica que optimizer{RST}")
+    print(f"{DIM}  {len(cache)} activos · métricas OOS · historial completo{RST}")
     print(f"{B}{'═'*65}{RST}\n")
 
-    # Macro SPY
     print("  Descargando SPY...")
     spy = yf.download("SPY", period=PERIOD, auto_adjust=True, progress=False)
     if isinstance(spy.columns, pd.MultiIndex): spy.columns=spy.columns.get_level_values(0)
@@ -837,10 +754,11 @@ def main():
         if ticker not in cache:
             print(f"  {Y}⚠ {ticker} no en caché{RST}"); continue
 
-        entry = cache[ticker]
-        p     = entry['params']
-        name  = UNIVERSE.get(ticker, ticker)
-        m_oos = entry.get('metrics_oos', {})
+        entry  = cache[ticker]
+        p      = entry['params']
+        name   = UNIVERSE.get(ticker, ticker)
+        # ── CAMBIO CLAVE: usar métricas OOS del optimizer ──────
+        m_oos  = entry.get('metrics_oos', {})
 
         print(f"  ↓ {ticker}...", end=" ", flush=True)
         try:
@@ -855,66 +773,37 @@ def main():
 
         macro = (spy_c > spy_e).reindex(df_raw.index, method='ffill').fillna(False).values
 
-        # ── Mismas funciones que el optimizer ──────────────────
         use_invert = entry.get('invert', ticker in INVERSE_TICKERS or ticker in VIX_TICKERS)
-        ind   = calc_ind(df_raw, p, use_invert)
-        sigs  = get_signals(ind, p, macro, use_invert)
-
-        # Calcular scores para todos los días (para dashboard)
+        ind    = calc_ind(df_raw, p, use_invert)
+        sigs   = get_signals(ind, p, macro, use_invert)
         scores = np.array([score_bar(ind, i, p) if i>=35 else 0
                            for i in range(len(ind['c']))])
 
-        # Backtest con la función enriquecida (misma lógica que run_bt)
+        # Historial completo de trades (para ver entradas/salidas)
         trades = build_rich_trades(ind, sigs, p, ticker)
-        m      = score_metrics([(None,None,t['pnl'],None,None,None,None)
-                                 for t in trades])
-        # Recalcular métricas desde los trades enriquecidos directamente
-        if trades:
-            pnls = np.array([t['pnl'] for t in trades])
-            wins = pnls[pnls>0]; loss = pnls[pnls<=0]
-            n_tr = len(pnls)
-            m = dict(
-                n     = n_tr,
-                wr    = round(len(wins)/n_tr*100, 1),
-                pf    = round(abs(wins.sum()/loss.sum()) if loss.sum()!=0 else 99.0, 2),
-                sharpe= round(float(pnls.mean()/pnls.std()*np.sqrt(26)) if pnls.std()>0 else 0, 2),
-                dd    = round(float(np.min(np.cumsum(pnls)-np.maximum.accumulate(np.cumsum(pnls)))), 1),
-                p3    = round(float((pnls>=3).mean()*100), 1),
-                p5    = round(float((pnls>=5).mean()*100), 1),
-                avg_w = round(float(wins.mean()) if len(wins) else 0, 2),
-                avg_l = round(float(loss.mean()) if len(loss) else 0, 2),
-                total = round(float(pnls.sum()), 1),
-                tp_pct= round(float((np.array([t['reason'] for t in trades])=='Take Profit ✅').mean()*100),1),
-                sl_pct= round(float((np.array([t['reason'] for t in trades])=='Stop Loss').mean()*100),1),
-            )
-        else:
-            m = {}
 
-        if not SOLO_ALERTAS and m:
-            print_summary(ticker, name, m, p)
+        # ── Terminal: mostrar métricas OOS ─────────────────────
+        if not SOLO_ALERTAS and m_oos:
+            print_summary(ticker, name, m_oos, p)
             print_trades(trades, ticker)
 
-        # Alerta
         alert = check_alert(ind, sigs, p, ticker, name, trades)
         if alert:
             alerts.append(alert)
             print_alert(alert)
 
-        # Datos para dashboard
         price_hist = build_price_history(ind, sigs, scores)
         all_data[ticker] = {
             "ticker":        ticker,
             "name":          name,
             "params":        p,
-            "metrics_oos":   m_oos,
-            "metrics_bt":    m,
-            "trades":        trades[-30:],
+            "metrics_oos":   m_oos,   # métricas honestas para dashboard
+            "trades":        trades,  # historial completo para referencia
             "price_history": price_hist,
             "alert":         alert,
             "optimized_at":  entry.get('optimized_at','')[:10],
         }
 
-    # Resumen alertas
     if alerts:
         print(f"\n{M}{'═'*65}{RST}")
         print(f"{BOLD}{M}  🚨 {len(alerts)} ALERTA(S) ACTIVA(S){RST}")
@@ -935,8 +824,6 @@ def main():
         "assets":        all_data,
     }
     OUTPUT_FILE.write_text(json.dumps(dashboard_data, ensure_ascii=False, indent=2))
-
-    # Generar HTML autocontenido (funciona sin servidor)
     _generate_dashboard(dashboard_data, BASE_DIR / "dashboard.html")
 
     print(f"\n  {G}→ dashboard_data.json generado{RST}")

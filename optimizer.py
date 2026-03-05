@@ -28,7 +28,7 @@ except NameError:
 CACHE_FILE  = BASE_DIR / "optimal_params.json"
 LOG_FILE    = BASE_DIR / "optimization_log.txt"
 DATA_PERIOD = "5y"
-N_COMBOS    = 1200   # combinaciones aleatorias por activo
+N_COMBOS    = 2000   # combinaciones aleatorias por activo
 
 # ── Universo ───────────────────────────────────────────────────────
 UNIVERSE = {
@@ -68,12 +68,13 @@ UNIVERSE = {
     "SMCI":     "Super Micro Computer Inc",
     "CELH":     "Celsius Holdings Inc",
     "RCL":      "Royal Caribbean Group",
-    "MELI":     "MercadoLibre Inc",
+    "F":        "Ford Motor Company",
+    "ENR.DE":   "Siemens Energy AG",
+    "KRW.PA":   "Amundi MSCI Korea UCITS ETF",
     "NIO":      "NIO Inc. ADR (EV China)",
     "OSCR":     "Oscar Health Inc.",
     "BABA":     "Alibaba Group ADR",
     "ASTS":     "AST SpaceMobile Inc.",
-    "GME":      "GameStop Corp.",
     "EVGO":     "EVgo Inc.",
     # ── Inversos / VIX (lógica especial) ─────────────────────────
     "DBPK.DE":  "Xtrackers S&P 500 2x Inverse Daily UCIT",
