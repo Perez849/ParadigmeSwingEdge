@@ -233,7 +233,7 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
             exit_  = t['exit_date']
             entry_ts = pd.Timestamp(entry)
             today_ts = pd.Timestamp(today_str)
-            if (today_ts - entry_ts).days <= 4 and exit_ <= today_str:
+            if (today_ts - entry_ts).days <= 4 and exit_ < today_str:
                 closed_dates.add(entry)
 
     n = len(ind['c'])
