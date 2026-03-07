@@ -233,7 +233,7 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
             exit_  = t['exit_date']
             entry_ts = pd.Timestamp(entry)
             today_ts = pd.Timestamp(today_str)
-            if (today_ts - entry_ts).days <= 4 and exit_ < today_str:
+            if (today_ts - entry_ts).days <= 4 and exit_ <= today_str:
                 closed_dates.add(entry)
 
     n = len(ind['c'])
@@ -397,6 +397,160 @@ UNIVERSE = {
 INVERSE_TICKERS = {"DBPK.DE", "2INVE.MC"}
 VIX_TICKERS     = {"LVO.MI"}
 
+# ══════════════════════════════════════════════════════════════════
+# OPCIONES — MICROESTRUCTURA DE MERCADO
+# ══════════════════════════════════════════════════════════════════
+
+OPTIONS_PROXY = {
+    "GLDM.PA":"GLD","IS0E.DE":"GDX","SLVR.DE":"SLV","VVMX.DE":"REMX",
+    "URNU.DE":"URA","VVSM.DE":"SMH","SEC0.DE":"SMH",
+    "NDXH.PA":"QQQ","LQQ.PA":"QQQ","IBCF.DE":"SPY","DBPG.DE":"SPY",
+    "DBPK.DE":"SPY","2INVE.MC":"EWP","ZPDE.DE":"XLE","ZPDJ.DE":"XLI",
+    "EXV1.DE":"EUFN","IBEXA.MC":"EWP","EMXC.DE":"EEM","WTIF.DE":"EWJ",
+    "DFEN.DE":"ITA","KRW.PA":"EWY","LVO.MI":"VXX","ENR.DE":"XLE",
+}
+
+def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
+    """Obtiene microestructura de opciones. Devuelve dict o None si falla."""
+    try:
+        opt_ticker = OPTIONS_PROXY.get(ticker, ticker)
+        is_proxy   = opt_ticker != ticker
+
+        t = yf.Ticker(opt_ticker)
+        expirations = t.options
+        if not expirations:
+            return {"error": f"Sin opciones para {opt_ticker}"}
+
+        from datetime import datetime as dt
+        today = dt.now()
+        next_exp = None
+        for exp in expirations:
+            if (dt.strptime(exp, "%Y-%m-%d") - today).days >= 3:
+                next_exp = exp; break
+        if not next_exp:
+            return {"error": "Sin vencimientos próximos"}
+
+        chain = t.option_chain(next_exp)
+        calls = chain.calls.copy()
+        puts  = chain.puts.copy()
+
+        # Precio actual del proxy
+        hist = t.history(period="2d")
+        if hist.empty: return {"error": "Sin precio actual"}
+        proxy_price = float(hist['Close'].iloc[-1])
+        scale = entry_price / proxy_price if (is_proxy and entry_price and proxy_price) else 1.0
+        days_to_exp = (dt.strptime(next_exp, "%Y-%m-%d") - today).days
+
+        # Filtrar strikes ±30%
+        lo, hi = proxy_price*0.70, proxy_price*1.30
+        calls = calls[(calls['strike']>=lo)&(calls['strike']<=hi)].copy()
+        puts  = puts[(puts['strike']>=lo)&(puts['strike']<=hi)].copy()
+        if calls.empty or puts.empty:
+            return {"error": "Sin strikes relevantes"}
+
+        # Put/Call Ratio
+        c_oi = calls['openInterest'].fillna(0).sum()
+        p_oi = puts['openInterest'].fillna(0).sum()
+        pcr  = round(p_oi/c_oi, 2) if c_oi > 0 else None
+
+        # Max Pain
+        strikes = sorted(set(calls['strike'].tolist()+puts['strike'].tolist()))
+        pain = {}
+        for s in strikes:
+            c_loss = ((s-calls[calls['strike']<s]['strike'])*calls[calls['strike']<s]['openInterest'].fillna(0)).sum()
+            p_loss = ((puts[puts['strike']>s]['strike']-s)*puts[puts['strike']>s]['openInterest'].fillna(0)).sum()
+            pain[s] = c_loss + p_loss
+        mp_strike = min(pain, key=pain.get) if pain else proxy_price
+        mp_price  = round(mp_strike*scale, 2)
+        mp_pct    = round((mp_strike/proxy_price-1)*100, 1)
+
+        # Implied Move (ATM straddle)
+        atm = min(strikes, key=lambda x: abs(x-proxy_price))
+        ac  = calls[calls['strike']==atm]
+        ap  = puts[puts['strike']==atm]
+        impl_pct = None
+        if not ac.empty and not ap.empty:
+            try:
+                cm = (float(ac['bid'].iloc[0])+float(ac['ask'].iloc[0]))/2
+                pm = (float(ap['bid'].iloc[0])+float(ap['ask'].iloc[0]))/2
+                impl_pct = round((cm+pm)/proxy_price*100, 1)
+            except Exception: pass
+
+        impl_up   = round(entry_price*(1+impl_pct/100), 2) if (impl_pct and entry_price) else None
+        impl_down = round(entry_price*(1-impl_pct/100), 2) if (impl_pct and entry_price) else None
+        tp_in_range = (take_profit <= impl_up) if (impl_up and take_profit) else None
+
+        # Skew
+        otm_c = calls[calls['strike']>proxy_price*1.05]
+        otm_p = puts[puts['strike']<proxy_price*0.95]
+        skew  = None
+        if not otm_c.empty and not otm_p.empty:
+            civ = otm_c['impliedVolatility'].fillna(0).mean()
+            piv = otm_p['impliedVolatility'].fillna(0).mean()
+            if civ > 0: skew = round((piv-civ)/civ*100, 1)
+
+        # IV Rank aproximado
+        iv_rank = None
+        try:
+            hv = t.history(period="1y")['Close'].pct_change().std()*np.sqrt(252)*100
+            if impl_pct and days_to_exp>0:
+                cur_iv = impl_pct/np.sqrt(days_to_exp/365)*np.sqrt(252/365)*10
+                iv_rank = round(min(cur_iv/hv*50, 100), 0)
+        except Exception: pass
+
+        # OI map (top 15 strikes)
+        c_oi_df = calls[['strike','openInterest']].rename(columns={'openInterest':'call_oi'})
+        p_oi_df = puts[['strike','openInterest']].rename(columns={'openInterest':'put_oi'})
+        import pandas as _pd
+        oi_map = _pd.merge(c_oi_df, p_oi_df, on='strike', how='outer').fillna(0)
+        oi_map['total_oi'] = oi_map['call_oi']+oi_map['put_oi']
+        oi_map = oi_map.nlargest(15,'total_oi').sort_values('strike')
+        oi_list = [{"strike_proxy":round(float(r['strike']),2),
+                    "strike_asset":round(float(r['strike'])*scale,2),
+                    "call_oi":int(r['call_oi']),"put_oi":int(r['put_oi']),
+                    "total_oi":int(r['total_oi']),
+                    "dominant":"CALL" if r['call_oi']>r['put_oi'] else "PUT"}
+                   for _,r in oi_map.iterrows()]
+
+        # Señales e interpretación
+        signals = []
+        if pcr is not None:
+            if pcr>1.3:   signals.append({"type":"bearish","msg":f"PCR {pcr} — muchas puts, mercado posicionado bajista (señal contrarian alcista posible)"})
+            elif pcr<0.7: signals.append({"type":"bullish","msg":f"PCR {pcr} — pocas puts, posicionamiento alcista confirma la señal"})
+            else:         signals.append({"type":"neutral","msg":f"PCR {pcr} — posicionamiento neutro, sin sesgo claro"})
+        if skew is not None:
+            if skew>15:   signals.append({"type":"bearish","msg":f"Skew +{skew}% — puts OTM caras, el mercado paga por protección bajista"})
+            elif skew<-5: signals.append({"type":"bullish","msg":f"Skew {skew}% — calls OTM caras, el mercado anticipa movimiento alcista"})
+            else:         signals.append({"type":"neutral","msg":f"Skew {skew}% — volatilidad equilibrada entre calls y puts"})
+        if tp_in_range is not None:
+            if tp_in_range: signals.append({"type":"bullish","msg":f"Tu TP (+{round((take_profit/entry_price-1)*100,1)}%) está dentro del implied move ±{impl_pct}% — el mercado descuenta ese movimiento como posible"})
+            else:           signals.append({"type":"warning","msg":f"Tu TP (+{round((take_profit/entry_price-1)*100,1)}%) está FUERA del implied move ±{impl_pct}% — el mercado no anticipa ese movimiento para este vencimiento"})
+        if mp_pct>2:    signals.append({"type":"bullish","msg":f"Max pain en +{mp_pct}% (${mp_price}) — gravita al alza, presión sobre vendedores de calls"})
+        elif mp_pct<-2: signals.append({"type":"bearish","msg":f"Max pain en {mp_pct}% (${mp_price}) — gravita a la baja, presión sobre vendedores de puts"})
+        else:           signals.append({"type":"neutral","msg":f"Max pain cerca del precio (${mp_price}, {mp_pct}%) — sin presión direccional clara"})
+
+        bulls = sum(1 for s in signals if s['type']=='bullish')
+        bears = sum(1 for s in signals if s['type']=='bearish')
+        warns = sum(1 for s in signals if s['type']=='warning')
+        if bulls>bears:     verdict,vc,vm = "CONFIRMA","green","Las opciones confirman el sesgo alcista de tu señal técnica"
+        elif bears>bulls:   verdict,vc,vm = "CONTRADICE","red","Las opciones muestran sesgo bajista — considera reducir tamaño o esperar confirmación"
+        else:               verdict,vc,vm = "NEUTRO","yellow","Las opciones no dan señal clara — la técnica manda"
+        if warns>0 and verdict=="CONFIRMA": vm += ". ⚠ Tu TP excede el rango implícito — considera un TP parcial dentro del rango"
+
+        return {
+            "options_ticker":opt_ticker,"is_proxy":is_proxy,
+            "expiration":next_exp,"days_to_exp":days_to_exp,
+            "proxy_price":round(proxy_price,2),
+            "pcr":pcr,"max_pain":mp_price,"max_pain_pct":mp_pct,
+            "implied_move_pct":impl_pct,"implied_up":impl_up,"implied_down":impl_down,
+            "tp_in_range":tp_in_range,"skew":skew,"iv_rank":iv_rank,
+            "oi_map":oi_list,"signals":signals,
+            "verdict":verdict,"verdict_color":vc,"verdict_msg":vm,
+            "total_call_oi":int(c_oi),"total_put_oi":int(p_oi),
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
 def _generate_dashboard(data, out_path):
     import json as _json
     data_js = _json.dumps(data, ensure_ascii=False)
@@ -496,6 +650,41 @@ canvas{display:block;width:100%;height:100%}
 .dw{flex:1;display:flex;flex-direction:column;align-items:center}
 .db{width:100%;border-radius:2px 2px 0 0;min-height:2px}
 .dl{font-size:.48rem;color:var(--muted);margin-top:.18rem;white-space:nowrap}
+/* OPTIONS PANEL */
+.op{background:linear-gradient(135deg,rgba(77,159,255,.05),rgba(0,229,160,.03));border:1px solid rgba(77,159,255,.2);border-radius:12px;padding:1.2rem 1.5rem;margin-top:1.4rem}
+.op-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
+.op-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;color:var(--accent2);text-transform:uppercase;letter-spacing:.1em}
+.op-proxy{font-size:.6rem;color:var(--muted);margin-top:.15rem}
+.op-verdict{padding:.4rem .9rem;border-radius:20px;font-size:.68rem;font-weight:700;letter-spacing:.05em}
+.op-verdict.green{background:rgba(0,229,160,.15);color:var(--green);border:1px solid rgba(0,229,160,.3)}
+.op-verdict.red{background:rgba(255,71,87,.15);color:var(--red);border:1px solid rgba(255,71,87,.3)}
+.op-verdict.yellow{background:rgba(255,179,0,.15);color:var(--yellow);border:1px solid rgba(255,179,0,.3)}
+.op-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.7rem;margin-bottom:1.1rem}
+.op-card{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:8px;padding:.6rem .8rem}
+.op-card-label{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.op-card-val{font-family:'Syne',sans-serif;font-size:1.05rem;font-weight:700}
+.op-card-sub{font-size:.58rem;color:var(--muted);margin-top:.18rem}
+.op-signals{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1.1rem}
+.op-sig{display:flex;align-items:flex-start;gap:.5rem;padding:.45rem .65rem;border-radius:7px;font-size:.67rem;line-height:1.5}
+.op-sig.bullish{background:rgba(0,229,160,.07);border:1px solid rgba(0,229,160,.18);color:var(--green)}
+.op-sig.bearish{background:rgba(255,71,87,.07);border:1px solid rgba(255,71,87,.18);color:var(--red)}
+.op-sig.neutral{background:rgba(90,106,138,.07);border:1px solid rgba(90,106,138,.18);color:var(--muted)}
+.op-sig.warning{background:rgba(255,179,0,.07);border:1px solid rgba(255,179,0,.18);color:var(--yellow)}
+.op-sig-icon{font-size:.8rem;flex-shrink:0;margin-top:.05rem}
+.op-oi-title{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.55rem}
+.op-oi-wrap{overflow-x:auto}
+.op-oi-chart{display:flex;align-items:flex-end;gap:3px;height:90px;min-width:380px;padding-bottom:20px;position:relative}
+.op-bar-wrap{display:flex;flex-direction:column;align-items:center;flex:1;height:100%;justify-content:flex-end;position:relative}
+.op-bar-c{border-radius:2px 2px 0 0;width:100%}
+.op-bar-p{border-radius:0;width:100%}
+.op-bar-label{font-size:.45rem;color:var(--muted);position:absolute;bottom:-18px;white-space:nowrap;transform:rotate(-35deg);transform-origin:top left}
+.op-range-section{margin-bottom:1.1rem}
+.op-range-title{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem}
+.op-range-visual{position:relative;height:36px;background:var(--border);border-radius:6px;overflow:visible;margin:0 .5rem}
+.op-range-fill{position:absolute;top:0;height:100%;background:linear-gradient(90deg,rgba(255,71,87,.25),rgba(0,229,160,.25));border-radius:6px}
+.op-range-marker{position:absolute;top:-6px;bottom:-6px;width:2px;border-radius:1px}
+.op-range-tag{position:absolute;font-size:.52rem;white-space:nowrap;top:-18px}
+.op-verdictmsg{font-size:.62rem;color:var(--muted);margin-top:.3rem}
 </style>
 </head>
 <body>
@@ -536,6 +725,7 @@ canvas{display:block;width:100%;height:100%}
         </table></div>
       </div>
       <div><div class="st" style="margin-bottom:.7rem">Parámetros óptimos</div><div class="prgrid" id="prg"></div></div>
+      <div id="op-panel"></div>
     </div>
   </div>
 </main>
@@ -696,6 +886,12 @@ function openAsset(ticker){
     }).join('');
   }
   document.getElementById('dp').classList.add('open');
+  // Renderizar panel de opciones (solo si hay alerta activa, sino datos generales)
+  const alertData = D.alerts ? D.alerts.find(x=>x.ticker===ticker) : null;
+  const ep = alertData ? alertData.price : null;
+  const tp2 = alertData ? alertData.take_profit : null;
+  const sl2 = alertData ? alertData.stop_loss : null;
+  renderOptions(a.options || null, ep, tp2, sl2);
   setTimeout(()=>{
     document.getElementById('dp').scrollIntoView({behavior:'smooth',block:'start'});
     const h=a.price_history||[];
@@ -717,6 +913,152 @@ function openAsset(ticker){
   },60);
 }
 function closePanel(){document.getElementById('dp').classList.remove('open');}
+
+function renderOptions(opt, entry_price, take_profit, stop_loss) {
+  const el = document.getElementById('op-panel');
+  if (!opt || opt.error) {
+    el.innerHTML = opt ? `<div class="op"><div class="op-err">📊 Opciones no disponibles: ${opt.error}</div></div>` : '';
+    return;
+  }
+
+  const vc = opt.verdict_color || 'yellow';
+  const sigIcons = {bullish:'📈', bearish:'📉', neutral:'⚖', warning:'⚠'};
+
+  // ── Rango implícito visual ─────────────────────────────────────
+  let rangeHtml = '';
+  if (opt.implied_down && opt.implied_up && entry_price) {
+    const lo = Math.min(opt.implied_down, stop_loss, entry_price) * 0.98;
+    const hi = Math.max(opt.implied_up,  take_profit, entry_price) * 1.02;
+    const rng = hi - lo;
+    const pct  = v => ((v - lo) / rng * 100).toFixed(1);
+    const mkr  = (v, col, label, labelCol) =>
+      `<div class="op-range-marker" style="left:${pct(v)}%;background:${col}">
+         <div class="op-range-tag" style="left:2px;color:${labelCol||col}">${label}<br><span style="opacity:.7">${v.toFixed(2)}</span></div>
+       </div>`;
+
+    rangeHtml = `
+    <div class="op-range-section">
+      <div class="op-range-title">📐 Rango implícito hasta vencimiento vs tus niveles</div>
+      <div style="padding-top:22px">
+        <div class="op-range-visual">
+          <div class="op-range-fill" style="left:${pct(opt.implied_down)}%;width:${(pct(opt.implied_up)-pct(opt.implied_down)).toFixed(1)}%"></div>
+          ${mkr(opt.implied_down, '#ff4757', '↓ Impl', '#ff4757')}
+          ${mkr(stop_loss,        '#ff6b6b', 'SL',    '#ff6b6b')}
+          ${mkr(entry_price,      '#ffffff', 'ENTRADA','#ffffff')}
+          ${mkr(take_profit, opt.tp_in_range ? '#00e5a0' : '#ffb300', 'TP', opt.tp_in_range ? '#00e5a0' : '#ffb300')}
+          ${mkr(opt.implied_up,   '#00e5a0', '↑ Impl', '#00e5a0')}
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;font-size:.6rem;color:var(--muted)">
+        Rango implícito: <span style="color:var(--text)">$${opt.implied_down?.toFixed(2)} → $${opt.implied_up?.toFixed(2)}</span>
+        (±${opt.implied_move_pct}% · vence ${opt.expiration} · ${opt.days_to_exp}d)
+        &nbsp;·&nbsp; Tu TP: <span style="color:${opt.tp_in_range ? 'var(--green)' : 'var(--yellow)'}">${opt.tp_in_range ? '✓ dentro del rango' : '⚠ fuera del rango'}</span>
+      </div>
+    </div>`;
+  }
+
+  // ── Mapa OI por strike ─────────────────────────────────────────
+  let oiHtml = '';
+  if (opt.oi_map && opt.oi_map.length) {
+    const maxOI = Math.max(...opt.oi_map.map(x => x.total_oi), 1);
+    const atm   = opt.proxy_price;
+    oiHtml = `
+    <div style="margin-bottom:1.1rem">
+      <div class="op-oi-title">📊 Open Interest por strike — muros de soporte y resistencia
+        <span style="margin-left:.5rem;font-size:.55rem">
+          <span style="color:rgba(77,159,255,.8)">■</span> Calls &nbsp;
+          <span style="color:rgba(255,71,87,.8)">■</span> Puts
+        </span>
+      </div>
+      <div class="op-oi-wrap"><div class="op-oi-chart">
+        ${opt.oi_map.map(bar => {
+          const hTotal = Math.round(bar.total_oi / maxOI * 62);
+          const hCall  = Math.round(bar.call_oi  / maxOI * 62);
+          const hPut   = Math.round(bar.put_oi   / maxOI * 62);
+          const isAtm  = Math.abs(bar.strike_proxy - atm) / atm < 0.015;
+          return `<div class="op-bar-wrap${isAtm?' op-bar-atm':''}">
+            <div style="display:flex;flex-direction:column;align-items:center;width:100%;justify-content:flex-end;height:62px;gap:0">
+              <div class="op-bar-c" style="height:${hCall}px;background:rgba(77,159,255,.7)"></div>
+              <div class="op-bar-p" style="height:${hPut}px;background:rgba(255,71,87,.65)"></div>
+            </div>
+            <div class="op-bar-label">${bar.strike_asset?.toFixed(1)||bar.strike_proxy}</div>
+          </div>`;
+        }).join('')}
+      </div></div>
+      <div style="font-size:.58rem;color:var(--muted);margin-top:.3rem">
+        Muros altos de Calls = resistencia. Muros altos de Puts = soporte. Strike ATM marcado con borde verde.
+      </div>
+    </div>`;
+  }
+
+  // ── Tarjetas de métricas ───────────────────────────────────────
+  const pcrColor = opt.pcr == null ? 'var(--muted)' : opt.pcr > 1.3 ? 'var(--red)' : opt.pcr < 0.7 ? 'var(--green)' : 'var(--yellow)';
+  const skewColor = opt.skew == null ? 'var(--muted)' : opt.skew > 15 ? 'var(--red)' : opt.skew < -5 ? 'var(--green)' : 'var(--yellow)';
+  const mpColor   = opt.max_pain_pct > 2 ? 'var(--green)' : opt.max_pain_pct < -2 ? 'var(--red)' : 'var(--yellow)';
+
+  const cards = [
+    { label: 'Put/Call Ratio', val: opt.pcr ?? '—', color: pcrColor,
+      sub: opt.pcr > 1.3 ? 'Bajista · contrarian alcista' : opt.pcr < 0.7 ? 'Alcista · confirma señal' : 'Neutro' },
+    { label: 'Max Pain', val: opt.max_pain != null ? `$${opt.max_pain}` : '—', color: mpColor,
+      sub: `${opt.max_pain_pct > 0 ? '+' : ''}${opt.max_pain_pct ?? '—'}% vs precio` },
+    { label: 'Implied Move', val: opt.implied_move_pct != null ? `±${opt.implied_move_pct}%` : '—', color: 'var(--accent2)',
+      sub: `Hasta ${opt.expiration}` },
+    { label: 'Skew (IV)', val: opt.skew != null ? `${opt.skew > 0 ? '+' : ''}${opt.skew}%` : '—', color: skewColor,
+      sub: opt.skew > 15 ? 'Puts caras · miedo' : opt.skew < -5 ? 'Calls caras · euforia' : 'Equilibrado' },
+    { label: 'IV Rank', val: opt.iv_rank != null ? `${opt.iv_rank}%` : '—',
+      color: opt.iv_rank > 60 ? 'var(--red)' : opt.iv_rank > 30 ? 'var(--yellow)' : 'var(--green)',
+      sub: opt.iv_rank > 60 ? 'IV alta · opciones caras' : opt.iv_rank < 30 ? 'IV baja · opciones baratas' : 'IV normal' },
+    { label: 'Call OI total', val: opt.total_call_oi != null ? (opt.total_call_oi/1000).toFixed(0)+'k' : '—',
+      color: 'rgba(77,159,255,.9)', sub: 'Open interest calls' },
+    { label: 'Put OI total', val: opt.total_put_oi != null ? (opt.total_put_oi/1000).toFixed(0)+'k' : '—',
+      color: 'rgba(255,71,87,.9)', sub: 'Open interest puts' },
+    { label: 'Vence en', val: opt.days_to_exp != null ? `${opt.days_to_exp}d` : '—',
+      color: 'var(--muted)', sub: opt.expiration },
+  ];
+
+  el.innerHTML = `
+  <div class="op">
+    <div class="op-h">
+      <div>
+        <div class="op-title">📊 Microestructura de opciones</div>
+        <div class="op-proxy">${opt.is_proxy ? `Proxy: ${opt.options_ticker} (sin opciones directas para este ticker)` : `Opciones directas: ${opt.options_ticker}`} · Próximo vencimiento: ${opt.expiration}</div>
+      </div>
+      <div>
+        <div class="op-verdict ${vc}">${opt.verdict}</div>
+        <div class="op-verdictmsg">${opt.verdict_msg}</div>
+      </div>
+    </div>
+
+    <div class="op-grid">
+      ${cards.map(c => `
+        <div class="op-card">
+          <div class="op-card-label">${c.label}</div>
+          <div class="op-card-val" style="color:${c.color}">${c.val}</div>
+          <div class="op-card-sub">${c.sub}</div>
+        </div>`).join('')}
+    </div>
+
+    ${rangeHtml}
+    ${oiHtml}
+
+    <div class="op-signals">
+      ${(opt.signals||[]).map(s => `
+        <div class="op-sig ${s.type}">
+          <span class="op-sig-icon">${sigIcons[s.type]||'·'}</span>
+          <span>${s.msg}</span>
+        </div>`).join('')}
+    </div>
+
+    <div style="font-size:.58rem;color:var(--muted);padding-top:.6rem;border-top:1px solid rgba(255,255,255,.05);line-height:1.8">
+      <b style="color:var(--text)">Guía rápida:</b>
+      <b style="color:var(--accent2)">PCR</b> &gt;1.3 = muchas puts = miedo = posible suelo contrarian.
+      <b style="color:var(--accent2)">Max Pain</b> = precio donde más opciones expiran sin valor = imán de precio antes del vencimiento.
+      <b style="color:var(--accent2)">Implied Move</b> = lo que el mercado descuenta que se puede mover.
+      <b style="color:var(--accent2)">Skew</b> = si las puts OTM son más caras que las calls = miedo a caída.
+      <b style="color:var(--accent2)">OI Calls</b> = resistencia. <b style="color:var(--accent2)">OI Puts</b> = soporte.
+    </div>
+  </div>`;
+}
 </script>
 </body>
 </html>"""
@@ -791,6 +1133,15 @@ def main():
         if alert:
             alerts.append(alert)
             print_alert(alert)
+            # Obtener microestructura de opciones para alertas activas
+            print(f"  📊 Obteniendo opciones...", end=" ", flush=True)
+            opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'])
+            if opt_data and not opt_data.get('error'):
+                print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% Veredicto={opt_data.get('verdict','—')}")
+            else:
+                print(f"⚠ {opt_data.get('error','sin datos') if opt_data else 'sin datos'}")
+        else:
+            opt_data = None
 
         price_hist = build_price_history(ind, sigs, scores)
         all_data[ticker] = {
@@ -801,6 +1152,7 @@ def main():
             "trades":        trades,  # historial completo para referencia
             "price_history": price_hist,
             "alert":         alert,
+            "options":       opt_data,
             "optimized_at":  entry.get('optimized_at','')[:10],
         }
 
