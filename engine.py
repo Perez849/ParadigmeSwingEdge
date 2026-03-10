@@ -488,8 +488,10 @@ def fmtOI_py(n):
                 return (b + a) / 2
         return lp if lp > 0 else 0.0
 
-    def pick_best_expiration(expirations, today, min_days=3, days_remaining=None):
-        """Elige el vencimiento más relevante para la duración restante del trade."""
+    def pick_best_expiration(expirations, today, min_days=1):
+        """Siempre elige el vencimiento más líquido (20-45 días).
+        La IV se extrae de ahí y luego se escala al horizonte que se necesite.
+        Si no hay entre 20-45d, coge el más cercano disponible ≥ min_days."""
         from datetime import datetime as dt
         candidates = []
         for exp in expirations:
@@ -500,22 +502,11 @@ def fmtOI_py(n):
                 break
         if not candidates:
             return None, 0
-
-        if days_remaining is not None and days_remaining > 0:
-            # Elegir el vencimiento más cercano a los días restantes del trade
-            # pero nunca antes de que expire el trade
-            target = max(days_remaining, min_days)
-            # Preferir vencimiento justo después de que expire el trade
-            after_trade = [(e, d) for e, d in candidates if d >= target]
-            if after_trade:
-                return after_trade[0]  # el más cercano por encima
-            # Si no hay ninguno después, el más cercano disponible
-            return min(candidates, key=lambda x: abs(x[1] - target))
-
-        # Sin days_remaining: preferir 20-45 días (líquidos)
+        # Preferir el rango más líquido
         preferred = [(e, d) for e, d in candidates if 20 <= d <= 45]
         if preferred:
             return preferred[0]
+        # Si no hay, el más cercano disponible
         return candidates[0]
 
     try:
@@ -529,9 +520,9 @@ def fmtOI_py(n):
             return {"error": f"Sin opciones para {opt_ticker}"}
 
         today = dt.now()
-        next_exp, days_to_exp = pick_best_expiration(expirations, today, days_remaining=days_remaining)
+        next_exp, days_to_exp = pick_best_expiration(expirations, today)
         if not next_exp:
-            return {"error": "Sin vencimientos válidos (mín 5 días)"}
+            return {"error": "Sin vencimientos válidos"}
 
         chain = t.option_chain(next_exp)
         calls = clean_chain(chain.calls.copy())
@@ -601,16 +592,20 @@ def fmtOI_py(n):
                 mp_pct    = round((mp_strike / proxy_price - 1) * 100, 1)
                 mp_valid  = True
 
-        # ── IMPLIED MOVE (ATM STRADDLE) ───────────────────────────────
-        # Buscar el strike ATM con mejor liquidez (spread más estrecho)
+        # ── IMPLIED MOVE ─────────────────────────────────────────────
+        # Paso 1: extraer precio del straddle ATM del vencimiento líquido
+        # Paso 2: destilar IV anualizada
+        # Paso 3: escalar a los días restantes del trade (no al vencimiento)
         strikes_all = sorted(set(calls['strike'].tolist() + puts['strike'].tolist()))
-        # Candidatos ATM: strikes dentro del 2% del precio actual
         atm_candidates = [s for s in strikes_all if abs(s - proxy_price) / proxy_price < 0.02]
         if not atm_candidates:
             atm_candidates = [min(strikes_all, key=lambda x: abs(x - proxy_price))]
 
-        impl_pct = None
-        atm_used = None
+        straddle_pct = None   # precio straddle como % del subyacente
+        atm_iv_ann   = None   # IV anualizada extraída del straddle
+        impl_pct     = None   # implied move escalado a días_restantes del trade
+        atm_used     = None
+
         for atm_s in sorted(atm_candidates, key=lambda x: abs(x - proxy_price)):
             ac = calls[calls['strike'] == atm_s]
             ap = puts[puts['strike'] == atm_s]
@@ -619,16 +614,30 @@ def fmtOI_py(n):
             cp = best_price(ac.iloc[0], 'bid', 'ask', 'lastPrice')
             pp = best_price(ap.iloc[0], 'bid', 'ask', 'lastPrice')
             if cp > 0 and pp > 0:
-                raw_impl = (cp + pp) / proxy_price * 100
-                # Validar rango razonable: 0.5% a 50%
-                if 0.5 <= raw_impl <= 50:
-                    impl_pct = round(raw_impl, 1)
+                raw_straddle = (cp + pp) / proxy_price * 100
+                if 0.5 <= raw_straddle <= 50:
+                    straddle_pct = round(raw_straddle, 1)
                     atm_used = atm_s
+                    # IV anualizada: straddle/S = IV * sqrt(T) * sqrt(2/pi)
+                    # → IV = (straddle/S) / sqrt(T) / sqrt(2/pi) = (straddle/S) * sqrt(pi/2) / sqrt(T)
+                    if days_to_exp and days_to_exp > 0:
+                        T_exp = days_to_exp / 365
+                        atm_iv_ann = straddle_pct / 100 * np.sqrt(np.pi / 2) / np.sqrt(T_exp) * 100
+                        if not (5 <= atm_iv_ann <= 300):
+                            atm_iv_ann = None
                     break
 
-        impl_up      = round(entry_price * (1 + impl_pct / 100), 2) if impl_pct and entry_price else None
-        impl_down    = round(entry_price * (1 - impl_pct / 100), 2) if impl_pct and entry_price else None
-        tp_in_range  = (take_profit <= impl_up) if (impl_up and take_profit) else None
+        # Escalar IV anualizada a los días restantes del trade
+        if atm_iv_ann and days_remaining and days_remaining > 0:
+            T_trade = days_remaining / 365
+            impl_pct = round(atm_iv_ann / 100 / np.sqrt(np.pi / 2) * np.sqrt(T_trade) * 100, 1)
+        elif straddle_pct:
+            # Fallback: si no hay days_remaining, usar el straddle directo del vencimiento
+            impl_pct = straddle_pct
+
+        impl_up     = round(entry_price * (1 + impl_pct / 100), 2) if impl_pct and entry_price else None
+        impl_down   = round(entry_price * (1 - impl_pct / 100), 2) if impl_pct and entry_price else None
+        tp_in_range = (take_profit <= impl_up) if (impl_up and take_profit) else None
 
         # ── SKEW desde precios de opciones (no desde impliedVolatility) ──
         # Comparar precio de puts OTM vs calls OTM equidistantes del ATM
@@ -670,7 +679,7 @@ def fmtOI_py(n):
 
         # ── IV RANK ───────────────────────────────────────────────────
         iv_rank = None
-        atm_iv  = None
+        atm_iv  = round(atm_iv_ann, 1) if atm_iv_ann else None
         hv_252  = None
         hv_21   = None
         try:
@@ -680,33 +689,14 @@ def fmtOI_py(n):
                 hv_252  = round(returns.std() * np.sqrt(252) * 100, 1)
                 hv_21   = round(returns.tail(21).std() * np.sqrt(252) * 100, 1)
 
-                # IV ATM: calcular desde precio del straddle + días al vencimiento
-                # Fórmula aproximada: IV ≈ straddle_price / (S * sqrt(T))
-                # donde T = días/365
-                if impl_pct and days_to_exp and days_to_exp > 0:
-                    T = days_to_exp / 365
-                    # impl_pct ya es el % del straddle sobre el precio → IV ≈ impl_pct% / sqrt(T) * sqrt(1/252*252)
-                    # Convención: IV anualizada = (straddle/S) / sqrt(T) * sqrt(pi/2) ≈ impl_pct/100 / sqrt(T) * 1.2533
-                    atm_iv = round(impl_pct / 100 / np.sqrt(T) * np.sqrt(np.pi / 2) * 100, 1)
-                    # Sanity check: IV entre 5% y 300%
-                    if not (5 <= atm_iv <= 300):
-                        atm_iv = None
-
-                # IV Rank: posición de atm_iv en el rango histórico de HV
-                if atm_iv and hv_252 > 0:
+                # IV Rank: posición de atm_iv en el rango histórico de HV rolling
+                iv_for_rank = atm_iv or hv_21  # fallback a HV21 si no hay IV de opciones
+                if iv_for_rank and hv_252 > 0:
                     rolling_hv = returns.rolling(21).std() * np.sqrt(252) * 100
                     iv_min = rolling_hv.quantile(0.05)
                     iv_max = rolling_hv.quantile(0.95)
                     if iv_max > iv_min:
-                        iv_rank = round((atm_iv - iv_min) / (iv_max - iv_min) * 100, 0)
-                        iv_rank = float(max(0, min(100, iv_rank)))
-                elif hv_252 and hv_21:
-                    # Sin atm_iv, al menos calcular IV rank aproximado comparando HV reciente vs anual
-                    rolling_hv = returns.rolling(21).std() * np.sqrt(252) * 100
-                    iv_min = rolling_hv.quantile(0.05)
-                    iv_max = rolling_hv.quantile(0.95)
-                    if iv_max > iv_min:
-                        iv_rank = round((hv_21 - iv_min) / (iv_max - iv_min) * 100, 0)
+                        iv_rank = round((iv_for_rank - iv_min) / (iv_max - iv_min) * 100, 0)
                         iv_rank = float(max(0, min(100, iv_rank)))
         except Exception:
             pass
@@ -788,10 +778,12 @@ def fmtOI_py(n):
         if impl_pct is not None:
             tp_pct_real = round((take_profit / entry_price - 1) * 100, 1) if entry_price else 0
             sl_pct_real = round((1 - stop_loss / entry_price) * 100, 1) if entry_price else 0
+            horizon = days_remaining if days_remaining else days_to_exp
+            iv_str  = f" (IV anualizada: {round(atm_iv_ann,1)}%)" if atm_iv_ann else ""
             if tp_in_range:
-                signals.append({"type": "bullish", "msg": f"Tu TP (+{tp_pct_real}%) está dentro del implied move ±{impl_pct}% para {next_exp}. El mercado descuenta que ese movimiento es alcanzable en este vencimiento. Tu SL (-{sl_pct_real}%) también está dentro del rango — el trade tiene sentido temporalmente."})
+                signals.append({"type": "bullish", "msg": f"Tu TP (+{tp_pct_real}%) está dentro del implied move ±{impl_pct}% calculado para los {horizon}d restantes del trade{iv_str}. El mercado descuenta que ese movimiento es alcanzable. Tu SL (-{sl_pct_real}%) también está dentro del rango — el trade tiene sentido temporalmente."})
             else:
-                signals.append({"type": "warning", "msg": f"Tu TP (+{tp_pct_real}%) está FUERA del implied move ±{impl_pct}%. El mercado solo descuenta un movimiento de ±{impl_pct}% hasta {next_exp} ({days_to_exp}d). Considera: (1) TP parcial al {impl_pct}%, (2) esperar vencimiento más largo, o (3) asumir que necesitas más tiempo del previsto."})
+                signals.append({"type": "warning", "msg": f"Tu TP (+{tp_pct_real}%) está FUERA del implied move ±{impl_pct}% para los {horizon}d restantes{iv_str}. El mercado solo descuenta ±{impl_pct}% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."})
 
         # Max Pain
         if mp_valid:
@@ -848,6 +840,8 @@ def fmtOI_py(n):
             "is_proxy":          is_proxy,
             "expiration":        next_exp,
             "days_to_exp":       days_to_exp,
+            "days_remaining":    days_remaining,
+            "trade_expiring_soon": days_remaining is not None and days_remaining <= 2,
             "proxy_price":       round(proxy_price, 2),
             "pcr":               pcr,
             "pcr_source":        pcr_note,
@@ -1364,7 +1358,9 @@ function renderOptions(opt, entry_price, take_profit, stop_loss) {
     { label: 'Put/Call Ratio', val: opt.pcr ?? '—', color: pcrColor,
       sub: opt.pcr == null ? (opt.pcr_source||'sin datos') : opt.pcr > 1.5 ? 'Muy bajista · contrarian posible' : opt.pcr > 1.2 ? 'Bajista moderado' : opt.pcr < 0.6 ? 'Alcista fuerte' : opt.pcr < 0.8 ? 'Leve sesgo alcista' : 'Neutro (0.8–1.2)' },
     { label: 'Implied Move', val: opt.implied_move_pct != null ? `±${opt.implied_move_pct}%` : '—', color: 'var(--accent2)',
-      sub: opt.implied_move_pct != null ? `Hasta ${opt.expiration} (${opt.days_to_exp}d)` : 'No disponible' },
+      sub: opt.implied_move_pct != null
+        ? `Para ${opt.days_remaining ?? opt.days_to_exp}d restantes · IV ann. ${opt.atm_iv ?? '—'}% · venc. ref. ${opt.expiration}`
+        : 'No disponible' },
     { label: 'Max Pain', val: opt.max_pain_valid ? `${opt.max_pain}` : '—', color: mpColor,
       sub: opt.max_pain_valid ? `${opt.max_pain_pct > 0 ? '+' : ''}${opt.max_pain_pct}% vs precio · imán de precio` : 'OI insuf. para calcular' },
     { label: 'Skew (puts/calls OTM)', val: opt.skew != null ? `${opt.skew > 0 ? '+' : ''}${opt.skew}%` : '—', color: skewColor,
