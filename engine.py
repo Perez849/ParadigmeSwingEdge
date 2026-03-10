@@ -1517,6 +1517,8 @@ def main():
             print_summary(ticker, name, m_oos, p)
             print_trades(trades, ticker)
 
+        alert   = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
+        opt_data = None
         if alert:
             alerts.append(alert)
             print_alert(alert)
