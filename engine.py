@@ -441,8 +441,10 @@ def fmtOI_py(n):
     if n >= 1_000: return f"{n/1_000:.1f}K"
     return str(n)
 
+def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaining=None):
+    """Obtiene microestructura de opciones con validaciones de calidad de datos."""
+
     # Proxies donde el PCR alto es ESTRUCTURAL (no señal bajista)
-    # — institucionales usan puts masivamente para cubrir posiciones largas
     PCR_STRUCTURAL_HIGH = {
         "GDX":  "ETF de mineras de oro — institucionales cubren largos en oro con puts de GDX. PCR >2 es normal.",
         "GLD":  "ETF de oro físico — cobertura institucional masiva. PCR elevado es estructural.",
@@ -460,9 +462,6 @@ def fmtOI_py(n):
         "ITA":  "ETF defensa — sector concentrado, PCR poco representativo.",
         "SMH":  "ETF semiconductores — muy usado para cubrir posiciones tech. PCR >1.5 normal.",
     }
-
-
-    """Obtiene microestructura de opciones con validaciones de calidad de datos."""
 
     def safe_float(val, default=0.0):
         try:
