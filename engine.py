@@ -600,61 +600,80 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
         tp_in_range  = (take_profit <= impl_up) if (impl_up and take_profit) else None
 
         # ── SKEW ─────────────────────────────────────────────────────
-        # IV del 5% OTM calls vs 5% OTM puts — solo con IV > 0 y razonable
         skew = None
         skew_detail = {}
-        otm_c = calls[(calls['strike'] > proxy_price * 1.04) & (calls['strike'] < proxy_price * 1.15)]
-        otm_p = puts[(puts['strike'] < proxy_price * 0.96) & (puts['strike'] > proxy_price * 0.85)]
+        otm_c = calls[(calls['strike'] > proxy_price * 1.04) & (calls['strike'] < proxy_price * 1.15)].copy()
+        otm_p = puts[(puts['strike'] < proxy_price * 0.96) & (puts['strike'] > proxy_price * 0.85)].copy()
         otm_c = otm_c[otm_c['impliedVolatility'] > 0.01]
         otm_p = otm_p[otm_p['impliedVolatility'] > 0.01]
         if len(otm_c) >= 2 and len(otm_p) >= 2:
-            civ = otm_c['impliedVolatility'].median()  # mediana más robusta que media
+            civ = otm_c['impliedVolatility'].median()
             piv = otm_p['impliedVolatility'].median()
-            if 0.01 < civ < 5 and 0.01 < piv < 5:  # IV entre 1% y 500% — razonable
+            # Detectar valores placeholder: si toda la cadena tiene casi la misma IV
+            # (std muy baja relativa a la media) los datos no son reales
+            all_iv = pd.concat([calls['impliedVolatility'], puts['impliedVolatility']])
+            all_iv = all_iv[all_iv > 0.01]
+            iv_cv = all_iv.std() / all_iv.mean() if all_iv.mean() > 0 else 0  # coef. variación
+            if iv_cv < 0.02:  # menos del 2% de variación → placeholder
+                skew = None
+                skew_detail = {"note": "IV uniforme en toda la cadena — datos placeholder de yfinance"}
+            elif 0.01 < civ < 5 and 0.01 < piv < 5:
                 raw_skew = (piv - civ) / civ * 100
-                # Skew entre -80% y +200% es razonable
                 if -80 <= raw_skew <= 200:
                     skew = round(raw_skew, 1)
                     skew_detail = {"put_iv": round(piv * 100, 1), "call_iv": round(civ * 100, 1)}
 
         # ── IV RANK ───────────────────────────────────────────────────
         iv_rank = None
-        iv_percentile = None
         atm_iv = None
         try:
-            # IV actual del ATM
-            if atm_used is not None:
-                ac_atm = calls[calls['strike'] == atm_used]
-                if not ac_atm.empty:
-                    atm_iv_raw = safe_float(ac_atm['impliedVolatility'].iloc[0])
-                    if 0.01 < atm_iv_raw < 5:
-                        atm_iv = round(atm_iv_raw * 100, 1)
+            # IV ATM — buscar el strike más cercano al precio con IV válida
+            # Independientemente de si el straddle funcionó
+            atm_strike = min(strikes_all, key=lambda x: abs(x - proxy_price))
 
-            # HV anualizada 252 días
+            # Primero verificar si la IV de toda la cadena es un placeholder
+            all_iv_chain = pd.concat([calls['impliedVolatility'], puts['impliedVolatility']])
+            all_iv_chain = all_iv_chain[all_iv_chain > 0.01]
+            iv_cv_chain = all_iv_chain.std() / all_iv_chain.mean() if len(all_iv_chain) > 3 and all_iv_chain.mean() > 0 else 1.0
+            iv_is_placeholder = iv_cv_chain < 0.02  # toda la cadena tiene casi la misma IV
+
+            if not iv_is_placeholder:
+                for candidate in sorted(strikes_all, key=lambda x: abs(x - proxy_price))[:5]:
+                    ac_c = calls[calls['strike'] == candidate]
+                    ap_c = puts[puts['strike'] == candidate]
+                    for df_c in [ac_c, ap_c]:
+                        if not df_c.empty:
+                            iv_raw = safe_float(df_c['impliedVolatility'].iloc[0])
+                            if 0.01 < iv_raw < 5.0:
+                                atm_iv = round(iv_raw * 100, 1)
+                                break
+                    if atm_iv:
+                        break
+
+            # HV anualizada
             hist_1y = t.history(period="1y")['Close']
             if len(hist_1y) >= 60:
                 returns = hist_1y.pct_change().dropna()
                 hv_252  = returns.std() * np.sqrt(252) * 100
-                hv_21   = returns.tail(21).std() * np.sqrt(252) * 100  # HV reciente
+                hv_21   = returns.tail(21).std() * np.sqrt(252) * 100
 
                 if atm_iv and hv_252 > 0:
-                    # IV Rank: posición de la IV actual en el rango del año
-                    # Estimamos rolling IV como HV en ventanas de 21d
+                    # IV Rank: comparar IV actual vs rango de IV del año
+                    # Proxy: usar rolling HV de 21d como estimación de IV histórica
                     rolling_hv = returns.rolling(21).std() * np.sqrt(252) * 100
-                    iv_min = rolling_hv.min()
-                    iv_max = rolling_hv.max()
+                    iv_min = rolling_hv.quantile(0.05)  # percentil 5 (ignora outliers)
+                    iv_max = rolling_hv.quantile(0.95)  # percentil 95
                     if iv_max > iv_min:
                         iv_rank = round((atm_iv - iv_min) / (iv_max - iv_min) * 100, 0)
-                        iv_rank = max(0, min(100, iv_rank))
+                        iv_rank = max(0, min(100, float(iv_rank)))
 
-                    # IV/HV ratio — cuánto premium paga el mercado sobre la vol realizada
                     iv_hv_ratio = round(atm_iv / hv_252, 2) if hv_252 > 0 else None
                 else:
                     iv_hv_ratio = None
             else:
                 hv_252 = None; hv_21 = None; iv_hv_ratio = None
         except Exception:
-            hv_252 = None; hv_21 = None; iv_hv_ratio = None; iv_hv_ratio = None
+            hv_252 = None; hv_21 = None; iv_hv_ratio = None
 
         # ── OI MAP ────────────────────────────────────────────────────
         # Usar OI si disponible, volumen como fallback
@@ -721,7 +740,8 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
                 signals.append({"type": "bullish", "msg": f"Skew invertido {skew}% (IV calls {civ_str} vs puts {piv_str}). Las calls OTM son más caras — el mercado está pagando por participar al alza. Señal de euforia o anticipación de movimiento alcista fuerte."})
             else:
                 signals.append({"type": "neutral", "msg": f"Skew equilibrado {skew}% (IV puts {piv_str}, calls {civ_str}). Volatilidad implícita simétrica — el mercado no anticipa dirección clara."})
-
+        elif skew_detail.get('note'):
+            signals.append({"type": "neutral", "msg": f"Skew no disponible: {skew_detail['note']}. yfinance no reporta IV real para este proxy — usa los demás indicadores."})
         # Implied Move
         if impl_pct is not None:
             tp_pct_real = round((take_profit / entry_price - 1) * 100, 1) if entry_price else 0
