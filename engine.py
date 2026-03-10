@@ -876,7 +876,7 @@ def fmtOI_py(n):
             "total_call_oi":     int(c_oi),
             "total_put_oi":      int(p_oi),
         }
-    except Exception as e:
+    except BaseException as e:
         return {"error": str(e)}
 
 def _generate_dashboard(data, out_path):
@@ -1449,11 +1449,13 @@ def main():
     print(f"{DIM}  {len(cache)} activos · métricas OOS · historial completo{RST}")
     print(f"{B}{'═'*65}{RST}\n")
 
-    print("  Descargando SPY...")
-    spy = yf.download("SPY", period=PERIOD, auto_adjust=True, progress=False)
+    print("  Descargando SPY (1y para filtro macro)...")
+    spy = yf.download("SPY", period="1y", auto_adjust=True, progress=False)
     if isinstance(spy.columns, pd.MultiIndex): spy.columns=spy.columns.get_level_values(0)
     spy_c = spy['Close'].squeeze()
     spy_e = spy_c.ewm(span=50, adjust=False).mean()
+    spy_above = bool(spy_c.iloc[-1] > spy_e.iloc[-1])
+    print(f"  SPY={spy_c.iloc[-1]:.2f} EMA50={spy_e.iloc[-1]:.2f} → {'✅ ALCISTA' if spy_above else '🔴 BAJISTA'} (filtro macro {'OFF' if spy_above else 'ACTIVO'})")
 
     tickers = [TICKER_SOLO] if TICKER_SOLO else list(cache.keys())
     alerts   = []
@@ -1515,20 +1517,21 @@ def main():
             print_summary(ticker, name, m_oos, p)
             print_trades(trades, ticker)
 
-        alert = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
         if alert:
             alerts.append(alert)
             print_alert(alert)
-            # Obtener microestructura de opciones para alertas activas
             print(f"  📊 Obteniendo opciones...", end=" ", flush=True)
-            opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'],
-                                          days_remaining=p['max_days'] - alert['days_ago'])
-            if opt_data and not opt_data.get('error'):
-                print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% Veredicto={opt_data.get('verdict','—')}")
-            else:
-                print(f"⚠ {opt_data.get('error','sin datos') if opt_data else 'sin datos'}")
-        else:
-            opt_data = None
+            try:
+                days_remaining = max(1, p['max_days'] - alert['days_ago'])
+                opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'],
+                                              days_remaining=days_remaining)
+                if opt_data and not opt_data.get('error'):
+                    print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% Veredicto={opt_data.get('verdict','—')}")
+                else:
+                    print(f"⚠ {opt_data.get('error','sin datos') if opt_data else 'sin datos'}")
+            except Exception as e_opt:
+                print(f"⚠ Error opciones: {e_opt}")
+                opt_data = None
 
         price_hist = build_price_history(ind, sigs, scores)
         all_data[ticker] = {
