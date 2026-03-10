@@ -1543,23 +1543,22 @@ def main():
             print(f"❌ {e}"); continue
 
         # ── Filtro macro combinado ────────────────────────────────
-        # Si SPY alcista → todas las señales pasan (macro = spy_c > spy_e)
-        # Si SPY bajista → solo pasan activos con precio > EMA50 propia
-        spy_filter = (spy_c > spy_e).reindex(df_raw.index, method='ffill').fillna(False)
-
+        # Si SPY alcista → macro = True siempre (todas las señales pasan)
+        # Si SPY bajista → macro = True solo si activo está por encima de su EMA50
+        #   (el activo va contra la corriente bajista del mercado)
         if not spy_above:
-            # SPY bajista: calcular EMA50 del activo individual
             asset_close = df_raw['Close'].squeeze()
             asset_ema50 = asset_close.ewm(span=50, adjust=False).mean()
-            asset_above = (asset_close > asset_ema50)
-            # Señal solo pasa si el activo también está por encima de su propia EMA50
-            combined_filter = (spy_filter & asset_above.reindex(spy_filter.index, method='ffill').fillna(False))
-            macro = combined_filter.reindex(df_raw.index, method='ffill').fillna(False).values
-            asset_ema50_ok = bool(asset_close.iloc[-1] > asset_ema50.iloc[-1])
+            asset_above_series = (asset_close > asset_ema50)
+            # macro[i] = True si el activo está por encima de su EMA50 en esa barra
+            # ignoramos completamente spy_filter — ya sabemos que SPY es bajista
+            macro = asset_above_series.reindex(df_raw.index, method='ffill').fillna(False).values
+            asset_ema50_ok  = bool(asset_close.iloc[-1] > asset_ema50.iloc[-1])
             asset_ema50_val = round(float(asset_ema50.iloc[-1]), 2)
         else:
-            macro = spy_filter.reindex(df_raw.index, method='ffill').fillna(False).values
-            asset_ema50_ok  = True   # no relevante cuando SPY es alcista
+            # SPY alcista: macro = True siempre
+            macro = np.ones(len(df_raw), dtype=bool)
+            asset_ema50_ok  = True
             asset_ema50_val = None
 
         use_invert = entry.get('invert', ticker in INVERSE_TICKERS or ticker in VIX_TICKERS)
@@ -1571,12 +1570,20 @@ def main():
         n_raw    = int(sigs_raw.sum())
         n_final  = int(sigs.sum())
         n_blocked = n_raw - n_final
-        # Señal potencial reciente (últimos 3 días) bloqueada por macro
+        # Señal potencial reciente bloqueada por macro
+        # Un activo está "bloqueado" solo si:
+        # 1. Tiene señal técnica reciente (sigs_raw=1)
+        # 2. El filtro combinado la bloquea (sigs=0)
+        # 3. Y la razón es el filtro — no que el activo pase el filtro hoy
         recent_blocked = False
         n_total = len(ind['c'])
-        for i in range(n_total-1, max(n_total-4, 35), -1):
-            if sigs_raw[i]==1 and sigs[i]==0:
-                recent_blocked = True; break
+        # Si SPY bajista pero activo por encima de su EMA50 → pasa el filtro → no bloqueado
+        if not spy_above and asset_ema50_ok:
+            recent_blocked = False  # señales permitidas para este activo
+        else:
+            for i in range(n_total-1, max(n_total-4, 35), -1):
+                if sigs_raw[i]==1 and sigs[i]==0:
+                    recent_blocked = True; break
         if recent_blocked:
             if not spy_above and not asset_ema50_ok:
                 motivo = f"SPY bajista + {ticker} bajo EMA50"
