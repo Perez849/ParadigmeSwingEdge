@@ -1274,14 +1274,18 @@ def main():
         "assets":          all_data,
     }
 
-    def _json_serial(obj):
-        if isinstance(obj, (np.integer,)):  return int(obj)
-        if isinstance(obj, (np.floating,)): return float(obj)
-        if isinstance(obj, (np.bool_,)):    return bool(obj)
-        if isinstance(obj, np.ndarray):     return obj.tolist()
-        raise TypeError(f'Object of type {type(obj).__name__} is not JSON serializable')
+    def _sanitize(obj):
+        """Convierte recursivamente tipos numpy a tipos Python nativos."""
+        if isinstance(obj, dict):   return {k: _sanitize(v) for k, v in obj.items()}
+        if isinstance(obj, list):   return [_sanitize(v) for v in obj]
+        if isinstance(obj, np.bool_):    return bool(obj)
+        if isinstance(obj, np.integer):  return int(obj)
+        if isinstance(obj, np.floating): return None if np.isnan(obj) else float(obj)
+        if isinstance(obj, np.ndarray):  return [_sanitize(v) for v in obj.tolist()]
+        if isinstance(obj, float) and np.isnan(obj): return None
+        return obj
 
-    OUTPUT_FILE.write_text(json.dumps(dashboard_data, ensure_ascii=False, indent=2, default=_json_serial))
+    OUTPUT_FILE.write_text(json.dumps(_sanitize(dashboard_data), ensure_ascii=False, indent=2))
     _generate_dashboard(dashboard_data, BASE_DIR / "dashboard.html")
 
     print(f"\n  {G}→ dashboard_data.json generado{RST}")
