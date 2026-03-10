@@ -436,10 +436,16 @@ OPTIONS_PROXY = {
     "DFEN.DE":"ITA","KRW.PA":"EWY","LVO.MI":"VXX","ENR.DE":"XLE",
 }
 
+def fmtOI_py(n):
+    if n is None or n == 0: return "0"
+    if n >= 1_000_000: return f"{n/1_000_000:.1f}M".rstrip('0').rstrip('.')+'M' if '.' in f"{n/1_000_000:.1f}" else f"{n/1_000_000:.0f}M"
+    if n >= 1_000: return f"{n/1_000:.1f}K"
+    return str(n)
+
 def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
-    """Obtiene microestructura de opciones. Devuelve dict o None si falla."""
+    """Obtiene microestructura de opciones con validaciones de calidad de datos."""
+
     def safe_float(val, default=0.0):
-        """Convierte a float de forma segura — yfinance a veces devuelve strings como 'Ok'"""
         try:
             v = float(val)
             return v if np.isfinite(v) else default
@@ -447,13 +453,42 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
             return default
 
     def clean_chain(df):
-        """Limpia una cadena de opciones asegurando tipos numéricos"""
         for col in ['openInterest','volume','bid','ask','lastPrice','impliedVolatility']:
             if col in df.columns:
                 df[col] = df[col].apply(lambda x: safe_float(x, 0.0))
         return df
 
+    def best_price(row, col_bid, col_ask, col_last):
+        """Precio más fiable: midpoint si spread razonable, si no lastPrice."""
+        b = safe_float(row.get(col_bid, 0))
+        a = safe_float(row.get(col_ask, 0))
+        lp = safe_float(row.get(col_last, 0))
+        if b > 0 and a > 0 and a >= b:
+            spread_pct = (a - b) / ((a + b) / 2) * 100
+            if spread_pct < 50:  # spread razonable (<50%)
+                return (b + a) / 2
+        return lp if lp > 0 else 0.0
+
+    def pick_best_expiration(expirations, today, min_days=5, target_days=30):
+        """Elige el vencimiento con más OI, priorizando 20-60 días."""
+        from datetime import datetime as dt
+        candidates = []
+        for exp in expirations:
+            d = (dt.strptime(exp, "%Y-%m-%d") - today).days
+            if d >= min_days:
+                candidates.append((exp, d))
+            if len(candidates) >= 6:
+                break
+        if not candidates:
+            return None, 0
+        # Preferir vencimientos entre 20-60 días (más liquidos y representativos)
+        preferred = [(e, d) for e, d in candidates if 20 <= d <= 60]
+        if preferred:
+            return preferred[0]
+        return candidates[0]
+
     try:
+        from datetime import datetime as dt
         opt_ticker = OPTIONS_PROXY.get(ticker, ticker)
         is_proxy   = opt_ticker != ticker
 
@@ -462,135 +497,322 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
         if not expirations:
             return {"error": f"Sin opciones para {opt_ticker}"}
 
-        from datetime import datetime as dt
         today = dt.now()
-        next_exp = None
-        for exp in expirations:
-            if (dt.strptime(exp, "%Y-%m-%d") - today).days >= 3:
-                next_exp = exp; break
+        next_exp, days_to_exp = pick_best_expiration(expirations, today)
         if not next_exp:
-            return {"error": "Sin vencimientos próximos"}
+            return {"error": "Sin vencimientos válidos (mín 5 días)"}
 
         chain = t.option_chain(next_exp)
         calls = clean_chain(chain.calls.copy())
         puts  = clean_chain(chain.puts.copy())
 
-        # Precio actual del proxy
-        hist = t.history(period="2d")
-        if hist.empty: return {"error": "Sin precio actual"}
+        # Precio actual
+        hist = t.history(period="5d")
+        if hist.empty:
+            return {"error": "Sin precio actual"}
         proxy_price = float(hist['Close'].iloc[-1])
-        scale = entry_price / proxy_price if (is_proxy and entry_price and proxy_price) else 1.0
-        days_to_exp = (dt.strptime(next_exp, "%Y-%m-%d") - today).days
+        if proxy_price <= 0:
+            return {"error": "Precio inválido"}
 
-        # Filtrar strikes ±30%
-        lo, hi = proxy_price*0.70, proxy_price*1.30
-        calls = calls[(calls['strike']>=lo)&(calls['strike']<=hi)].copy()
-        puts  = puts[(puts['strike']>=lo)&(puts['strike']<=hi)].copy()
+        scale = entry_price / proxy_price if (is_proxy and entry_price and proxy_price > 0) else 1.0
+
+        # Filtrar strikes ±25% (más estricto — strips OTM extremo con datos basura)
+        lo, hi = proxy_price * 0.75, proxy_price * 1.25
+        calls = calls[(calls['strike'] >= lo) & (calls['strike'] <= hi)].copy()
+        puts  = puts[(puts['strike'] >= lo) & (puts['strike'] <= hi)].copy()
         if calls.empty or puts.empty:
-            return {"error": "Sin strikes relevantes"}
+            return {"error": "Sin strikes relevantes en rango ±25%"}
 
-        # Put/Call Ratio — usar solo OI > 0
-        c_oi = calls['openInterest'].sum()
-        p_oi = puts['openInterest'].sum()
-        pcr  = round(p_oi/c_oi, 2) if c_oi > 0 else None
+        # ── PUT/CALL RATIO ────────────────────────────────────────────
+        # Usar volumen como fallback si OI es 0 en más del 80% de strikes
+        c_oi_raw = calls['openInterest'].sum()
+        p_oi_raw = puts['openInterest'].sum()
+        c_vol    = calls['volume'].sum()
+        p_vol    = puts['volume'].sum()
 
-        # Max Pain
-        strikes = sorted(set(calls['strike'].tolist()+puts['strike'].tolist()))
-        pain = {}
-        for s in strikes:
-            c_loss = ((s-calls[calls['strike']<s]['strike'])*calls[calls['strike']<s]['openInterest']).sum()
-            p_loss = ((puts[puts['strike']>s]['strike']-s)*puts[puts['strike']>s]['openInterest']).sum()
-            pain[s] = c_loss + p_loss
-        mp_strike = min(pain, key=pain.get) if pain else proxy_price
-        mp_price  = round(mp_strike*scale, 2)
-        mp_pct    = round((mp_strike/proxy_price-1)*100, 1)
+        oi_coverage = (calls['openInterest'] > 0).mean()  # % strikes con OI real
+        use_volume_fallback = oi_coverage < 0.2  # menos del 20% tiene OI → usar volumen
 
-        # Implied Move (ATM straddle) — usa midpoint si bid>0, si no usa lastPrice
-        atm = min(strikes, key=lambda x: abs(x-proxy_price))
-        ac  = calls[calls['strike']==atm]
-        ap  = puts[puts['strike']==atm]
+        if use_volume_fallback and c_vol > 0:
+            c_oi = c_vol; p_oi = p_vol
+            pcr_source = "volume"
+        else:
+            c_oi = c_oi_raw; p_oi = p_oi_raw
+            pcr_source = "oi"
+
+        # Validación de sanidad: PCR entre 0.05 y 10 es razonable
+        if c_oi > 0:
+            raw_pcr = p_oi / c_oi
+            pcr = round(raw_pcr, 2) if 0.05 <= raw_pcr <= 10 else None
+            pcr_note = "datos insuficientes (ratio anómalo)" if pcr is None else pcr_source
+        else:
+            pcr = None
+            pcr_note = "sin datos de OI/volumen"
+
+        # ── MAX PAIN ─────────────────────────────────────────────────
+        # Solo calcular si hay OI real suficiente
+        mp_strike = proxy_price
+        mp_price  = round(proxy_price * scale, 2)
+        mp_pct    = 0.0
+        mp_valid  = False
+        if c_oi_raw > 0 and p_oi_raw > 0:
+            strikes_all = sorted(set(calls['strike'].tolist() + puts['strike'].tolist()))
+            pain = {}
+            for s in strikes_all:
+                c_itm = calls[calls['strike'] < s]
+                p_itm = puts[puts['strike'] > s]
+                c_loss = ((s - c_itm['strike']) * c_itm['openInterest']).sum()
+                p_loss = ((p_itm['strike'] - s) * p_itm['openInterest']).sum()
+                pain[s] = c_loss + p_loss
+            if pain:
+                mp_strike = min(pain, key=pain.get)
+                mp_price  = round(mp_strike * scale, 2)
+                mp_pct    = round((mp_strike / proxy_price - 1) * 100, 1)
+                mp_valid  = True
+
+        # ── IMPLIED MOVE (ATM STRADDLE) ───────────────────────────────
+        # Buscar el strike ATM con mejor liquidez (spread más estrecho)
+        strikes_all = sorted(set(calls['strike'].tolist() + puts['strike'].tolist()))
+        # Candidatos ATM: strikes dentro del 2% del precio actual
+        atm_candidates = [s for s in strikes_all if abs(s - proxy_price) / proxy_price < 0.02]
+        if not atm_candidates:
+            atm_candidates = [min(strikes_all, key=lambda x: abs(x - proxy_price))]
+
         impl_pct = None
-        if not ac.empty and not ap.empty:
-            try:
-                # Midpoint primero, fallback a lastPrice
-                cb = safe_float(ac['bid'].iloc[0]); ca = safe_float(ac['ask'].iloc[0])
-                pb = safe_float(ap['bid'].iloc[0]); pa = safe_float(ap['ask'].iloc[0])
-                cm = (cb+ca)/2 if (cb>0 and ca>0) else safe_float(ac['lastPrice'].iloc[0])
-                pm = (pb+pa)/2 if (pb>0 and pa>0) else safe_float(ap['lastPrice'].iloc[0])
-                if cm > 0 and pm > 0 and proxy_price > 0:
-                    impl_pct = round((cm+pm)/proxy_price*100, 1)
-            except Exception: pass
+        atm_used = None
+        for atm_s in sorted(atm_candidates, key=lambda x: abs(x - proxy_price)):
+            ac = calls[calls['strike'] == atm_s]
+            ap = puts[puts['strike'] == atm_s]
+            if ac.empty or ap.empty:
+                continue
+            cp = best_price(ac.iloc[0], 'bid', 'ask', 'lastPrice')
+            pp = best_price(ap.iloc[0], 'bid', 'ask', 'lastPrice')
+            if cp > 0 and pp > 0:
+                raw_impl = (cp + pp) / proxy_price * 100
+                # Validar rango razonable: 0.5% a 50%
+                if 0.5 <= raw_impl <= 50:
+                    impl_pct = round(raw_impl, 1)
+                    atm_used = atm_s
+                    break
 
-        impl_up   = round(entry_price*(1+impl_pct/100), 2) if (impl_pct and entry_price) else None
-        impl_down = round(entry_price*(1-impl_pct/100), 2) if (impl_pct and entry_price) else None
-        tp_in_range = (take_profit <= impl_up) if (impl_up and take_profit) else None
+        impl_up      = round(entry_price * (1 + impl_pct / 100), 2) if impl_pct and entry_price else None
+        impl_down    = round(entry_price * (1 - impl_pct / 100), 2) if impl_pct and entry_price else None
+        tp_in_range  = (take_profit <= impl_up) if (impl_up and take_profit) else None
+
+        # ── SKEW ─────────────────────────────────────────────────────
+        # IV del 5% OTM calls vs 5% OTM puts — solo con IV > 0 y razonable
+        skew = None
+        skew_detail = {}
+        otm_c = calls[(calls['strike'] > proxy_price * 1.04) & (calls['strike'] < proxy_price * 1.15)]
+        otm_p = puts[(puts['strike'] < proxy_price * 0.96) & (puts['strike'] > proxy_price * 0.85)]
+        otm_c = otm_c[otm_c['impliedVolatility'] > 0.01]
+        otm_p = otm_p[otm_p['impliedVolatility'] > 0.01]
+        if len(otm_c) >= 2 and len(otm_p) >= 2:
+            civ = otm_c['impliedVolatility'].median()  # mediana más robusta que media
+            piv = otm_p['impliedVolatility'].median()
+            if 0.01 < civ < 5 and 0.01 < piv < 5:  # IV entre 1% y 500% — razonable
+                raw_skew = (piv - civ) / civ * 100
+                # Skew entre -80% y +200% es razonable
+                if -80 <= raw_skew <= 200:
+                    skew = round(raw_skew, 1)
+                    skew_detail = {"put_iv": round(piv * 100, 1), "call_iv": round(civ * 100, 1)}
+
+        # ── IV RANK ───────────────────────────────────────────────────
+        iv_rank = None
+        iv_percentile = None
+        atm_iv = None
+        try:
+            # IV actual del ATM
+            if atm_used is not None:
+                ac_atm = calls[calls['strike'] == atm_used]
+                if not ac_atm.empty:
+                    atm_iv_raw = safe_float(ac_atm['impliedVolatility'].iloc[0])
+                    if 0.01 < atm_iv_raw < 5:
+                        atm_iv = round(atm_iv_raw * 100, 1)
+
+            # HV anualizada 252 días
+            hist_1y = t.history(period="1y")['Close']
+            if len(hist_1y) >= 60:
+                returns = hist_1y.pct_change().dropna()
+                hv_252  = returns.std() * np.sqrt(252) * 100
+                hv_21   = returns.tail(21).std() * np.sqrt(252) * 100  # HV reciente
+
+                if atm_iv and hv_252 > 0:
+                    # IV Rank: posición de la IV actual en el rango del año
+                    # Estimamos rolling IV como HV en ventanas de 21d
+                    rolling_hv = returns.rolling(21).std() * np.sqrt(252) * 100
+                    iv_min = rolling_hv.min()
+                    iv_max = rolling_hv.max()
+                    if iv_max > iv_min:
+                        iv_rank = round((atm_iv - iv_min) / (iv_max - iv_min) * 100, 0)
+                        iv_rank = max(0, min(100, iv_rank))
+
+                    # IV/HV ratio — cuánto premium paga el mercado sobre la vol realizada
+                    iv_hv_ratio = round(atm_iv / hv_252, 2) if hv_252 > 0 else None
+                else:
+                    iv_hv_ratio = None
+            else:
+                hv_252 = None; hv_21 = None; iv_hv_ratio = None
+        except Exception:
+            hv_252 = None; hv_21 = None; iv_hv_ratio = None; iv_hv_ratio = None
+
+        # ── OI MAP ────────────────────────────────────────────────────
+        # Usar OI si disponible, volumen como fallback
+        def get_oi_col(df):
+            if df['openInterest'].sum() > 0:
+                return 'openInterest'
+            return 'volume'
+
+        c_col = get_oi_col(calls)
+        p_col = get_oi_col(puts)
+        c_oi_df = calls[calls[c_col] > 0][['strike', c_col]].rename(columns={c_col: 'call_oi'})
+        p_oi_df = puts[puts[p_col] > 0][['strike', p_col]].rename(columns={p_col: 'put_oi'})
+        oi_map  = pd.merge(c_oi_df, p_oi_df, on='strike', how='outer').fillna(0)
+        oi_map['total_oi'] = oi_map['call_oi'] + oi_map['put_oi']
+        oi_map = oi_map.nlargest(15, 'total_oi').sort_values('strike')
+        oi_using_volume = (c_col == 'volume' or p_col == 'volume')
+
+        oi_list = [{"strike_proxy": round(float(r['strike']), 2),
+                    "strike_asset": round(float(r['strike']) * scale, 2),
+                    "call_oi": int(r['call_oi']), "put_oi": int(r['put_oi']),
+                    "total_oi": int(r['total_oi']),
+                    "dominant": "CALL" if r['call_oi'] > r['put_oi'] else "PUT"}
+                   for _, r in oi_map.iterrows()]
+
+        # ── GAMMA WALLS (muros de gamma) ─────────────────────────────
+        # Strikes con OI > 2x la media — son muros reales de soporte/resistencia
+        if oi_list:
+            avg_oi = np.mean([x['total_oi'] for x in oi_list])
+            gamma_walls = [x for x in oi_list if x['total_oi'] > avg_oi * 2]
+            call_walls = sorted([x for x in gamma_walls if x['dominant'] == 'CALL'],
+                                key=lambda x: x['total_oi'], reverse=True)[:2]
+            put_walls  = sorted([x for x in gamma_walls if x['dominant'] == 'PUT'],
+                                key=lambda x: x['total_oi'], reverse=True)[:2]
+        else:
+            call_walls = []; put_walls = []
+
+        # ── SEÑALES ENRIQUECIDAS ──────────────────────────────────────
+        signals = []
+
+        # PCR
+        if pcr is not None:
+            if pcr > 1.5:
+                signals.append({"type": "bearish", "msg": f"PCR {pcr} (muy alto) — hay {round(p_oi/max(c_oi,1),1)}x más puts que calls. El mercado está pagando fuerte por protección bajista. Interpretación contrarian: puede ser un suelo si el sentimiento ya es demasiado negativo, pero confirma presión vendedora."})
+            elif pcr > 1.2:
+                signals.append({"type": "bearish", "msg": f"PCR {pcr} — posicionamiento bajista moderado. Más puts que calls sugiere que los institucionales están cubriendo posiciones largas o apostando a la baja."})
+            elif pcr < 0.6:
+                signals.append({"type": "bullish", "msg": f"PCR {pcr} — posicionamiento claramente alcista. Pocas puts relativas indica confianza del mercado. Confirma la señal técnica."})
+            elif pcr < 0.8:
+                signals.append({"type": "bullish", "msg": f"PCR {pcr} — leve sesgo alcista en opciones. El mercado no está comprando protección — coherente con la señal de compra."})
+            else:
+                signals.append({"type": "neutral", "msg": f"PCR {pcr} — posicionamiento neutro (rango normal 0.8-1.2). Calls y puts equilibradas, sin sesgo direccional claro desde opciones."})
+        else:
+            signals.append({"type": "neutral", "msg": f"PCR no disponible ({pcr_note}). Sin datos de posicionamiento."})
 
         # Skew
-        otm_c = calls[calls['strike']>proxy_price*1.05]
-        otm_p = puts[puts['strike']<proxy_price*0.95]
-        skew  = None
-        if not otm_c.empty and not otm_p.empty:
-            civ = otm_c['impliedVolatility'].replace(0, np.nan).mean()
-            piv = otm_p['impliedVolatility'].replace(0, np.nan).mean()
-            if civ and civ > 0: skew = round((piv-civ)/civ*100, 1)
-
-        # IV Rank aproximado
-        iv_rank = None
-        try:
-            hv = t.history(period="1y")['Close'].pct_change().std()*np.sqrt(252)*100
-            if impl_pct and days_to_exp>0 and hv>0:
-                cur_iv = impl_pct/np.sqrt(days_to_exp/365)*np.sqrt(252/365)*10
-                iv_rank = round(min(cur_iv/hv*50, 100), 0)
-        except Exception: pass
-
-        # OI map (top 15 strikes) — excluir strikes con OI=0
-        c_oi_df = calls[calls['openInterest']>0][['strike','openInterest']].rename(columns={'openInterest':'call_oi'})
-        p_oi_df = puts[puts['openInterest']>0][['strike','openInterest']].rename(columns={'openInterest':'put_oi'})
-        oi_map = pd.merge(c_oi_df, p_oi_df, on='strike', how='outer').fillna(0)
-        oi_map['total_oi'] = oi_map['call_oi']+oi_map['put_oi']
-        oi_map = oi_map.nlargest(15,'total_oi').sort_values('strike')
-        oi_list = [{"strike_proxy":round(float(r['strike']),2),
-                    "strike_asset":round(float(r['strike'])*scale,2),
-                    "call_oi":int(r['call_oi']),"put_oi":int(r['put_oi']),
-                    "total_oi":int(r['total_oi']),
-                    "dominant":"CALL" if r['call_oi']>r['put_oi'] else "PUT"}
-                   for _,r in oi_map.iterrows()]
-
-        # Señales e interpretación
-        signals = []
-        if pcr is not None:
-            if pcr>1.3:   signals.append({"type":"bearish","msg":f"PCR {pcr} — muchas puts, mercado posicionado bajista (señal contrarian alcista posible)"})
-            elif pcr<0.7: signals.append({"type":"bullish","msg":f"PCR {pcr} — pocas puts, posicionamiento alcista confirma la señal"})
-            else:         signals.append({"type":"neutral","msg":f"PCR {pcr} — posicionamiento neutro, sin sesgo claro"})
         if skew is not None:
-            if skew>15:   signals.append({"type":"bearish","msg":f"Skew +{skew}% — puts OTM caras, el mercado paga por protección bajista"})
-            elif skew<-5: signals.append({"type":"bullish","msg":f"Skew {skew}% — calls OTM caras, el mercado anticipa movimiento alcista"})
-            else:         signals.append({"type":"neutral","msg":f"Skew {skew}% — volatilidad equilibrada entre calls y puts"})
-        if tp_in_range is not None:
-            if tp_in_range: signals.append({"type":"bullish","msg":f"Tu TP (+{round((take_profit/entry_price-1)*100,1)}%) está dentro del implied move ±{impl_pct}% — el mercado descuenta ese movimiento como posible"})
-            else:           signals.append({"type":"warning","msg":f"Tu TP (+{round((take_profit/entry_price-1)*100,1)}%) está FUERA del implied move ±{impl_pct}% — el mercado no anticipa ese movimiento para este vencimiento"})
-        if mp_pct>2:    signals.append({"type":"bullish","msg":f"Max pain en +{mp_pct}% (${mp_price}) — gravita al alza, presión sobre vendedores de calls"})
-        elif mp_pct<-2: signals.append({"type":"bearish","msg":f"Max pain en {mp_pct}% (${mp_price}) — gravita a la baja, presión sobre vendedores de puts"})
-        else:           signals.append({"type":"neutral","msg":f"Max pain cerca del precio (${mp_price}, {mp_pct}%) — sin presión direccional clara"})
+            piv_str = f"{skew_detail.get('put_iv','?')}%"
+            civ_str = f"{skew_detail.get('call_iv','?')}%"
+            if skew > 25:
+                signals.append({"type": "bearish", "msg": f"Skew muy pronunciado +{skew}% (IV puts {piv_str} vs calls {civ_str}). Los inversores institucionales están pagando una prima muy alta por protección bajista — señal de miedo real. El mercado espera más volatilidad a la baja que al alza."})
+            elif skew > 10:
+                signals.append({"type": "bearish", "msg": f"Skew normal +{skew}% (IV puts {piv_str} vs calls {civ_str}). Puts OTM más caras que calls — situación habitual que refleja demanda de cobertura. No es señal de alarma pero sugiere cautela."})
+            elif skew < -10:
+                signals.append({"type": "bullish", "msg": f"Skew invertido {skew}% (IV calls {civ_str} vs puts {piv_str}). Las calls OTM son más caras — el mercado está pagando por participar al alza. Señal de euforia o anticipación de movimiento alcista fuerte."})
+            else:
+                signals.append({"type": "neutral", "msg": f"Skew equilibrado {skew}% (IV puts {piv_str}, calls {civ_str}). Volatilidad implícita simétrica — el mercado no anticipa dirección clara."})
 
-        bulls = sum(1 for s in signals if s['type']=='bullish')
-        bears = sum(1 for s in signals if s['type']=='bearish')
-        warns = sum(1 for s in signals if s['type']=='warning')
-        if bulls>bears:     verdict,vc,vm = "CONFIRMA","green","Las opciones confirman el sesgo alcista de tu señal técnica"
-        elif bears>bulls:   verdict,vc,vm = "CONTRADICE","red","Las opciones muestran sesgo bajista — considera reducir tamaño o esperar confirmación"
-        else:               verdict,vc,vm = "NEUTRO","yellow","Las opciones no dan señal clara — la técnica manda"
-        if warns>0 and verdict=="CONFIRMA": vm += ". ⚠ Tu TP excede el rango implícito — considera un TP parcial dentro del rango"
+        # Implied Move
+        if impl_pct is not None:
+            tp_pct_real = round((take_profit / entry_price - 1) * 100, 1) if entry_price else 0
+            sl_pct_real = round((1 - stop_loss / entry_price) * 100, 1) if entry_price else 0
+            if tp_in_range:
+                signals.append({"type": "bullish", "msg": f"Tu TP (+{tp_pct_real}%) está dentro del implied move ±{impl_pct}% para {next_exp}. El mercado descuenta que ese movimiento es alcanzable en este vencimiento. Tu SL (-{sl_pct_real}%) también está dentro del rango — el trade tiene sentido temporalmente."})
+            else:
+                signals.append({"type": "warning", "msg": f"Tu TP (+{tp_pct_real}%) está FUERA del implied move ±{impl_pct}%. El mercado solo descuenta un movimiento de ±{impl_pct}% hasta {next_exp} ({days_to_exp}d). Considera: (1) TP parcial al {impl_pct}%, (2) esperar vencimiento más largo, o (3) asumir que necesitas más tiempo del previsto."})
+
+        # Max Pain
+        if mp_valid:
+            mp_dist = abs(mp_pct)
+            if mp_pct > 3:
+                signals.append({"type": "bullish", "msg": f"Max Pain en {mp_price} (+{mp_pct}% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."})
+            elif mp_pct < -3:
+                signals.append({"type": "bearish", "msg": f"Max Pain en {mp_price} ({mp_pct}% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia {mp_price}."})
+            else:
+                signals.append({"type": "neutral", "msg": f"Max Pain en {mp_price} ({mp_pct:+.1f}% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."})
+
+        # IV Rank
+        if iv_rank is not None:
+            if iv_rank > 70:
+                signals.append({"type": "warning", "msg": f"IV Rank {iv_rank:.0f}% — la volatilidad implícita está en el percentil {iv_rank:.0f} de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."})
+            elif iv_rank < 30:
+                signals.append({"type": "bullish", "msg": f"IV Rank {iv_rank:.0f}% — volatilidad implícita BAJA respecto al año. Las opciones están baratas. Buen momento para comprar calls si quieres apalancamiento limitado en riesgo."})
+            else:
+                signals.append({"type": "neutral", "msg": f"IV Rank {iv_rank:.0f}% — volatilidad en rango normal. Ni cara ni barata."})
+
+        # Gamma Walls
+        if call_walls:
+            cw_str = ", ".join([f"{w['strike_asset']:.2f} (OI {fmtOI_py(w['call_oi'])})" for w in call_walls])
+            signals.append({"type": "neutral", "msg": f"Muros de calls (resistencia gamma): {cw_str}. Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."})
+        if put_walls:
+            pw_str = ", ".join([f"{w['strike_asset']:.2f} (OI {fmtOI_py(w['put_oi'])})" for w in put_walls])
+            signals.append({"type": "neutral", "msg": f"Muros de puts (soporte gamma): {pw_str}. Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."})
+
+        # ── VEREDICTO PONDERADO ───────────────────────────────────────
+        bulls = sum(1 for s in signals if s['type'] == 'bullish')
+        bears = sum(1 for s in signals if s['type'] == 'bearish')
+        warns = sum(1 for s in signals if s['type'] == 'warning')
+        data_quality = "alta" if pcr is not None and impl_pct is not None and skew is not None else \
+                       "media" if sum([pcr is not None, impl_pct is not None, skew is not None]) >= 2 else "baja"
+
+        if data_quality == "baja":
+            verdict, vc = "DATOS INSUF.", "yellow"
+            vm = "Datos de opciones insuficientes para dar un veredicto fiable. La señal técnica manda."
+        elif bulls > bears + warns:
+            verdict, vc = "CONFIRMA", "green"
+            vm = f"Opciones confirman sesgo alcista ({bulls} señales positivas vs {bears} negativas). Convicción alta."
+        elif bears > bulls:
+            verdict, vc = "CONTRADICE", "red"
+            vm = f"Opciones muestran sesgo bajista ({bears} señales negativas). Considera reducir tamaño o esperar confirmación adicional."
+        elif warns > 0 and bulls >= bears:
+            verdict, vc = "CONFIRMA CON CAUTELA", "yellow"
+            vm = f"Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual."
+        else:
+            verdict, vc = "NEUTRO", "yellow"
+            vm = "Opciones no dan señal clara. La técnica manda — las opciones no contradicen la entrada."
 
         return {
-            "options_ticker":opt_ticker,"is_proxy":is_proxy,
-            "expiration":next_exp,"days_to_exp":days_to_exp,
-            "proxy_price":round(proxy_price,2),
-            "pcr":pcr,"max_pain":mp_price,"max_pain_pct":mp_pct,
-            "implied_move_pct":impl_pct,"implied_up":impl_up,"implied_down":impl_down,
-            "tp_in_range":tp_in_range,"skew":skew,"iv_rank":iv_rank,
-            "oi_map":oi_list,"signals":signals,
-            "verdict":verdict,"verdict_color":vc,"verdict_msg":vm,
-            "total_call_oi":int(c_oi),"total_put_oi":int(p_oi),
+            "options_ticker":    opt_ticker,
+            "is_proxy":          is_proxy,
+            "expiration":        next_exp,
+            "days_to_exp":       days_to_exp,
+            "proxy_price":       round(proxy_price, 2),
+            "pcr":               pcr,
+            "pcr_source":        pcr_note,
+            "max_pain":          mp_price,
+            "max_pain_pct":      mp_pct,
+            "max_pain_valid":    mp_valid,
+            "implied_move_pct":  impl_pct,
+            "implied_up":        impl_up,
+            "implied_down":      impl_down,
+            "tp_in_range":       tp_in_range,
+            "skew":              skew,
+            "skew_detail":       skew_detail,
+            "iv_rank":           iv_rank,
+            "atm_iv":            atm_iv,
+            "hv_252":            round(hv_252, 1) if hv_252 else None,
+            "hv_21":             round(hv_21, 1) if hv_21 else None,
+            "oi_map":            oi_list,
+            "oi_using_volume":   oi_using_volume,
+            "call_walls":        call_walls,
+            "put_walls":         put_walls,
+            "signals":           signals,
+            "verdict":           verdict,
+            "verdict_color":     vc,
+            "verdict_msg":       vm,
+            "data_quality":      data_quality,
+            "total_call_oi":     int(c_oi),
+            "total_put_oi":      int(p_oi),
         }
     except Exception as e:
         return {"error": str(e)}
@@ -1070,28 +1292,31 @@ function renderOptions(opt, entry_price, take_profit, stop_loss) {
   }
 
   // ── Tarjetas de métricas ───────────────────────────────────────
-  const pcrColor = opt.pcr == null ? 'var(--muted)' : opt.pcr > 1.3 ? 'var(--red)' : opt.pcr < 0.7 ? 'var(--green)' : 'var(--yellow)';
-  const skewColor = opt.skew == null ? 'var(--muted)' : opt.skew > 15 ? 'var(--red)' : opt.skew < -5 ? 'var(--green)' : 'var(--yellow)';
-  const mpColor   = opt.max_pain_pct > 2 ? 'var(--green)' : opt.max_pain_pct < -2 ? 'var(--red)' : 'var(--yellow)';
+  const pcrColor = opt.pcr == null ? 'var(--muted)' : opt.pcr > 1.5 ? 'var(--red)' : opt.pcr > 1.2 ? '#ff8c00' : opt.pcr < 0.6 ? 'var(--green)' : opt.pcr < 0.8 ? '#7ecf9e' : 'var(--yellow)';
+  const skewColor = opt.skew == null ? 'var(--muted)' : opt.skew > 25 ? 'var(--red)' : opt.skew > 10 ? '#ff8c00' : opt.skew < -10 ? 'var(--green)' : 'var(--yellow)';
+  const mpColor   = opt.max_pain_pct > 3 ? 'var(--green)' : opt.max_pain_pct < -3 ? 'var(--red)' : 'var(--yellow)';
+  const ivColor   = opt.iv_rank > 70 ? 'var(--red)' : opt.iv_rank < 30 ? 'var(--green)' : 'var(--yellow)';
+  const dqColor   = opt.data_quality === 'alta' ? 'var(--green)' : opt.data_quality === 'media' ? 'var(--yellow)' : 'var(--red)';
 
   const cards = [
     { label: 'Put/Call Ratio', val: opt.pcr ?? '—', color: pcrColor,
-      sub: opt.pcr > 1.3 ? 'Bajista · contrarian alcista' : opt.pcr < 0.7 ? 'Alcista · confirma señal' : 'Neutro' },
-    { label: 'Max Pain', val: opt.max_pain != null ? `$${opt.max_pain}` : '—', color: mpColor,
-      sub: `${opt.max_pain_pct > 0 ? '+' : ''}${opt.max_pain_pct ?? '—'}% vs precio` },
+      sub: opt.pcr == null ? (opt.pcr_source||'sin datos') : opt.pcr > 1.5 ? 'Muy bajista · contrarian posible' : opt.pcr > 1.2 ? 'Bajista moderado' : opt.pcr < 0.6 ? 'Alcista fuerte' : opt.pcr < 0.8 ? 'Leve sesgo alcista' : 'Neutro (0.8–1.2)' },
     { label: 'Implied Move', val: opt.implied_move_pct != null ? `±${opt.implied_move_pct}%` : '—', color: 'var(--accent2)',
-      sub: `Hasta ${opt.expiration}` },
-    { label: 'Skew (IV)', val: opt.skew != null ? `${opt.skew > 0 ? '+' : ''}${opt.skew}%` : '—', color: skewColor,
-      sub: opt.skew > 15 ? 'Puts caras · miedo' : opt.skew < -5 ? 'Calls caras · euforia' : 'Equilibrado' },
-    { label: 'IV Rank', val: opt.iv_rank != null ? `${opt.iv_rank}%` : '—',
-      color: opt.iv_rank > 60 ? 'var(--red)' : opt.iv_rank > 30 ? 'var(--yellow)' : 'var(--green)',
-      sub: opt.iv_rank > 60 ? 'IV alta · opciones caras' : opt.iv_rank < 30 ? 'IV baja · opciones baratas' : 'IV normal' },
-    { label: 'Call OI total', val: opt.total_call_oi != null ? fmtOI(opt.total_call_oi) : '—',
-      color: 'rgba(77,159,255,.9)', sub: 'Open interest calls' },
-    { label: 'Put OI total', val: opt.total_put_oi != null ? fmtOI(opt.total_put_oi) : '—',
-      color: 'rgba(255,71,87,.9)', sub: 'Open interest puts' },
-    { label: 'Vence en', val: opt.days_to_exp != null ? `${opt.days_to_exp}d` : '—',
-      color: 'var(--muted)', sub: opt.expiration },
+      sub: opt.implied_move_pct != null ? `Hasta ${opt.expiration} (${opt.days_to_exp}d)` : 'No disponible' },
+    { label: 'Max Pain', val: opt.max_pain_valid ? `${opt.max_pain}` : '—', color: mpColor,
+      sub: opt.max_pain_valid ? `${opt.max_pain_pct > 0 ? '+' : ''}${opt.max_pain_pct}% vs precio · imán de precio` : 'OI insuf. para calcular' },
+    { label: 'Skew (IV puts/calls)', val: opt.skew != null ? `${opt.skew > 0 ? '+' : ''}${opt.skew}%` : '—', color: skewColor,
+      sub: opt.skew != null ? `Puts IV: ${opt.skew_detail?.put_iv??'?'}% · Calls IV: ${opt.skew_detail?.call_iv??'?'}%` : 'Datos IV insuficientes' },
+    { label: 'IV Rank (percentil)', val: opt.iv_rank != null ? `${opt.iv_rank}%` : '—', color: ivColor,
+      sub: opt.iv_rank != null ? (opt.iv_rank > 70 ? 'Opciones CARAS — vender premium' : opt.iv_rank < 30 ? 'Opciones BARATAS — comprar calls' : 'IV en rango normal') : 'Sin datos históricos' },
+    { label: 'IV ATM actual', val: opt.atm_iv != null ? `${opt.atm_iv}%` : '—', color: 'var(--accent2)',
+      sub: opt.hv_252 != null ? `HV 252d: ${opt.hv_252}% · HV 21d: ${opt.hv_21??'?'}%` : 'Sin HV histórica' },
+    { label: 'Call OI / Vol', val: opt.total_call_oi != null ? fmtOI(opt.total_call_oi) : '—',
+      color: 'rgba(77,159,255,.9)', sub: opt.oi_using_volume ? '⚠ Usando volumen (OI no disponible)' : 'Open Interest calls' },
+    { label: 'Put OI / Vol', val: opt.total_put_oi != null ? fmtOI(opt.total_put_oi) : '—',
+      color: 'rgba(255,71,87,.9)', sub: opt.oi_using_volume ? '⚠ Usando volumen (OI no disponible)' : 'Open Interest puts' },
+    { label: 'Calidad datos', val: opt.data_quality?.toUpperCase() ?? '—', color: dqColor,
+      sub: `Vencimiento: ${opt.expiration} · ${opt.days_to_exp}d` },
   ];
 
   el.innerHTML = `
@@ -1127,13 +1352,15 @@ function renderOptions(opt, entry_price, take_profit, stop_loss) {
         </div>`).join('')}
     </div>
 
-    <div style="font-size:.58rem;color:var(--muted);padding-top:.6rem;border-top:1px solid rgba(255,255,255,.05);line-height:1.8">
-      <b style="color:var(--text)">Guía rápida:</b>
-      <b style="color:var(--accent2)">PCR</b> &gt;1.3 = muchas puts = miedo = posible suelo contrarian.
-      <b style="color:var(--accent2)">Max Pain</b> = precio donde más opciones expiran sin valor = imán de precio antes del vencimiento.
-      <b style="color:var(--accent2)">Implied Move</b> = lo que el mercado descuenta que se puede mover.
-      <b style="color:var(--accent2)">Skew</b> = si las puts OTM son más caras que las calls = miedo a caída.
-      <b style="color:var(--accent2)">OI Calls</b> = resistencia. <b style="color:var(--accent2)">OI Puts</b> = soporte.
+    <div style="font-size:.58rem;color:var(--muted);padding-top:.6rem;border-top:1px solid rgba(255,255,255,.05);line-height:2">
+      <b style="color:var(--text);font-size:.62rem">📖 Guía de interpretación:</b><br>
+      <b style="color:var(--accent2)">PCR</b> (Put/Call Ratio): &gt;1.5 = mucho miedo/cobertura bajista (contrarian alcista posible) · &lt;0.6 = confianza alcista · 0.8-1.2 = neutro.<br>
+      <b style="color:var(--accent2)">Implied Move</b>: rango que el mercado espera hasta el vencimiento. Tu TP debería estar dentro si quieres confirmar con opciones.<br>
+      <b style="color:var(--accent2)">Max Pain</b>: precio donde más opciones expiran sin valor. Los market makers tienen incentivo en llevar el precio ahí — imán real antes del vencimiento.<br>
+      <b style="color:var(--accent2)">Skew</b>: diferencia IV puts OTM vs calls OTM. Positivo = miedo a caída (normal). Muy alto (&gt;25%) = pánico. Negativo = anticipación de subida fuerte.<br>
+      <b style="color:var(--accent2)">IV Rank</b>: percentil de la IV actual en el rango del año. &gt;70% = opciones caras (mejor vender). &lt;30% = baratas (mejor comprar).<br>
+      <b style="color:var(--accent2)">Gamma Walls</b>: strikes con OI muy alto actúan como soporte (puts) o resistencia (calls) naturales por el hedging de los market makers.<br>
+      <b style="color:var(--yellow)">⚠ Si calidad de datos = BAJA</b>: el proxy no tiene suficiente liquidez en opciones — usa las señales técnicas como fuente principal.
     </div>
   </div>`;
 }
