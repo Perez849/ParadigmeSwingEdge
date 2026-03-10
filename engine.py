@@ -184,10 +184,11 @@ def score_metrics(trades):
 def build_rich_trades(ind, sigs, p, ticker):
     c=ind['c']; real=ind['close']; atr=ind['atr']; idx=ind['index']; n=len(c)
     trades=[]; in_t=False; ep=sl=tp=pk=0.0; ep_real=0.0; entry_i=0
+    open_trade=None  # trade actualmente abierto al final del histórico
 
     for i in range(n):
-        price=c[i]          # precio invertido — para lógica de señales/SL/TP
-        price_real=real[i]  # precio real — para mostrar en dashboard
+        price=c[i]
+        price_real=real[i]
         if np.isnan(price): continue
         a = atr[i] if not np.isnan(atr[i]) else abs(price)*0.02
 
@@ -203,12 +204,15 @@ def build_rich_trades(ind, sigs, p, ticker):
             if price<=sl:    reason="Stop Loss"
             elif price>=tp:  reason="Take Profit ✅"
             elif pnl>p['trail_act']:
-                if price<pk-a*p['trail_atr']: reason="Trailing Stop"
+                nl = pk - a*p['trail_atr']
+                if price < nl:
+                    reason="Trailing Stop"
+                else:
+                    sl = max(sl, nl)  # actualizar trailing SL
             if reason is None and held>=p['max_days']:
                 reason=f"Tiempo ({held}d)"
             if reason:
                 entry_sc = int(score_bar(ind, entry_i, p))
-                # SL y TP en precio real (proporcional)
                 sl_real = round(ep_real * (1 + (sl - ep)/ep), 2)
                 tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
                 trades.append({
@@ -228,53 +232,47 @@ def build_rich_trades(ind, sigs, p, ticker):
                     "entry_adx":   round(float(ind['adx'][entry_i]),1) if not np.isnan(ind['adx'][entry_i]) else None,
                 })
                 in_t=False
-    return trades
 
-def check_alert(ind, sigs, p, ticker, name, trades=None):
+    # Si al terminar el bucle hay un trade abierto, guardarlo con el SL actualizado
+    if in_t:
+        sl_real = round(ep_real * (1 + (sl - ep)/ep), 2)
+        tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
+        open_trade = {
+            "entry_date":  str(idx[entry_i])[:10],
+            "entry_price": round(ep_real, 2),
+            "stop_loss":   sl_real,   # SL actual (puede ser trailing actualizado)
+            "take_profit": tp_real,
+            "days_open":   n - 1 - entry_i,
+        }
+
+    return trades, open_trade
+
+
+def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
     today_str = str(ind['index'][-1])[:10]
     today_ts  = pd.Timestamp(today_str)
 
-    # Fechas de entrada de trades ya cerrados
-    closed_dates = set()
-    # Fechas de entrada de trades que llevan más de max_days sin cerrar
-    # (el backtest no los cerró → el trade sigue "abierto" en teoría,
-    #  pero si ya pasaron más de max_days desde la entrada, debería haber cerrado)
-    expired_dates = set()
-
-    if trades:
-        for t in trades:
-            if t['exit_date'] < today_str:
-                closed_dates.add(t['entry_date'])
-
-    # Buscar señales recientes — desde la más reciente hacia atrás
-    n = len(ind['c'])
-    for i in range(n-1, 35, -1):
-        if sigs[i] != 1: continue
-
-        date_str = str(ind['index'][i])[:10]
+    # Si hay un trade abierto simulado, es la única fuente de verdad
+    if open_trade:
+        date_str = open_trade['entry_date']
         days_ago = (today_ts - pd.Timestamp(date_str)).days
+        price_real = open_trade['entry_price']
+        sl_real    = open_trade['stop_loss']
+        tp_real    = open_trade['take_profit']
+        current_real = float(ind['close'][-1])
 
-        # Si el trade asociado a esta señal ya cerró → no es alerta activa
-        if date_str in closed_dates:
+        # El trade ya debería haber cerrado por SL
+        if current_real <= sl_real:
             return None
 
-        # Si han pasado más días que max_days → el trade debería haber cerrado
-        # por tiempo aunque el backtest no lo registre (trade al final del histórico)
-        if days_ago > p['max_days']:
-            return None
+        sl_pct_val = abs((sl_real - price_real) / price_real * 100)
+        atr_pct    = float(ind['atr'][ind['index'].get_loc(pd.Timestamp(date_str))] if date_str in [str(x)[:10] for x in ind['index']] else ind['atr'][-1])
 
-        price      = float(ind['c'][i])
-        price_real = float(ind['close'][i])
-        a          = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else abs(price)*0.02
-        atr_pct    = a/abs(price)*100
-        sl_pct_val = p['atr_stop'] * atr_pct
-        sl_price   = price * (1 - sl_pct_val/100)
-
-        # Verificar si el precio actual ya rompió el SL (usar precio real)
-        current_price_real = float(ind['close'][-1])
-        sl_price_real = price_real * (1 - sl_pct_val/100)
-        if current_price_real <= sl_price_real:
-            return None
+        # Buscar el índice de entrada para score/rsi/adx
+        entry_i = next((i for i in range(len(ind['index'])) if str(ind['index'][i])[:10]==date_str), len(ind['index'])-1)
+        a = float(ind['atr'][entry_i]) if not np.isnan(ind['atr'][entry_i]) else abs(float(ind['c'][entry_i]))*0.02
+        price_c = float(ind['c'][entry_i])
+        atr_pct = a / abs(price_c) * 100 if price_c != 0 else 0.02
 
         return {
             "ticker":      ticker,
@@ -282,21 +280,23 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
             "date":        date_str,
             "urgency":     "HOY" if days_ago==0 else f"HACE {days_ago}d",
             "days_ago":    days_ago,
-            "price":       round(price_real, 2),
-            "stop_loss":   round(price_real * (1 - sl_pct_val/100), 2),
-            "take_profit": round(price_real * (1 + p['tp_pct']/100), 2),
+            "price":       price_real,
+            "stop_loss":   sl_real,
+            "take_profit": tp_real,
             "stop_pct":    round(sl_pct_val, 2),
             "tp_pct":      p['tp_pct'],
             "rr_ratio":    round(p['tp_pct']/sl_pct_val, 2) if sl_pct_val>0 else None,
-            "score":       int(score_bar(ind, i, p)),
-            "rsi":         round(float(ind['rsi'][i]),1) if not np.isnan(ind['rsi'][i]) else None,
-            "adx":         round(float(ind['adx'][i]),1) if not np.isnan(ind['adx'][i]) else None,
-            "vol_ratio":   round(float(ind['vol_r'][i]),2) if not np.isnan(ind['vol_r'][i]) else None,
+            "score":       int(score_bar(ind, entry_i, p)),
+            "rsi":         round(float(ind['rsi'][entry_i]),1) if not np.isnan(ind['rsi'][entry_i]) else None,
+            "adx":         round(float(ind['adx'][entry_i]),1) if not np.isnan(ind['adx'][entry_i]) else None,
+            "vol_ratio":   round(float(ind['vol_r'][entry_i]),2) if not np.isnan(ind['vol_r'][entry_i]) else None,
             "max_days":    p['max_days'],
             "trail_act":   p['trail_act'],
             "trail_atr":   p['trail_atr'],
             "trail_sl":    round(price_real * (1 - p['trail_atr']*atr_pct/100), 2),
         }
+
+    # Sin trade abierto simulado → no hay alerta activa
     return None
 
 def build_price_history(ind, sigs, scores):
@@ -1218,15 +1218,15 @@ def main():
         scores = np.array([score_bar(ind, i, p) if i>=35 else 0
                            for i in range(len(ind['c']))])
 
-        # Historial completo de trades (para ver entradas/salidas)
-        trades = build_rich_trades(ind, sigs, p, ticker)
+        # Historial completo de trades + trade actualmente abierto
+        trades, open_trade = build_rich_trades(ind, sigs, p, ticker)
 
         # ── Terminal: mostrar métricas OOS ─────────────────────
         if not SOLO_ALERTAS and m_oos:
             print_summary(ticker, name, m_oos, p)
             print_trades(trades, ticker)
 
-        alert = check_alert(ind, sigs, p, ticker, name, trades)
+        alert = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
         if alert:
             alerts.append(alert)
             print_alert(alert)
