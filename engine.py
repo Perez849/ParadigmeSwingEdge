@@ -81,10 +81,12 @@ def calc_ind(df, p, invert=False):
     bb_std = c.rolling(20).std()
     bb_mid = c.rolling(20).mean()
     out['bb_w']   = (4*bb_std/bb_mid*100).values
-    out['close']  = out['c']
+    # Precio real siempre (sin invertir) — para mostrar en dashboard y alertas
+    c_real        = df['Close'].squeeze()
+    out['close']  = c_real.values.astype(float)   # precio real
     out['high']   = h.values.astype(float)
     out['low']    = l.values.astype(float)
-    out['open']   = df['Open'].squeeze().values.astype(float) if 'Open' in df.columns else out['c']
+    out['open']   = df['Open'].squeeze().values.astype(float) if 'Open' in df.columns else out['close']
     out['volume'] = v.values.astype(float)
     out['index']  = df.index
     return out
@@ -180,17 +182,18 @@ def score_metrics(trades):
 # ══════════════════════════════════════════════════════════════════
 
 def build_rich_trades(ind, sigs, p, ticker):
-    c=ind['c']; atr=ind['atr']; idx=ind['index']; n=len(c)
-    trades=[]; in_t=False; ep=sl=tp=pk=0.0; entry_i=0
+    c=ind['c']; real=ind['close']; atr=ind['atr']; idx=ind['index']; n=len(c)
+    trades=[]; in_t=False; ep=sl=tp=pk=0.0; ep_real=0.0; entry_i=0
 
     for i in range(n):
-        price=c[i]
+        price=c[i]          # precio invertido — para lógica de señales/SL/TP
+        price_real=real[i]  # precio real — para mostrar en dashboard
         if np.isnan(price): continue
-        a = atr[i] if not np.isnan(atr[i]) else price*0.02
+        a = atr[i] if not np.isnan(atr[i]) else abs(price)*0.02
 
         if not in_t:
             if sigs[i]==1:
-                in_t=True; ep=price; pk=price
+                in_t=True; ep=price; ep_real=price_real; pk=price
                 sl=price-a*p['atr_stop']
                 tp=price*(1+p['tp_pct']/100)
                 entry_i=i
@@ -205,16 +208,19 @@ def build_rich_trades(ind, sigs, p, ticker):
                 reason=f"Tiempo ({held}d)"
             if reason:
                 entry_sc = int(score_bar(ind, entry_i, p))
+                # SL y TP en precio real (proporcional)
+                sl_real = round(ep_real * (1 + (sl - ep)/ep), 2)
+                tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
                 trades.append({
                     "ticker":      ticker,
                     "entry_date":  str(idx[entry_i])[:10],
                     "exit_date":   str(idx[i])[:10],
-                    "entry_price": round(ep,2),
-                    "exit_price":  round(price,2),
-                    "stop_loss":   round(ep - ind['atr'][entry_i]*p['atr_stop'],2),
-                    "take_profit": round(tp,2),
-                    "pnl":         round(pnl,2),
-                    "peak_pnl":    round((pk-ep)/ep*100,2),
+                    "entry_price": round(ep_real, 2),
+                    "exit_price":  round(price_real, 2),
+                    "stop_loss":   sl_real,
+                    "take_profit": tp_real,
+                    "pnl":         round(pnl, 2),
+                    "peak_pnl":    round((pk-ep)/ep*100, 2),
                     "days":        held,
                     "reason":      reason,
                     "score":       entry_sc,
@@ -239,29 +245,32 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
     n = len(ind['c'])
     for i in range(n-1, max(n-4, 35), -1):
         if sigs[i] != 1: continue
-        price    = float(ind['c'][i])
-        a        = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else price*0.02
+        price      = float(ind['c'][i])       # precio invertido — para calcular SL/TP en %
+        price_real = float(ind['close'][i])   # precio real — para mostrar al usuario
+        a        = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else abs(price)*0.02
         today    = ind['index'][-1]
         date     = ind['index'][i]
         date_str = str(date)[:10]
         days_ago = (pd.Timestamp(today) - pd.Timestamp(date)).days
-        atr_pct  = a/price*100
+        atr_pct  = a/abs(price)*100
 
         if date_str in closed_dates:
             return None
 
+        # SL y TP en precio real (mismos % que sobre el precio invertido)
+        sl_pct_val = p['atr_stop'] * atr_pct
         return {
             "ticker":      ticker,
             "name":        name,
             "date":        date_str,
             "urgency":     "HOY" if days_ago==0 else f"HACE {days_ago}d",
             "days_ago":    days_ago,
-            "price":       round(price,2),
-            "stop_loss":   round(price - a*p['atr_stop'],2),
-            "take_profit": round(price*(1+p['tp_pct']/100),2),
-            "stop_pct":    round(p['atr_stop']*atr_pct,2),
+            "price":       round(price_real, 2),
+            "stop_loss":   round(price_real * (1 - sl_pct_val/100), 2),
+            "take_profit": round(price_real * (1 + p['tp_pct']/100), 2),
+            "stop_pct":    round(sl_pct_val, 2),
             "tp_pct":      p['tp_pct'],
-            "rr_ratio":    round(p['tp_pct']/(p['atr_stop']*atr_pct),2) if atr_pct>0 else None,
+            "rr_ratio":    round(p['tp_pct']/sl_pct_val, 2) if sl_pct_val>0 else None,
             "score":       int(score_bar(ind, i, p)),
             "rsi":         round(float(ind['rsi'][i]),1) if not np.isnan(ind['rsi'][i]) else None,
             "adx":         round(float(ind['adx'][i]),1) if not np.isnan(ind['adx'][i]) else None,
@@ -269,7 +278,7 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
             "max_days":    p['max_days'],
             "trail_act":   p['trail_act'],
             "trail_atr":   p['trail_atr'],
-            "trail_sl":    round(price - a * p['trail_atr'], 2),
+            "trail_sl":    round(price_real * (1 - p['trail_atr']*atr_pct/100), 2),
         }
     return None
 
@@ -282,7 +291,7 @@ def build_price_history(ind, sigs, scores):
         hist.append({
             "date":   str(ind['index'][i])[:10],
             "open":   gv('open'),  "high":  gv('high'),
-            "low":    gv('low'),   "close": gv('close'),
+            "low":    gv('low'),   "close": gv('close'),  # precio real
             "volume": int(ind['volume'][i]) if not np.isnan(ind['volume'][i]) else 0,
             "ema_f":  gv('ema_f'), "ema_s": gv('ema_s'), "ema_t": gv('ema_t'),
             "rsi":    round(float(ind['rsi'][i]),1) if not np.isnan(ind['rsi'][i]) else None,
@@ -1118,6 +1127,23 @@ def main():
         use_invert = entry.get('invert', ticker in INVERSE_TICKERS or ticker in VIX_TICKERS)
         ind    = calc_ind(df_raw, p, use_invert)
         sigs   = get_signals(ind, p, macro, use_invert)
+
+        # ── Diagnóstico: señales sin filtro macro vs con filtro ────
+        sigs_raw = get_signals(ind, p, macro=None, invert_macro=False)
+        n_raw    = int(sigs_raw.sum())
+        n_final  = int(sigs.sum())
+        n_blocked = n_raw - n_final
+        # Señal potencial reciente (últimos 3 días) bloqueada por macro
+        recent_blocked = False
+        n_total = len(ind['c'])
+        for i in range(n_total-1, max(n_total-4, 35), -1):
+            if sigs_raw[i]==1 and sigs[i]==0:
+                recent_blocked = True; break
+        if recent_blocked:
+            print(f"  {Y}⚡ Señal reciente bloqueada por macro SPY (SPY bajo EMA50){RST}")
+        elif n_blocked > 0:
+            print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
+
         scores = np.array([score_bar(ind, i, p) if i>=35 else 0
                            for i in range(len(ind['c']))])
 
