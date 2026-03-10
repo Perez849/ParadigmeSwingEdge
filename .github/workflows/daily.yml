@@ -1,10 +1,8 @@
 name: Daily Engine Run
-
 on:
   schedule:
-    - cron: '0 17 * * 1-5'
+    - cron: '0 7-20 * * 1-5'
   workflow_dispatch:
-
 jobs:
   run-engine:
     runs-on: ubuntu-latest
@@ -12,18 +10,14 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Run engine
         run: python engine.py
-
       - name: Commit dashboard
         run: |
           git config user.name 'github-actions'
