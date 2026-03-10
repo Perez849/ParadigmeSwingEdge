@@ -441,7 +441,27 @@ def fmtOI_py(n):
     if n >= 1_000: return f"{n/1_000:.1f}K"
     return str(n)
 
-def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
+    # Proxies donde el PCR alto es ESTRUCTURAL (no señal bajista)
+    # — institucionales usan puts masivamente para cubrir posiciones largas
+    PCR_STRUCTURAL_HIGH = {
+        "GDX":  "ETF de mineras de oro — institucionales cubren largos en oro con puts de GDX. PCR >2 es normal.",
+        "GLD":  "ETF de oro físico — cobertura institucional masiva. PCR elevado es estructural.",
+        "SLV":  "ETF de plata — igual que GLD, PCR alto es normal por cobertura.",
+        "URA":  "ETF de uranio — sector nicho con cobertura institucional. PCR estructuralmente alto.",
+        "REMX": "ETF de metales raros — mercado pequeño, PCR poco representativo.",
+        "EEM":  "ETF mercados emergentes — cobertura macro institucional. PCR >2 habitual.",
+        "EWY":  "ETF Corea — cobertura macro. PCR elevado estructural.",
+        "EWP":  "ETF España/IBEX — mercado pequeño, PCR poco representativo.",
+        "VXX":  "ETF de volatilidad — por definición se compran puts para cubrirse. PCR siempre alto.",
+        "EUFN": "ETF bancos europeos — cobertura institucional. PCR elevado normal.",
+        "EWJ":  "ETF Japón — cobertura macro. PCR estructuralmente alto.",
+        "XLE":  "ETF energía — cobertura de productores con puts. PCR >1.5 estructural.",
+        "XLI":  "ETF industriales — cobertura institucional. PCR moderadamente alto es normal.",
+        "ITA":  "ETF defensa — sector concentrado, PCR poco representativo.",
+        "SMH":  "ETF semiconductores — muy usado para cubrir posiciones tech. PCR >1.5 normal.",
+    }
+
+
     """Obtiene microestructura de opciones con validaciones de calidad de datos."""
 
     def safe_float(val, default=0.0):
@@ -468,20 +488,32 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
                 return (b + a) / 2
         return lp if lp > 0 else 0.0
 
-    def pick_best_expiration(expirations, today, min_days=5, target_days=30):
-        """Elige el vencimiento con más OI, priorizando 20-60 días."""
+    def pick_best_expiration(expirations, today, min_days=3, days_remaining=None):
+        """Elige el vencimiento más relevante para la duración restante del trade."""
         from datetime import datetime as dt
         candidates = []
         for exp in expirations:
             d = (dt.strptime(exp, "%Y-%m-%d") - today).days
             if d >= min_days:
                 candidates.append((exp, d))
-            if len(candidates) >= 6:
+            if len(candidates) >= 8:
                 break
         if not candidates:
             return None, 0
-        # Preferir vencimientos entre 20-60 días (más liquidos y representativos)
-        preferred = [(e, d) for e, d in candidates if 20 <= d <= 60]
+
+        if days_remaining is not None and days_remaining > 0:
+            # Elegir el vencimiento más cercano a los días restantes del trade
+            # pero nunca antes de que expire el trade
+            target = max(days_remaining, min_days)
+            # Preferir vencimiento justo después de que expire el trade
+            after_trade = [(e, d) for e, d in candidates if d >= target]
+            if after_trade:
+                return after_trade[0]  # el más cercano por encima
+            # Si no hay ninguno después, el más cercano disponible
+            return min(candidates, key=lambda x: abs(x[1] - target))
+
+        # Sin days_remaining: preferir 20-45 días (líquidos)
+        preferred = [(e, d) for e, d in candidates if 20 <= d <= 45]
         if preferred:
             return preferred[0]
         return candidates[0]
@@ -497,7 +529,7 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
             return {"error": f"Sin opciones para {opt_ticker}"}
 
         today = dt.now()
-        next_exp, days_to_exp = pick_best_expiration(expirations, today)
+        next_exp, days_to_exp = pick_best_expiration(expirations, today, days_remaining=days_remaining)
         if not next_exp:
             return {"error": "Sin vencimientos válidos (mín 5 días)"}
 
@@ -717,20 +749,24 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
         # ── SEÑALES ENRIQUECIDAS ──────────────────────────────────────
         signals = []
 
-        # PCR
+        # PCR — con detección de proxies estructuralmente altos
+        pcr_structural_note = PCR_STRUCTURAL_HIGH.get(opt_ticker)
         if pcr is not None:
-            if pcr > 1.5:
-                signals.append({"type": "bearish", "msg": f"PCR {pcr} (muy alto) — hay {round(p_oi/max(c_oi,1),1)}x más puts que calls. El mercado está pagando fuerte por protección bajista. Interpretación contrarian: puede ser un suelo si el sentimiento ya es demasiado negativo, pero confirma presión vendedora."})
+            if pcr_structural_note and pcr > 1.5:
+                # PCR alto estructural — no interpretar como señal bajista
+                signals.append({"type": "neutral", "msg": f"PCR {pcr} — ALTO ESTRUCTURAL para {opt_ticker}. {pcr_structural_note} No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."})
+            elif pcr > 1.5:
+                signals.append({"type": "bearish", "msg": f"PCR {pcr} (alto) — hay {round(p_oi/max(c_oi,1),1)}x más puts que calls. El mercado está pagando por protección bajista. Si el PCR sube más puede ser señal contrarian (todo el mundo ya cubierto = posible suelo), pero de momento confirma presión vendedora."})
             elif pcr > 1.2:
-                signals.append({"type": "bearish", "msg": f"PCR {pcr} — posicionamiento bajista moderado. Más puts que calls sugiere que los institucionales están cubriendo posiciones largas o apostando a la baja."})
+                signals.append({"type": "bearish", "msg": f"PCR {pcr} — más puts que calls. Los inversores están comprando cobertura bajista, lo que sugiere cautela en el mercado. No es extremo pero es moderadamente bajista."})
             elif pcr < 0.6:
-                signals.append({"type": "bullish", "msg": f"PCR {pcr} — posicionamiento claramente alcista. Pocas puts relativas indica confianza del mercado. Confirma la señal técnica."})
+                signals.append({"type": "bullish", "msg": f"PCR {pcr} — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."})
             elif pcr < 0.8:
-                signals.append({"type": "bullish", "msg": f"PCR {pcr} — leve sesgo alcista en opciones. El mercado no está comprando protección — coherente con la señal de compra."})
+                signals.append({"type": "bullish", "msg": f"PCR {pcr} — leve sesgo alcista. El mercado no está comprando protección, coherente con una señal de compra."})
             else:
-                signals.append({"type": "neutral", "msg": f"PCR {pcr} — posicionamiento neutro (rango normal 0.8-1.2). Calls y puts equilibradas, sin sesgo direccional claro desde opciones."})
+                signals.append({"type": "neutral", "msg": f"PCR {pcr} — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."})
         else:
-            signals.append({"type": "neutral", "msg": f"PCR no disponible ({pcr_note}). Sin datos de posicionamiento."})
+            signals.append({"type": "neutral", "msg": f"PCR no disponible ({pcr_note}). Sin datos de posicionamiento en opciones."})
 
         # Skew
         if skew is not None:
@@ -1485,7 +1521,8 @@ def main():
             print_alert(alert)
             # Obtener microestructura de opciones para alertas activas
             print(f"  📊 Obteniendo opciones...", end=" ", flush=True)
-            opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'])
+            opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'],
+                                          days_remaining=p['max_days'] - alert['days_ago'])
             if opt_data and not opt_data.get('error'):
                 print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% Veredicto={opt_data.get('verdict','—')}")
             else:
