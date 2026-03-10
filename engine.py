@@ -1273,7 +1273,15 @@ def main():
         "blocked_by_macro": blocked,
         "assets":          all_data,
     }
-    OUTPUT_FILE.write_text(json.dumps(dashboard_data, ensure_ascii=False, indent=2))
+
+    def _json_serial(obj):
+        if isinstance(obj, (np.integer,)):  return int(obj)
+        if isinstance(obj, (np.floating,)): return float(obj)
+        if isinstance(obj, (np.bool_,)):    return bool(obj)
+        if isinstance(obj, np.ndarray):     return obj.tolist()
+        raise TypeError(f'Object of type {type(obj).__name__} is not JSON serializable')
+
+    OUTPUT_FILE.write_text(json.dumps(dashboard_data, ensure_ascii=False, indent=2, default=_json_serial))
     _generate_dashboard(dashboard_data, BASE_DIR / "dashboard.html")
 
     print(f"\n  {G}→ dashboard_data.json generado{RST}")
