@@ -270,9 +270,10 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
         sl_pct_val = p['atr_stop'] * atr_pct
         sl_price   = price * (1 - sl_pct_val/100)
 
-        # Verificar si el precio actual ya rompió el SL
-        current_price = float(ind['c'][-1])
-        if current_price <= sl_price:
+        # Verificar si el precio actual ya rompió el SL (usar precio real)
+        current_price_real = float(ind['close'][-1])
+        sl_price_real = price_real * (1 - sl_pct_val/100)
+        if current_price_real <= sl_price_real:
             return None
 
         return {
@@ -983,6 +984,14 @@ function openAsset(ticker){
 }
 function closePanel(){document.getElementById('dp').classList.remove('open');}
 
+function fmtOI(n) {
+  if (n == null || isNaN(n)) return '—';
+  if (n === 0) return '0';
+  if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M';
+  if (n >= 1000)    return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K';
+  return n.toString();
+}
+
 function renderOptions(opt, entry_price, take_profit, stop_loss) {
   const el = document.getElementById('op-panel');
   if (!opt || opt.error) {
@@ -1077,9 +1086,9 @@ function renderOptions(opt, entry_price, take_profit, stop_loss) {
     { label: 'IV Rank', val: opt.iv_rank != null ? `${opt.iv_rank}%` : '—',
       color: opt.iv_rank > 60 ? 'var(--red)' : opt.iv_rank > 30 ? 'var(--yellow)' : 'var(--green)',
       sub: opt.iv_rank > 60 ? 'IV alta · opciones caras' : opt.iv_rank < 30 ? 'IV baja · opciones baratas' : 'IV normal' },
-    { label: 'Call OI total', val: opt.total_call_oi != null ? (opt.total_call_oi/1000).toFixed(0)+'k' : '—',
+    { label: 'Call OI total', val: opt.total_call_oi != null ? fmtOI(opt.total_call_oi) : '—',
       color: 'rgba(77,159,255,.9)', sub: 'Open interest calls' },
-    { label: 'Put OI total', val: opt.total_put_oi != null ? (opt.total_put_oi/1000).toFixed(0)+'k' : '—',
+    { label: 'Put OI total', val: opt.total_put_oi != null ? fmtOI(opt.total_put_oi) : '—',
       color: 'rgba(255,71,87,.9)', sub: 'Open interest puts' },
     { label: 'Vence en', val: opt.days_to_exp != null ? `${opt.days_to_exp}d` : '—',
       color: 'var(--muted)', sub: opt.expiration },
