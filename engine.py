@@ -1031,6 +1031,7 @@ canvas{display:block;width:100%;height:100%}
   <div class="hm" id="gt"></div>
 </header>
 <main>
+  <div id="spy-macro" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.9rem 1.1rem;margin-bottom:1.2rem"></div>
   <div class="ab" id="ab"><div class="ab-h">🚨 Señales de compra activas</div><div class="ac" id="ac"></div></div>
   <div class="mb" id="mb">
     <div class="mb-h">⚡ Señales bloqueadas por filtro macro</div>
@@ -1053,6 +1054,7 @@ canvas{display:block;width:100%;height:100%}
     </div>
     <div class="pb">
       <div style="margin-bottom:1rem"><span class="oos-note">⚡ Métricas OOS · Historial completo de trades abajo</span></div>
+      <div id="asset-ema50" style="display:none;font-size:.62rem;margin-bottom:.8rem;padding:.35rem .6rem;background:rgba(255,255,255,.04);border-radius:6px"></div>
       <div class="ms" id="mss"></div>
       <div class="pg">
         <div><div class="st" style="margin-bottom:.7rem">Precio 90d + EMAs</div><div class="cw"><canvas id="pc2"></canvas></div></div>
@@ -1104,6 +1106,41 @@ function drawChart(id,datasets,opts){
 
 if(D.generated_at){const d=new Date(D.generated_at);document.getElementById('gt').textContent='Actualizado: '+d.toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'});}
 
+// ── Panel filtro macro SPY ─────────────────────────────────────
+const mf = D.macro_filter;
+if (mf) {
+  const above   = mf.spy_above;
+  const dist    = mf.distance_pct;
+  const distAbs = Math.abs(dist).toFixed(2);
+  const color   = above ? 'var(--green)' : 'var(--red)';
+  const icon    = above ? '✅' : '🔴';
+  const estado  = above ? 'ALCISTA — filtro macro OFF' : 'BAJISTA — filtro macro ACTIVO';
+  const distTxt = above
+    ? `SPY cotiza un <strong style="color:var(--green)">+${distAbs}%</strong> por encima de su EMA50`
+    : `SPY cotiza un <strong style="color:var(--red)">-${distAbs}%</strong> por debajo de su EMA50`;
+
+  // Barra visual de distancia
+  const barWidth = Math.min(Math.abs(dist) * 4, 100).toFixed(1);  // escala: 25% dist = barra llena
+  const barColor = above ? 'var(--green)' : 'var(--red)';
+
+  document.getElementById('spy-macro').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem">
+      <div>
+        <div style="font-size:.75rem;font-weight:700;color:${color};letter-spacing:.04em">${icon} SPY — ${estado}</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:.2rem">${distTxt} · Precio: <span style="color:var(--text)">$${mf.spy_price}</span> · EMA50: <span style="color:var(--text)">$${mf.spy_ema50}</span></div>
+      </div>
+      <div style="text-align:right;font-size:.62rem;color:var(--muted)">
+        ${mf.filter_active ? `<span style="color:var(--red)">${mf.n_blocked} señal(es) bloqueada(s) hoy</span>` : '<span style="color:var(--green)">Señales permitidas ✓</span>'}
+      </div>
+    </div>
+    <div style="margin-top:.6rem;height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden">
+      <div style="height:100%;width:${barWidth}%;background:${barColor};border-radius:3px;transition:width .4s"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:.55rem;color:var(--muted);margin-top:.2rem">
+      <span>0%</span><span style="color:${color}">${above?'+':'−'}${distAbs}% de la EMA50</span><span>±25%</span>
+    </div>`;
+}
+
 // Señales bloqueadas por macro
 const bl=D.blocked_by_macro||[];
 if(bl.length){
@@ -1112,6 +1149,7 @@ if(bl.length){
     <div class="mb-chip" onclick="openAsset('${b.ticker}')">
       <div class="mb-ticker">${b.ticker}</div>
       <div class="mb-name">${b.name||''}</div>
+      ${b.motivo ? `<div style="font-size:.55rem;color:var(--muted);margin-top:.2rem">${b.motivo}</div>` : ''}
     </div>`).join('');
 }
 
@@ -1122,6 +1160,10 @@ if(al.length){
     <div class="acard ${a.days_ago===0?'today':''}" onclick="openAsset('${a.ticker}')">
       <div class="ar"><div class="at">${a.ticker}</div><span class="au ${a.days_ago===0?'today':''}">${a.urgency}</span></div>
       <div class="an">${a.name||''}</div>
+      <div style="font-size:.63rem;color:var(--muted);margin-bottom:.3rem">
+        📅 Entrada: <span style="color:var(--text)">${a.date}</span>
+        · Día ${a.days_ago+1} de ${a.max_days??'?'} hábiles
+      </div>
       <div style="font-size:.84rem;font-weight:500">$${a.price?.toFixed(2)}</div>
       <div class="stgrid">
         <div class="slb"><div class="bl">STOP LOSS</div><div>$${a.stop_loss?.toFixed(2)} <span style="opacity:.6">-${a.stop_pct}%</span></div></div>
@@ -1194,6 +1236,22 @@ function openAsset(ticker){
   const a=D.assets[ticker];if(!a)return;
   document.getElementById('ptk').textContent=ticker;
   document.getElementById('ptn').textContent=a.name||'';
+
+  // Indicador EMA50 individual (solo relevante cuando SPY es bajista)
+  const mf=D.macro_filter;
+  const ema50el=document.getElementById('asset-ema50');
+  if(ema50el){
+    if(mf && !mf.spy_above && a.asset_ema50_val!=null){
+      const ok=a.asset_ema50_ok;
+      ema50el.style.display='block';
+      ema50el.innerHTML=`<span style="color:${ok?'var(--green)':'var(--red)'}">
+        ${ok?'✅':'🔴'} EMA50 del activo: ${ok?'precio por encima':'precio por debajo'} (EMA50=${a.asset_ema50_val})
+        ${ok?' — señales permitidas a pesar de SPY bajista':' — señales bloqueadas (SPY bajista + activo bajista)'}
+      </span>`;
+    } else {
+      ema50el.style.display='none';
+    }
+  }
   // Panel usa métricas OOS
   const m=a.metrics_oos||{},p=a.params||{};
   const minis=[
@@ -1312,7 +1370,7 @@ function renderOptions(opt, entry_price, take_profit, stop_loss) {
       </div>
       <div style="margin-top:1.5rem;font-size:.6rem;color:var(--muted)">
         Rango implícito: <span style="color:var(--text)">$${opt.implied_down?.toFixed(2)} → $${opt.implied_up?.toFixed(2)}</span>
-        (±${opt.implied_move_pct}% · vence ${opt.expiration} · ${opt.days_to_exp}d)
+        (±${opt.implied_move_pct}% para ${opt.days_remaining??opt.days_to_exp}d restantes · IV ann. ${opt.atm_iv??'—'}% · ref. ${opt.expiration})
         &nbsp;·&nbsp; Tu TP: <span style="color:${opt.tp_in_range ? 'var(--green)' : 'var(--yellow)'}">${opt.tp_in_range ? '✓ dentro del rango' : '⚠ fuera del rango'}</span>
       </div>
     </div>`;
@@ -1484,7 +1542,25 @@ def main():
         except Exception as e:
             print(f"❌ {e}"); continue
 
-        macro = (spy_c > spy_e).reindex(df_raw.index, method='ffill').fillna(False).values
+        # ── Filtro macro combinado ────────────────────────────────
+        # Si SPY alcista → todas las señales pasan (macro = spy_c > spy_e)
+        # Si SPY bajista → solo pasan activos con precio > EMA50 propia
+        spy_filter = (spy_c > spy_e).reindex(df_raw.index, method='ffill').fillna(False)
+
+        if not spy_above:
+            # SPY bajista: calcular EMA50 del activo individual
+            asset_close = df_raw['Close'].squeeze()
+            asset_ema50 = asset_close.ewm(span=50, adjust=False).mean()
+            asset_above = (asset_close > asset_ema50)
+            # Señal solo pasa si el activo también está por encima de su propia EMA50
+            combined_filter = (spy_filter & asset_above.reindex(spy_filter.index, method='ffill').fillna(False))
+            macro = combined_filter.reindex(df_raw.index, method='ffill').fillna(False).values
+            asset_ema50_ok = bool(asset_close.iloc[-1] > asset_ema50.iloc[-1])
+            asset_ema50_val = round(float(asset_ema50.iloc[-1]), 2)
+        else:
+            macro = spy_filter.reindex(df_raw.index, method='ffill').fillna(False).values
+            asset_ema50_ok  = True   # no relevante cuando SPY es alcista
+            asset_ema50_val = None
 
         use_invert = entry.get('invert', ticker in INVERSE_TICKERS or ticker in VIX_TICKERS)
         ind    = calc_ind(df_raw, p, use_invert)
@@ -1502,8 +1578,14 @@ def main():
             if sigs_raw[i]==1 and sigs[i]==0:
                 recent_blocked = True; break
         if recent_blocked:
-            print(f"  {Y}⚡ Señal reciente bloqueada por macro SPY (SPY bajo EMA50){RST}")
-            blocked.append({"ticker": ticker, "name": name})
+            if not spy_above and not asset_ema50_ok:
+                motivo = f"SPY bajista + {ticker} bajo EMA50"
+            elif not spy_above:
+                motivo = "SPY bajo EMA50"
+            else:
+                motivo = "filtro macro"
+            print(f"  {Y}⚡ Señal reciente bloqueada por macro ({motivo}){RST}")
+            blocked.append({"ticker": ticker, "name": name, "motivo": motivo})
         elif n_blocked > 0:
             print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
 
@@ -1541,12 +1623,14 @@ def main():
             "ticker":        ticker,
             "name":          name,
             "params":        p,
-            "metrics_oos":   m_oos,   # métricas honestas para dashboard
-            "trades":        trades,  # historial completo para referencia
+            "metrics_oos":   m_oos,
+            "trades":        trades,
             "price_history": price_hist,
             "alert":         alert,
             "options":       opt_data,
             "optimized_at":  entry.get('optimized_at','')[:10],
+            "asset_ema50_ok":  asset_ema50_ok,
+            "asset_ema50_val": asset_ema50_val,
         }
 
     if alerts:
@@ -1568,6 +1652,14 @@ def main():
         "alerts":          alerts,
         "blocked_by_macro": blocked,
         "assets":          all_data,
+        "macro_filter": {
+            "spy_price":    round(float(spy_c.iloc[-1]), 2),
+            "spy_ema50":    round(float(spy_e.iloc[-1]), 2),
+            "spy_above":    spy_above,
+            "distance_pct": round((float(spy_c.iloc[-1]) / float(spy_e.iloc[-1]) - 1) * 100, 2),
+            "filter_active": not spy_above,
+            "n_blocked":    len(blocked),
+        },
     }
 
     def _sanitize(obj):
