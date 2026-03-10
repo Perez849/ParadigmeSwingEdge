@@ -255,7 +255,6 @@ def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
     # Si hay un trade abierto simulado, es la única fuente de verdad
     if open_trade:
         date_str = open_trade['entry_date']
-        days_ago = (today_ts - pd.Timestamp(date_str)).days
         price_real = open_trade['entry_price']
         sl_real    = open_trade['stop_loss']
         tp_real    = open_trade['take_profit']
@@ -265,10 +264,17 @@ def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
         if current_real <= sl_real:
             return None
 
-        sl_pct_val = abs((sl_real - price_real) / price_real * 100)
-
-        # Buscar el índice de entrada para score/rsi/adx/trail_sl
+        # days_ago en días de MERCADO (barras), no días calendario
+        # El optimizador usa max_days en barras — debe ser consistente
         entry_i = next((i for i in range(len(ind['index'])) if str(ind['index'][i])[:10]==date_str), len(ind['index'])-1)
+        days_ago = len(ind['index']) - 1 - entry_i  # barras desde entrada hasta hoy
+
+        # Respetar max_days — si ya pasó, el trade debería haber cerrado en el backtest
+        # pero por si acaso no mostramos alerta expirada
+        if days_ago > p['max_days']:
+            return None
+
+        sl_pct_val = abs((sl_real - price_real) / price_real * 100)
         a = float(ind['atr'][entry_i]) if not np.isnan(ind['atr'][entry_i]) else abs(float(ind['c'][entry_i]))*0.02
         price_c = float(ind['c'][entry_i])
         atr_pct = a / abs(price_c) * 100 if price_c != 0 else 0.02
