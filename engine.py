@@ -235,15 +235,12 @@ def check_alert(ind, sigs, p, ticker, name, trades=None):
     if trades:
         today_str = str(ind['index'][-1])[:10]
         for t in trades:
-            entry = t['entry_date']
-            exit_  = t['exit_date']
-            entry_ts = pd.Timestamp(entry)
-            today_ts = pd.Timestamp(today_str)
-            if (today_ts - entry_ts).days <= 4 and exit_ <= today_str:
-                closed_dates.add(entry)
+            # Solo suprimir si el trade ya cerró antes de hoy
+            if t['exit_date'] < today_str:
+                closed_dates.add(t['entry_date'])
 
     n = len(ind['c'])
-    for i in range(n-1, max(n-4, 35), -1):
+    for i in range(n-1, 35, -1):
         if sigs[i] != 1: continue
         price      = float(ind['c'][i])       # precio invertido — para calcular SL/TP en %
         price_real = float(ind['close'][i])   # precio real — para mostrar al usuario
@@ -611,6 +608,16 @@ main{max-width:1600px;margin:0 auto;padding:2rem;display:grid;gap:1.5rem}
 .st{font-family:'Syne',sans-serif;font-weight:700;font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.12em;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
 .st::after{content:'';flex:1;height:1px;background:var(--border)}
 .oos-note{font-size:.6rem;color:var(--accent2);margin-bottom:1rem;padding:.4rem .7rem;background:rgba(77,159,255,.06);border:1px solid rgba(77,159,255,.15);border-radius:6px;display:inline-block}
+/* MACRO BLOCKED */
+.mb{background:linear-gradient(135deg,rgba(255,179,0,.05),rgba(255,71,87,.03));border:1px solid rgba(255,179,0,.2);border-radius:12px;padding:1.2rem 1.5rem;display:none}
+.mb.on{display:block}
+.mb-h{font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;color:var(--yellow);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.7rem}
+.mb-note{font-size:.62rem;color:var(--muted);margin-bottom:.9rem;line-height:1.6}
+.mb-grid{display:flex;flex-wrap:wrap;gap:.5rem}
+.mb-chip{background:rgba(255,179,0,.07);border:1px solid rgba(255,179,0,.18);border-radius:8px;padding:.45rem .8rem;cursor:pointer;transition:all .2s}
+.mb-chip:hover{background:rgba(255,179,0,.14);transform:translateY(-1px)}
+.mb-ticker{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;color:var(--yellow)}
+.mb-name{font-size:.58rem;color:var(--muted);margin-top:.1rem}
 .tw{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 table{width:100%;border-collapse:collapse}
 thead th{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;padding:.7rem .9rem;text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,.018)}
@@ -704,6 +711,11 @@ canvas{display:block;width:100%;height:100%}
 </header>
 <main>
   <div class="ab" id="ab"><div class="ab-h">🚨 Señales de compra activas</div><div class="ac" id="ac"></div></div>
+  <div class="mb" id="mb">
+    <div class="mb-h">⚡ Señales bloqueadas por filtro macro</div>
+    <div class="mb-note">Estos activos tienen señal técnica válida HOY pero el filtro macro (SPY bajo su EMA50) las está bloqueando. El mercado está en modo bajista — el sistema no opera en contra de la tendencia general. Haz click para ver el detalle del activo.</div>
+    <div class="mb-grid" id="mb-grid"></div>
+  </div>
   <div><div class="st">Resumen global</div><div class="sr" id="sr"></div></div>
   <div>
     <div class="st">Universo de activos optimizados</div>
@@ -770,6 +782,17 @@ function drawChart(id,datasets,opts){
 }
 
 if(D.generated_at){const d=new Date(D.generated_at);document.getElementById('gt').textContent='Actualizado: '+d.toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'});}
+
+// Señales bloqueadas por macro
+const bl=D.blocked_by_macro||[];
+if(bl.length){
+  document.getElementById('mb').classList.add('on');
+  document.getElementById('mb-grid').innerHTML=bl.map(b=>`
+    <div class="mb-chip" onclick="openAsset('${b.ticker}')">
+      <div class="mb-ticker">${b.ticker}</div>
+      <div class="mb-name">${b.name||''}</div>
+    </div>`).join('');
+}
 
 const al=D.alerts||[];
 if(al.length){
@@ -1099,6 +1122,7 @@ def main():
 
     tickers = [TICKER_SOLO] if TICKER_SOLO else list(cache.keys())
     alerts   = []
+    blocked  = []   # señales bloqueadas por filtro macro
     all_data = {}
 
     for ticker in tickers:
@@ -1141,6 +1165,7 @@ def main():
                 recent_blocked = True; break
         if recent_blocked:
             print(f"  {Y}⚡ Señal reciente bloqueada por macro SPY (SPY bajo EMA50){RST}")
+            blocked.append({"ticker": ticker, "name": name})
         elif n_blocked > 0:
             print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
 
@@ -1197,9 +1222,10 @@ def main():
         print(f"\n  {Y}Sin alertas activas hoy.{RST}")
 
     dashboard_data = {
-        "generated_at": datetime.now().isoformat(),
-        "alerts":        alerts,
-        "assets":        all_data,
+        "generated_at":    datetime.now().isoformat(),
+        "alerts":          alerts,
+        "blocked_by_macro": blocked,
+        "assets":          all_data,
     }
     OUTPUT_FILE.write_text(json.dumps(dashboard_data, ensure_ascii=False, indent=2))
     _generate_dashboard(dashboard_data, BASE_DIR / "dashboard.html")
