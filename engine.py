@@ -231,31 +231,50 @@ def build_rich_trades(ind, sigs, p, ticker):
     return trades
 
 def check_alert(ind, sigs, p, ticker, name, trades=None):
+    today_str = str(ind['index'][-1])[:10]
+    today_ts  = pd.Timestamp(today_str)
+
+    # Fechas de entrada de trades ya cerrados
     closed_dates = set()
+    # Fechas de entrada de trades que llevan más de max_days sin cerrar
+    # (el backtest no los cerró → el trade sigue "abierto" en teoría,
+    #  pero si ya pasaron más de max_days desde la entrada, debería haber cerrado)
+    expired_dates = set()
+
     if trades:
-        today_str = str(ind['index'][-1])[:10]
         for t in trades:
-            # Solo suprimir si el trade ya cerró antes de hoy
             if t['exit_date'] < today_str:
                 closed_dates.add(t['entry_date'])
 
+    # Buscar señales recientes — desde la más reciente hacia atrás
     n = len(ind['c'])
     for i in range(n-1, 35, -1):
         if sigs[i] != 1: continue
-        price      = float(ind['c'][i])       # precio invertido — para calcular SL/TP en %
-        price_real = float(ind['close'][i])   # precio real — para mostrar al usuario
-        a        = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else abs(price)*0.02
-        today    = ind['index'][-1]
-        date     = ind['index'][i]
-        date_str = str(date)[:10]
-        days_ago = (pd.Timestamp(today) - pd.Timestamp(date)).days
-        atr_pct  = a/abs(price)*100
 
+        date_str = str(ind['index'][i])[:10]
+        days_ago = (today_ts - pd.Timestamp(date_str)).days
+
+        # Si el trade asociado a esta señal ya cerró → no es alerta activa
         if date_str in closed_dates:
             return None
 
-        # SL y TP en precio real (mismos % que sobre el precio invertido)
+        # Si han pasado más días que max_days → el trade debería haber cerrado
+        # por tiempo aunque el backtest no lo registre (trade al final del histórico)
+        if days_ago > p['max_days']:
+            return None
+
+        price      = float(ind['c'][i])
+        price_real = float(ind['close'][i])
+        a          = float(ind['atr'][i]) if not np.isnan(ind['atr'][i]) else abs(price)*0.02
+        atr_pct    = a/abs(price)*100
         sl_pct_val = p['atr_stop'] * atr_pct
+        sl_price   = price * (1 - sl_pct_val/100)
+
+        # Verificar si el precio actual ya rompió el SL
+        current_price = float(ind['c'][-1])
+        if current_price <= sl_price:
+            return None
+
         return {
             "ticker":      ticker,
             "name":        name,
@@ -418,6 +437,21 @@ OPTIONS_PROXY = {
 
 def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
     """Obtiene microestructura de opciones. Devuelve dict o None si falla."""
+    def safe_float(val, default=0.0):
+        """Convierte a float de forma segura — yfinance a veces devuelve strings como 'Ok'"""
+        try:
+            v = float(val)
+            return v if np.isfinite(v) else default
+        except (TypeError, ValueError):
+            return default
+
+    def clean_chain(df):
+        """Limpia una cadena de opciones asegurando tipos numéricos"""
+        for col in ['openInterest','volume','bid','ask','lastPrice','impliedVolatility']:
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: safe_float(x, 0.0))
+        return df
+
     try:
         opt_ticker = OPTIONS_PROXY.get(ticker, ticker)
         is_proxy   = opt_ticker != ticker
@@ -437,8 +471,8 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
             return {"error": "Sin vencimientos próximos"}
 
         chain = t.option_chain(next_exp)
-        calls = chain.calls.copy()
-        puts  = chain.puts.copy()
+        calls = clean_chain(chain.calls.copy())
+        puts  = clean_chain(chain.puts.copy())
 
         # Precio actual del proxy
         hist = t.history(period="2d")
@@ -454,32 +488,36 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
         if calls.empty or puts.empty:
             return {"error": "Sin strikes relevantes"}
 
-        # Put/Call Ratio
-        c_oi = calls['openInterest'].fillna(0).sum()
-        p_oi = puts['openInterest'].fillna(0).sum()
+        # Put/Call Ratio — usar solo OI > 0
+        c_oi = calls['openInterest'].sum()
+        p_oi = puts['openInterest'].sum()
         pcr  = round(p_oi/c_oi, 2) if c_oi > 0 else None
 
         # Max Pain
         strikes = sorted(set(calls['strike'].tolist()+puts['strike'].tolist()))
         pain = {}
         for s in strikes:
-            c_loss = ((s-calls[calls['strike']<s]['strike'])*calls[calls['strike']<s]['openInterest'].fillna(0)).sum()
-            p_loss = ((puts[puts['strike']>s]['strike']-s)*puts[puts['strike']>s]['openInterest'].fillna(0)).sum()
+            c_loss = ((s-calls[calls['strike']<s]['strike'])*calls[calls['strike']<s]['openInterest']).sum()
+            p_loss = ((puts[puts['strike']>s]['strike']-s)*puts[puts['strike']>s]['openInterest']).sum()
             pain[s] = c_loss + p_loss
         mp_strike = min(pain, key=pain.get) if pain else proxy_price
         mp_price  = round(mp_strike*scale, 2)
         mp_pct    = round((mp_strike/proxy_price-1)*100, 1)
 
-        # Implied Move (ATM straddle)
+        # Implied Move (ATM straddle) — usa midpoint si bid>0, si no usa lastPrice
         atm = min(strikes, key=lambda x: abs(x-proxy_price))
         ac  = calls[calls['strike']==atm]
         ap  = puts[puts['strike']==atm]
         impl_pct = None
         if not ac.empty and not ap.empty:
             try:
-                cm = (float(ac['bid'].iloc[0])+float(ac['ask'].iloc[0]))/2
-                pm = (float(ap['bid'].iloc[0])+float(ap['ask'].iloc[0]))/2
-                impl_pct = round((cm+pm)/proxy_price*100, 1)
+                # Midpoint primero, fallback a lastPrice
+                cb = safe_float(ac['bid'].iloc[0]); ca = safe_float(ac['ask'].iloc[0])
+                pb = safe_float(ap['bid'].iloc[0]); pa = safe_float(ap['ask'].iloc[0])
+                cm = (cb+ca)/2 if (cb>0 and ca>0) else safe_float(ac['lastPrice'].iloc[0])
+                pm = (pb+pa)/2 if (pb>0 and pa>0) else safe_float(ap['lastPrice'].iloc[0])
+                if cm > 0 and pm > 0 and proxy_price > 0:
+                    impl_pct = round((cm+pm)/proxy_price*100, 1)
             except Exception: pass
 
         impl_up   = round(entry_price*(1+impl_pct/100), 2) if (impl_pct and entry_price) else None
@@ -491,24 +529,23 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss):
         otm_p = puts[puts['strike']<proxy_price*0.95]
         skew  = None
         if not otm_c.empty and not otm_p.empty:
-            civ = otm_c['impliedVolatility'].fillna(0).mean()
-            piv = otm_p['impliedVolatility'].fillna(0).mean()
-            if civ > 0: skew = round((piv-civ)/civ*100, 1)
+            civ = otm_c['impliedVolatility'].replace(0, np.nan).mean()
+            piv = otm_p['impliedVolatility'].replace(0, np.nan).mean()
+            if civ and civ > 0: skew = round((piv-civ)/civ*100, 1)
 
         # IV Rank aproximado
         iv_rank = None
         try:
             hv = t.history(period="1y")['Close'].pct_change().std()*np.sqrt(252)*100
-            if impl_pct and days_to_exp>0:
+            if impl_pct and days_to_exp>0 and hv>0:
                 cur_iv = impl_pct/np.sqrt(days_to_exp/365)*np.sqrt(252/365)*10
                 iv_rank = round(min(cur_iv/hv*50, 100), 0)
         except Exception: pass
 
-        # OI map (top 15 strikes)
-        c_oi_df = calls[['strike','openInterest']].rename(columns={'openInterest':'call_oi'})
-        p_oi_df = puts[['strike','openInterest']].rename(columns={'openInterest':'put_oi'})
-        import pandas as _pd
-        oi_map = _pd.merge(c_oi_df, p_oi_df, on='strike', how='outer').fillna(0)
+        # OI map (top 15 strikes) — excluir strikes con OI=0
+        c_oi_df = calls[calls['openInterest']>0][['strike','openInterest']].rename(columns={'openInterest':'call_oi'})
+        p_oi_df = puts[puts['openInterest']>0][['strike','openInterest']].rename(columns={'openInterest':'put_oi'})
+        oi_map = pd.merge(c_oi_df, p_oi_df, on='strike', how='outer').fillna(0)
         oi_map['total_oi'] = oi_map['call_oi']+oi_map['put_oi']
         oi_map = oi_map.nlargest(15,'total_oi').sort_values('strike')
         oi_list = [{"strike_proxy":round(float(r['strike']),2),
