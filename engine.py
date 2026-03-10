@@ -1285,8 +1285,9 @@ def main():
         if isinstance(obj, float) and np.isnan(obj): return None
         return obj
 
-    OUTPUT_FILE.write_text(json.dumps(_sanitize(dashboard_data), ensure_ascii=False, indent=2))
-    _generate_dashboard(dashboard_data, BASE_DIR / "dashboard.html")
+    clean_data = _sanitize(dashboard_data)
+    OUTPUT_FILE.write_text(json.dumps(clean_data, ensure_ascii=False, indent=2))
+    _generate_dashboard(clean_data, BASE_DIR / "dashboard.html")
 
     print(f"\n  {G}→ dashboard_data.json generado{RST}")
     print(f"  {G}→ dashboard.html generado (abre directamente en el navegador){RST}\n")
