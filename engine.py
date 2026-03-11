@@ -962,13 +962,9 @@ def merge_trades_into_cache(cache, all_data):
         if added > 0:
             existing.sort(key=lambda t: t['entry_date'])
             cache[ticker]['trades'] = existing
-
-            new_metrics = _recalc_metrics(existing)
-            if new_metrics:
-                cache[ticker]['metrics_oos'] = new_metrics
-                # Actualizar también all_data para que el dashboard use métricas frescas
-                asset['metrics_oos'] = new_metrics
-
+            # NO recalculamos metrics_oos aquí — eso es responsabilidad del optimizer.
+            # El engine solo acumula trades; las métricas se actualizan cuando
+            # el usuario re-corre el optimizer (o el modo UPDATE_TRADES).
             cache[ticker]['trades_updated_at'] = datetime.now().isoformat()
             updated.append((ticker, added, len(existing)))
 
@@ -1753,13 +1749,6 @@ def main():
                   f"· WR={m.get('wr',0):.1f}% Sharpe={m.get('sharpe',0):.2f} PF={m.get('pf',0):.2f}")
     else:
         print(f"\n  {DIM}→ optimal_params.json sin cambios (sin trades nuevos cerrados){RST}")
-
-    # Refrescar métricas en all_data desde el cache ya actualizado
-    # (merge_trades_into_cache actualiza asset['metrics_oos'] in-place,
-    #  pero por seguridad hacemos un segundo pase para los que no cambiaron)
-    for ticker in all_data:
-        if ticker in cache and cache[ticker].get('metrics_oos'):
-            all_data[ticker]['metrics_oos'] = cache[ticker]['metrics_oos']
 
     dashboard_data = {
         "generated_at":    datetime.now().isoformat(),
