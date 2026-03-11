@@ -879,8 +879,13 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
         return {"error": str(e)}
 
 def _recalc_metrics(trades):
-    """Recalcula metrics_oos a partir de una lista de trades rich (dicts con 'pnl')."""
-    pnls = np.array([t['pnl'] for t in trades if t.get('pnl') is not None])
+    """Recalcula metrics_oos a partir de una lista de trades rich (dicts con 'pnl').
+    Solo usa trades con exit_date definida (cerrados). Ignora el trade abierto si existe.
+    """
+    pnls = np.array([
+        t['pnl'] for t in trades
+        if t.get('pnl') is not None and t.get('exit_date')
+    ])
     if len(pnls) < 4:
         return None
     wins = pnls[pnls > 0]; loss = pnls[pnls <= 0]
@@ -900,9 +905,17 @@ def _recalc_metrics(trades):
 
 
 def merge_trades_into_cache(cache, all_data):
-    """Mergea trades nuevos cerrados del engine en optimal_params.json
-    y recalcula metrics_oos con el historial completo acumulado.
-    Clave de deduplicación: (ticker, entry_date).
+    """Mergea trades nuevos cerrados en optimal_params.json de forma robusta:
+
+    Estrategia:
+    - Solo añade trades cuya entry_date sea POSTERIOR a la última entry_date ya guardada.
+      Esto evita re-procesar todo el backtest histórico y elimina el riesgo de duplicados
+      por ajustes retroactivos de yfinance.
+    - Si el JSON no tiene trades previos (primera vez), acepta todos los trades del engine.
+    - Tras añadir, recalcula metrics_oos con el historial completo y actualiza all_data
+      para que el dashboard refleje las métricas actualizadas.
+
+    Clave de deduplicación secundaria: entry_date (por si acaso la fecha límite falla).
     """
     updated = []
     for ticker, asset in all_data.items():
@@ -913,25 +926,48 @@ def merge_trades_into_cache(cache, all_data):
             continue
 
         existing = cache[ticker].get('trades', [])
-        existing_keys = {(t.get('ticker', ticker), t['entry_date']) for t in existing}
+
+        # Fecha límite: solo aceptamos trades con entry_date > última fecha ya guardada
+        # Si no hay historial previo, aceptamos todos (primera población del JSON)
+        if existing:
+            last_saved_date = max(t['entry_date'] for t in existing)
+        else:
+            last_saved_date = '1900-01-01'  # primera vez: acepta todo
+
+        # Set de fechas ya existentes para deduplicación secundaria
+        existing_dates = {t['entry_date'] for t in existing}
 
         added = 0
         for t in new_trades:
-            key = (t.get('ticker', ticker), t['entry_date'])
-            if key not in existing_keys:
-                existing.append(t)
-                existing_keys.add(key)
-                added += 1
+            entry_date = t.get('entry_date', '')
+            exit_date  = t.get('exit_date', '')
+            # Solo trades cerrados (tienen exit_date) y más recientes que el historial
+            if not exit_date:
+                continue
+            if entry_date <= last_saved_date and entry_date in existing_dates:
+                continue  # ya existe con seguridad
+            if entry_date <= last_saved_date:
+                continue  # más antiguo que lo que ya tenemos — ignorar
+
+            t_copy = dict(t, source='live')  # marcar explícitamente como trade real
+            existing.append(t_copy)
+            existing_dates.add(entry_date)
+            added += 1
+
+        # Marcar trades existentes sin source como 'backtest' (vienen del optimizer)
+        for t in existing:
+            if 'source' not in t:
+                t['source'] = 'backtest'
 
         if added > 0:
-            # Ordenar por fecha de entrada
             existing.sort(key=lambda t: t['entry_date'])
             cache[ticker]['trades'] = existing
 
-            # Recalcular métricas con historial completo
             new_metrics = _recalc_metrics(existing)
             if new_metrics:
                 cache[ticker]['metrics_oos'] = new_metrics
+                # Actualizar también all_data para que el dashboard use métricas frescas
+                asset['metrics_oos'] = new_metrics
 
             cache[ticker]['trades_updated_at'] = datetime.now().isoformat()
             updated.append((ticker, added, len(existing)))
@@ -1097,6 +1133,8 @@ canvas{display:block;width:100%;height:100%}
 .trades-tbl td{padding:.4rem .6rem;border-bottom:1px solid rgba(26,34,54,.5);font-family:var(--mono)}
 .trades-tbl td:not(:first-child){text-align:right}
 .trades-tbl tr:last-child td{border-bottom:none}
+.src-live{display:inline-block;font-size:.5rem;font-family:var(--mono);font-weight:700;letter-spacing:.06em;padding:.1rem .35rem;border-radius:4px;background:rgba(34,211,238,.12);color:var(--accent);border:1px solid rgba(34,211,238,.25);vertical-align:middle;margin-left:.3rem;text-transform:uppercase}
+.src-bt{display:inline-block;font-size:.5rem;font-family:var(--mono);font-weight:700;letter-spacing:.06em;padding:.1rem .35rem;border-radius:4px;background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.2);vertical-align:middle;margin-left:.3rem;text-transform:uppercase}
 .pnl-row{display:flex;align-items:center;gap:.35rem;justify-content:flex-end}
 .pnl-pill{height:3px;border-radius:2px;opacity:.5;min-width:2px}
 .params-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:.5rem}
@@ -1210,7 +1248,7 @@ canvas{display:block;width:100%;height:100%}
         <div class="sec-title" style="margin-bottom:.55rem">Historial completo de trades</div>
         <div style="overflow-x:auto">
           <table class="trades-tbl">
-            <thead><tr><th>Entrada</th><th>Salida</th><th>Ent$</th><th>Sal$</th><th>SL</th><th>TP</th><th>P&amp;L</th><th>Días</th><th>Razón</th></tr></thead>
+            <thead><tr><th>Entrada</th><th>Salida</th><th>Ent$</th><th>Sal$</th><th>SL</th><th>TP</th><th>P&amp;L</th><th>Días</th><th>Razón</th><th>Origen</th></tr></thead>
             <tbody id="ttb"></tbody>
           </table>
         </div>
@@ -1413,7 +1451,8 @@ function openAsset(ticker){
   const trades=a.trades||[];
   document.getElementById('ttb').innerHTML=trades.map(t=>{
     const c=t.pnl>=0?'var(--green)':'var(--red)',bw=Math.min(Math.abs(t.pnl)*4,60),stars=t.pnl>=5?' ★★':t.pnl>=3?' ★':'';
-    return `<tr><td>${t.entry_date}</td><td>${t.exit_date}</td><td>$${t.entry_price}</td><td>$${t.exit_price}</td><td style="color:var(--red)">$${t.stop_loss}</td><td style="color:var(--green)">$${t.take_profit}</td><td><div class="pnl-row"><span style="color:${c}">${t.pnl>=0?'+':''}${t.pnl.toFixed(2)}%${stars}</span><div class="pnl-pill" style="width:${bw}px;background:${c}"></div></div></td><td>${t.days}d</td><td style="font-size:.62rem;color:var(--text3)">${t.reason}</td></tr>`;
+    const srcBadge=t.source==='live'?'<span class="src-live">live</span>':'<span class="src-bt">bt</span>';
+    return `<tr><td>${t.entry_date}</td><td>${t.exit_date}</td><td>$${t.entry_price}</td><td>$${t.exit_price}</td><td style="color:var(--red)">$${t.stop_loss}</td><td style="color:var(--green)">$${t.take_profit}</td><td><div class="pnl-row"><span style="color:${c}">${t.pnl>=0?'+':''}${t.pnl.toFixed(2)}%${stars}</span><div class="pnl-pill" style="width:${bw}px;background:${c}"></div></div></td><td>${t.days}d</td><td style="font-size:.62rem;color:var(--text3)">${t.reason}</td><td>${srcBadge}</td></tr>`;
   }).join('');
   const kp=['rsi_p','rsi_lo','rsi_hi','ema_f','ema_s','ema_t','macd_f','macd_s','adx_min','score_min','tp_pct','atr_stop','max_days','vol_min','trail_act','trail_atr'];
   document.getElementById('prg').innerHTML=kp.filter(k=>p[k]!==undefined).map(k=>`<div class="param-item"><div class="param-key">${k}</div><div class="param-val">${p[k]}</div></div>`).join('');
@@ -1690,6 +1729,38 @@ def main():
     else:
         print(f"\n  {Y}Sin alertas activas hoy.{RST}")
 
+    def _sanitize(obj):
+        """Convierte recursivamente tipos numpy a tipos Python nativos."""
+        if isinstance(obj, dict):   return {k: _sanitize(v) for k, v in obj.items()}
+        if isinstance(obj, list):   return [_sanitize(v) for v in obj]
+        if isinstance(obj, np.bool_):    return bool(obj)
+        if isinstance(obj, np.integer):  return int(obj)
+        if isinstance(obj, np.floating): return None if np.isnan(obj) else float(obj)
+        if isinstance(obj, np.ndarray):  return [_sanitize(v) for v in obj.tolist()]
+        if isinstance(obj, float) and np.isnan(obj): return None
+        return obj
+
+    # ── Merge trades nuevos en optimal_params.json ──────────────
+    # IMPORTANTE: ocurre ANTES de construir dashboard_data para que
+    # el dashboard ya refleje las métricas actualizadas post-merge
+    updated = merge_trades_into_cache(cache, all_data)
+    if updated:
+        CACHE_FILE.write_text(json.dumps(cache, indent=2))
+        print(f"\n  {G}→ optimal_params.json actualizado con trades nuevos:{RST}")
+        for ticker, added, total in updated:
+            m = cache[ticker].get('metrics_oos', {})
+            print(f"     {BOLD}{ticker}{RST}: +{added} trade(s) · total {total} trades "
+                  f"· WR={m.get('wr',0):.1f}% Sharpe={m.get('sharpe',0):.2f} PF={m.get('pf',0):.2f}")
+    else:
+        print(f"\n  {DIM}→ optimal_params.json sin cambios (sin trades nuevos cerrados){RST}")
+
+    # Refrescar métricas en all_data desde el cache ya actualizado
+    # (merge_trades_into_cache actualiza asset['metrics_oos'] in-place,
+    #  pero por seguridad hacemos un segundo pase para los que no cambiaron)
+    for ticker in all_data:
+        if ticker in cache and cache[ticker].get('metrics_oos'):
+            all_data[ticker]['metrics_oos'] = cache[ticker]['metrics_oos']
+
     dashboard_data = {
         "generated_at":    datetime.now().isoformat(),
         "alerts":          alerts,
@@ -1704,28 +1775,6 @@ def main():
             "n_blocked":    len(blocked),
         },
     }
-
-    def _sanitize(obj):
-        """Convierte recursivamente tipos numpy a tipos Python nativos."""
-        if isinstance(obj, dict):   return {k: _sanitize(v) for k, v in obj.items()}
-        if isinstance(obj, list):   return [_sanitize(v) for v in obj]
-        if isinstance(obj, np.bool_):    return bool(obj)
-        if isinstance(obj, np.integer):  return int(obj)
-        if isinstance(obj, np.floating): return None if np.isnan(obj) else float(obj)
-        if isinstance(obj, np.ndarray):  return [_sanitize(v) for v in obj.tolist()]
-        if isinstance(obj, float) and np.isnan(obj): return None
-        return obj
-
-    # ── Merge trades nuevos en optimal_params.json ──────────────
-    # Acumula el historial día a día y recalcula métricas OOS
-    updated = merge_trades_into_cache(cache, all_data)
-    if updated:
-        CACHE_FILE.write_text(json.dumps(cache, indent=2))
-        print(f"\n  {G}→ optimal_params.json actualizado con trades nuevos:{RST}")
-        for ticker, added, total in updated:
-            print(f"     {BOLD}{ticker}{RST}: +{added} trade(s) nuevo(s) · historial total: {total} trades")
-    else:
-        print(f"\n  {DIM}→ optimal_params.json sin cambios (sin trades nuevos cerrados){RST}")
 
     clean_data = _sanitize(dashboard_data)
     OUTPUT_FILE.write_text(json.dumps(clean_data, ensure_ascii=False, indent=2))
