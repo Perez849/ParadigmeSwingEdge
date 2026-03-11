@@ -343,10 +343,110 @@ def optimize(ticker, df, macro, n_combos):
     )
 
 # ══════════════════════════════════════════════════════════════════
+def update_trades_only(cache, tickers, spy_above_series):
+    """Modo rápido: re-corre el backtest con parámetros existentes para actualizar
+    trades, métricas OOS y timestamp — sin buscar nuevos parámetros."""
+    print(f"\n{'═'*58}")
+    print(f"  MODO UPDATE TRADES — parámetros fijos, backtest fresco")
+    print(f"  Activos a actualizar: {len(tickers)}")
+    print(f"{'═'*58}")
+
+    updated = 0
+    for ticker in tickers:
+        name = UNIVERSE.get(ticker, ticker)
+        print(f"\n  {ticker}  {name}", end=" ")
+
+        if ticker not in cache:
+            print(f"⚠ sin parámetros en caché — saltando")
+            continue
+
+        p = cache[ticker].get('params')
+        if not p:
+            print(f"⚠ sin params — saltando")
+            continue
+
+        try:
+            df = yf.download(ticker, period=DATA_PERIOD, auto_adjust=True, progress=False)
+            if isinstance(df.columns, pd.MultiIndex):
+                df.columns = df.columns.get_level_values(0)
+            if len(df) < 200:
+                print(f"❌ pocos datos"); continue
+        except Exception as e:
+            print(f"❌ {e}"); continue
+
+        # Filtro macro barra a barra (igual que en la optimización)
+        spy_aligned = spy_above_series.reindex(df.index, method='ffill').fillna(False)
+        asset_close = df['Close'].squeeze()
+        asset_ema50 = asset_close.ewm(span=50, adjust=False).mean()
+        asset_above = (asset_close > asset_ema50)
+        macro = (spy_aligned | (~spy_aligned & asset_above)).values
+
+        use_invert = ticker in INVERSE_TICKERS or ticker in VIX_TICKERS
+        n = len(df); split = int(n * 0.65)
+
+        df_oos  = df.iloc[split:]
+        mo_oos  = macro[split:]
+
+        ind_oos  = calc_ind(df_oos, p, use_invert)
+        sigs_oos = get_signals(ind_oos, p, mo_oos, use_invert)
+        trs_oos  = run_bt(ind_oos, sigs_oos, p)
+        m_oos    = score_metrics(trs_oos)
+
+        if not m_oos:
+            print(f"⚠ sin trades OOS suficientes — saltando")
+            continue
+
+        # Convertir trades a formato rich para el dashboard
+        rich_trades = []
+        idx_oos = list(df_oos.index)
+        close_real_oos = df_oos['Close'].squeeze().values
+        for tr in trs_oos:
+            ep_adj, ex_adj, pnl, held, reason, ei, xi = tr
+            ep_real = float(close_real_oos[ei]) if ei < len(close_real_oos) else ep_adj
+            ex_real = float(close_real_oos[xi]) if xi < len(close_real_oos) else ex_adj
+            sl_real = round(ep_real * (1 + (ep_adj*(1-p['atr_stop']*0.02) - ep_adj)/ep_adj), 2)
+            tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
+            rich_trades.append({
+                "ticker":      ticker,
+                "entry_date":  str(idx_oos[ei])[:10],
+                "exit_date":   str(idx_oos[xi])[:10],
+                "entry_price": round(ep_real, 2),
+                "exit_price":  round(ex_real, 2),
+                "stop_loss":   sl_real,
+                "take_profit": tp_real,
+                "pnl":         round(pnl, 2),
+                "days":        held,
+                "reason":      reason,
+            })
+
+        # Actualizar solo trades, métricas y timestamp — parámetros intactos
+        old_m = cache[ticker].get('metrics_oos', {})
+        cache[ticker]['metrics_oos'] = m_oos
+        cache[ticker]['trades']      = rich_trades
+        cache[ticker]['updated_at']  = datetime.now().isoformat()
+        # Nota: optimized_at se mantiene intacto — solo es la fecha de la última optimización
+
+        CACHE_FILE.write_text(json.dumps(cache, indent=2))
+        updated += 1
+
+        delta_sh = m_oos['sharpe'] - old_m.get('sharpe', 0)
+        delta_wr = m_oos['wr']     - old_m.get('wr', 0)
+        sign_sh  = '+' if delta_sh >= 0 else ''
+        sign_wr  = '+' if delta_wr >= 0 else ''
+        print(f"✓  Sharpe={m_oos['sharpe']:.2f}({sign_sh}{delta_sh:.2f})  "
+              f"WR={m_oos['wr']:.1f}%({sign_wr}{delta_wr:.1f})  "
+              f"N={m_oos['n']}  PF={m_oos['pf']:.2f}")
+
+    print(f"\n{'═'*58}")
+    print(f"  Update completado: {updated}/{len(tickers)} activos actualizados")
+    print(f"  Caché: {CACHE_FILE}")
+
+
 def main():
     # ── Configuración — edita aquí ────────────────────────────────
     TICKER_SOLO  = None    # None = todos | "GLDM.PA" = solo ese ticker
     FORCE_REOPT  = False   # True = re-optimizar aunque exista caché
+    UPDATE_TRADES = False  # True = solo actualizar trades/métricas, SIN re-optimizar
     N_COMBOS_RUN = N_COMBOS
     # ─────────────────────────────────────────────────────────────
 
@@ -363,6 +463,12 @@ def main():
         spy.columns = spy.columns.get_level_values(0)
     spy_c = spy['Close'].squeeze()
     spy_e = spy_c.ewm(span=50, adjust=False).mean()
+    spy_above_series = (spy_c > spy_e)
+
+    # ── Modo update trades ────────────────────────────────────────
+    if UPDATE_TRADES:
+        update_trades_only(cache, tickers, spy_above_series)
+        return
 
     log = []
     for ticker in tickers:
@@ -389,7 +495,11 @@ def main():
         except Exception as e:
             print(f"❌ {e}"); continue
 
-        macro = (spy_c > spy_e).reindex(df.index, method='ffill').fillna(False).values
+        spy_aligned = spy_above_series.reindex(df.index, method='ffill').fillna(False)
+        asset_close = df['Close'].squeeze()
+        asset_ema50 = asset_close.ewm(span=50, adjust=False).mean()
+        asset_above = (asset_close > asset_ema50)
+        macro = (spy_aligned | (~spy_aligned & asset_above)).values
 
         print(f"  ⚙  Optuna TPE · {N_COMBOS_RUN} evaluaciones...", end=" ", flush=True)
         t0  = time.time()

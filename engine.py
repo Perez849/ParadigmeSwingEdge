@@ -1551,7 +1551,16 @@ def main():
                            for i in range(len(ind['c']))])
 
         # Historial completo de trades + trade actualmente abierto
+        # IMPORTANTE: para detectar el open_trade usamos también sigs_raw (sin filtro macro)
+        # El filtro macro solo aplica en la ENTRADA — una vez abierto el trade,
+        # que la EMA50 se reajuste al añadir barras nuevas no debe eliminarlo retroactivamente
         trades, open_trade = build_rich_trades(ind, sigs, p, ticker)
+        if open_trade is None:
+            _, open_trade_raw = build_rich_trades(ind, sigs_raw, p, ticker)
+            if open_trade_raw:
+                current_real = float(ind['close'][-1])
+                if current_real > open_trade_raw['stop_loss']:
+                    open_trade = open_trade_raw
 
         # ── Terminal: mostrar métricas OOS ─────────────────────
         if not SOLO_ALERTAS and m_oos:
