@@ -9,9 +9,9 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.2.2
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
@@ -22,6 +22,6 @@ jobs:
         run: |
           git config user.name 'github-actions'
           git config user.email 'actions@github.com'
-          git add dashboard.html dashboard_data.json
+          git add dashboard.html dashboard_data.json optimal_params.json
           git diff --staged --quiet || git commit -m 'Update dashboard'
           git push
