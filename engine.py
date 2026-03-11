@@ -1,6 +1,6 @@
 """
 ╔══════════════════════════════════════════════════════════════════════╗
-║  SWING EDGE ENGINE  v2.0                                             ║
+║  SWING EDGE ENGINE  v2.3                                             ║
 ║  Usa EXACTAMENTE las mismas funciones que optimizer.py               ║
 ║  → Métricas del resumen tomadas del OOS (honest metrics)             ║
 ╚══════════════════════════════════════════════════════════════════════╝
@@ -9,7 +9,7 @@ USO (Jupyter):
   Edita las variables de configuración en main() y ejecuta main()
 """
 
-import sys, json, warnings
+import json, warnings
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -71,16 +71,16 @@ def calc_ind(df, p, invert=False):
     out['pdi']    = pdi.values
     lo14 = l.rolling(14).min(); hi14 = h.rolling(14).max()
     out['stoch']  = (100*(c-lo14)/(hi14-lo14).replace(0,np.nan)).values
-    out['vol_r']  = (v/v.rolling(20).mean()).values
-    out['dist']   = ((c-c.ewm(span=p['ema_s'],adjust=False).mean())
-                     /c.ewm(span=p['ema_s'],adjust=False).mean()*100).values
+    out['vol_r']  = (v/v.rolling(20).mean().replace(0, np.nan)).values
+    _ema_s_dist   = c.ewm(span=p['ema_s'],adjust=False).mean().replace(0, np.nan)
+    out['dist']   = ((c-_ema_s_dist)/_ema_s_dist*100).values
     ema_fs = c.ewm(span=p['ema_f'],adjust=False).mean()
-    out['slope']  = ((ema_fs-ema_fs.shift(3))/ema_fs.shift(3)*100).values
+    out['slope']  = ((ema_fs-ema_fs.shift(3))/ema_fs.shift(3).replace(0, np.nan)*100).values
     out['roc5']   = c.pct_change(5).values*100
     out['roc20']  = c.pct_change(20).values*100
     bb_std = c.rolling(20).std()
     bb_mid = c.rolling(20).mean()
-    out['bb_w']   = (4*bb_std/bb_mid*100).values
+    out['bb_w']   = (4*bb_std/bb_mid.replace(0, np.nan)*100).values
     # Precio real siempre (sin invertir) — para mostrar en dashboard y alertas
     c_real        = df['Close'].squeeze()
     out['close']  = c_real.values.astype(float)   # precio real
@@ -135,48 +135,6 @@ def get_signals(ind, p, macro=None, invert_macro=False):
             sigs[i] = 1; last = i
     return sigs
 
-def run_bt(ind, sigs, p):
-    c=ind['c']; atr=ind['atr']; n=len(c)
-    trades=[]; in_t=False; ep=sl=tp=pk=0.0; entry_i=0
-    for i in range(n):
-        price=c[i]
-        if np.isnan(price): continue
-        a = atr[i] if not np.isnan(atr[i]) else price*0.02
-        if not in_t:
-            if sigs[i]==1:
-                in_t=True; ep=price; pk=price
-                sl=price-a*p['atr_stop']; tp=price*(1+p['tp_pct']/100); entry_i=i
-        else:
-            pk=max(pk,price); held=i-entry_i
-            pnl=(price-ep)/ep*100; reason=None
-            if price<=sl:    reason="SL"
-            elif price>=tp:  reason="TP"
-            elif pnl>p['trail_act']:
-                if price<pk-a*p['trail_atr']: reason="Trail"
-            if reason is None and held>=p['max_days']: reason="T"
-            if reason:
-                trades.append((ep,price,pnl,held,reason,entry_i,i))
-                in_t=False
-    return trades
-
-def score_metrics(trades):
-    if len(trades) < 4: return None
-    pnls = np.array([t[2] for t in trades])
-    wins = pnls[pnls>0]; loss = pnls[pnls<=0]
-    n=len(pnls); wr=len(wins)/n*100
-    pf = abs(wins.sum()/loss.sum()) if loss.sum()!=0 else (99.0 if len(wins)>0 else 0)
-    if pf < 0.8: return None
-    dd = float(np.min(np.cumsum(pnls)-np.maximum.accumulate(np.cumsum(pnls))))
-    sh = float(pnls.mean()/pnls.std()*np.sqrt(26)) if pnls.std()>0 else 0
-    p3 = float((pnls>=3).mean()*100)
-    p5 = float((pnls>=5).mean()*100)
-    dd_pen = max(0,(-dd-20))*0.3
-    sc = sh*3.0 + pf*2.0 + p3*0.04 + (wr/100)*0.8 - dd_pen
-    return dict(n=n, wr=wr, pf=pf, sharpe=sh, dd=dd, p3=p3, p5=p5,
-                avg_w=float(wins.mean()) if len(wins) else 0,
-                avg_l=float(loss.mean()) if len(loss) else 0,
-                total=float(pnls.sum()), score=sc)
-
 # ══════════════════════════════════════════════════════════════════
 # FUNCIONES EXCLUSIVAS DEL ENGINE
 # ══════════════════════════════════════════════════════════════════
@@ -200,7 +158,7 @@ def build_rich_trades(ind, sigs, p, ticker):
                 entry_i=i
         else:
             pk=max(pk,price); held=i-entry_i
-            pnl=(price-ep)/ep*100; reason=None
+            pnl=(price-ep)/ep*100 if ep!=0 else 0.0; reason=None
             if price<=sl:    reason="Stop Loss"
             elif price>=tp:  reason="Take Profit ✅"
             elif pnl>p['trail_act']:
@@ -213,7 +171,7 @@ def build_rich_trades(ind, sigs, p, ticker):
                 reason=f"Tiempo ({held}d)"
             if reason:
                 entry_sc = int(score_bar(ind, entry_i, p))
-                sl_real = round(ep_real * (1 + (sl - ep)/ep), 2)
+                sl_real = round(ep_real * (sl / ep), 2) if ep != 0 else round(sl, 2)
                 tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
                 trades.append({
                     "ticker":      ticker,
@@ -224,7 +182,7 @@ def build_rich_trades(ind, sigs, p, ticker):
                     "stop_loss":   sl_real,
                     "take_profit": tp_real,
                     "pnl":         round(pnl, 2),
-                    "peak_pnl":    round((pk-ep)/ep*100, 2),
+                    "peak_pnl":    round((pk-ep)/ep*100, 2) if ep != 0 else 0.0,
                     "days":        held,
                     "reason":      reason,
                     "score":       entry_sc,
@@ -235,7 +193,7 @@ def build_rich_trades(ind, sigs, p, ticker):
 
     # Si al terminar el bucle hay un trade abierto, guardarlo con el SL actualizado
     if in_t:
-        sl_real = round(ep_real * (1 + (sl - ep)/ep), 2)
+        sl_real = round(ep_real * (sl / ep), 2) if ep != 0 else round(sl, 2)
         tp_real = round(ep_real * (1 + p['tp_pct']/100), 2)
         open_trade = {
             "entry_date":  str(idx[entry_i])[:10],
@@ -249,9 +207,6 @@ def build_rich_trades(ind, sigs, p, ticker):
 
 
 def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
-    today_str = str(ind['index'][-1])[:10]
-    today_ts  = pd.Timestamp(today_str)
-
     # Si hay un trade abierto simulado, es la única fuente de verdad
     if open_trade:
         date_str = open_trade['entry_date']
@@ -266,19 +221,25 @@ def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
 
         # days_ago en días de MERCADO (barras), no días calendario
         # El optimizador usa max_days en barras — debe ser consistente
-        entry_i = next((i for i in range(len(ind['index'])) if str(ind['index'][i])[:10]==date_str), len(ind['index'])-1)
-        days_ago = len(ind['index']) - 1 - entry_i  # barras desde entrada hasta hoy
+        # Buscar entry_i por fecha exacta; si no existe (fin de semana), usar >=
+        entry_i = next((i for i in range(len(ind['index'])) if str(ind['index'][i])[:10] >= date_str), 0)
+        # Fallback: si la búsqueda >= devolvió índice 0 y no coincide, usar el más cercano
+        if entry_i == 0 and str(ind['index'][0])[:10] > date_str:
+            entry_i = 0  # trade más antiguo del período
+        days_ago = max(0, len(ind['index']) - 1 - entry_i)  # barras de mercado desde entrada; clamp ≥0
 
         # Respetar max_days — si ya pasó, el trade debería haber cerrado en el backtest
         # pero por si acaso no mostramos alerta expirada
         if days_ago > p['max_days']:
             return None
 
-        sl_pct_val = abs((sl_real - price_real) / price_real * 100)
+        sl_pct_val = abs((sl_real - price_real) / price_real * 100) if price_real != 0 else 0.0
         a = float(ind['atr'][entry_i]) if not np.isnan(ind['atr'][entry_i]) else abs(float(ind['c'][entry_i]))*0.02
         price_c = float(ind['c'][entry_i])
         atr_pct = a / abs(price_c) * 100 if price_c != 0 else 0.02
 
+        current_pnl = round((current_real - price_real) / price_real * 100, 2) if price_real != 0 else 0.0
+        score_now = int(score_bar(ind, len(ind['c'])-1, p))
         return {
             "ticker":      ticker,
             "name":        name,
@@ -286,11 +247,14 @@ def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
             "urgency":     "HOY" if days_ago==0 else f"HACE {days_ago}d",
             "days_ago":    days_ago,
             "price":       price_real,
+            "current_price": round(current_real, 2),
+            "current_pnl": current_pnl,
             "stop_loss":   sl_real,
             "take_profit": tp_real,
             "stop_pct":    round(sl_pct_val, 2),
             "tp_pct":      p['tp_pct'],
             "rr_ratio":    round(p['tp_pct']/sl_pct_val, 2) if sl_pct_val>0 else None,
+            "score_now":   score_now,
             "score":       int(score_bar(ind, entry_i, p)),
             "rsi":         round(float(ind['rsi'][entry_i]),1) if not np.isnan(ind['rsi'][entry_i]) else None,
             "adx":         round(float(ind['adx'][entry_i]),1) if not np.isnan(ind['adx'][entry_i]) else None,
@@ -298,7 +262,7 @@ def check_alert(ind, sigs, p, ticker, name, trades=None, open_trade=None):
             "max_days":    p['max_days'],
             "trail_act":   p['trail_act'],
             "trail_atr":   p['trail_atr'],
-            "trail_sl":    round(price_real * (1 - p['trail_atr']*atr_pct/100), 2),
+            "trail_sl":    max(0.0, round(current_real * (1 - p['trail_atr']*atr_pct/100), 2)),
         }
 
     # Sin trade abierto simulado → no hay alerta activa
@@ -308,18 +272,24 @@ def build_price_history(ind, sigs, scores):
     n = len(ind['c'])
     start = max(0, n-90)
     hist = []
+    def _v2(arr, i, dec=2):
+        try:
+            v = float(arr[i])
+            return round(v, dec) if not np.isnan(v) else None
+        except (TypeError, ValueError):
+            return None
     for i in range(start, n):
-        def gv(k): v=ind[k][i]; return round(float(v),2) if not np.isnan(v) else None
         hist.append({
             "date":   str(ind['index'][i])[:10],
-            "open":   gv('open'),  "high":  gv('high'),
-            "low":    gv('low'),   "close": gv('close'),  # precio real
+            "open":   _v2(ind['open'],   i), "high":  _v2(ind['high'],  i),
+            "low":    _v2(ind['low'],    i), "close": _v2(ind['close'], i),
             "volume": int(ind['volume'][i]) if not np.isnan(ind['volume'][i]) else 0,
-            "ema_f":  gv('ema_f'), "ema_s": gv('ema_s'), "ema_t": gv('ema_t'),
-            "rsi":    round(float(ind['rsi'][i]),1) if not np.isnan(ind['rsi'][i]) else None,
-            "adx":    round(float(ind['adx'][i]),1) if not np.isnan(ind['adx'][i]) else None,
-            "macd_h": round(float(ind['macd_h'][i]),3) if not np.isnan(ind['macd_h'][i]) else None,
-            "vol_r":  round(float(ind['vol_r'][i]),2) if not np.isnan(ind['vol_r'][i]) else None,
+            "ema_f":  _v2(ind['ema_f'],  i), "ema_s": _v2(ind['ema_s'], i),
+            "ema_t":  _v2(ind['ema_t'],  i),
+            "rsi":    _v2(ind['rsi'],    i, 1),
+            "adx":    _v2(ind['adx'],    i, 1),
+            "macd_h": _v2(ind['macd_h'], i, 3),
+            "vol_r":  _v2(ind['vol_r'],  i, 2),
             "signal": int(sigs[i]),
             "score":  int(scores[i]),
         })
@@ -356,31 +326,42 @@ def print_trades(trades, ticker):
     print(f"\n  {DIM}{'─'*74}{RST}")
     print(f"  {BOLD}Historial completo — {ticker}{RST}")
     print(f"  {DIM}{'─'*74}{RST}")
-    print(f"  {'Entrada':<12}{'Salida':<12}{'Ent$':>8}{'Sal$':>8}{'P&L':>9}  {'d':>4}{'Sc':>4}  Razón")
+    print(f"  {'Entrada':<12}{'Salida':<12}{'Ent$':>8}{'Sal$':>8}{'P&L':>9}  {'d':>4}{'Sc':>4}  Origen  Razón")
     print(f"  {DIM}{'─'*74}{RST}")
     for t in trades:
-        p = t['pnl']
-        col = G if p>=0 else R
-        stars = "★★" if p>=5 else ("★ " if p>=3 else "  ")
-        print(f"  {t['entry_date']:<12}{t['exit_date']:<12}"
-              f"{t['entry_price']:>8.2f}{t['exit_price']:>8.2f}"
-              f"  {col}{p:>+7.2f}%{RST} {col}{stars}{RST}"
-              f"  {t['days']:>4}{t['score']:>4}  {DIM}{t['reason']}{RST}")
+        pnl = t.get('pnl') if t.get('pnl') is not None else 0.0
+        exit_date  = t.get('exit_date', '—')[:10] if t.get('exit_date') else '—'
+        exit_price = t.get('exit_price') or 0.0
+        days  = t.get('days', 0)
+        score = t.get('score', 0)
+        src   = t.get('source', 'bt')
+        col = G if pnl>=0 else R
+        stars = "★★" if pnl>=5 else ("★ " if pnl>=3 else "  ")
+        src_tag = f"{C}live{RST}" if src == 'live' else f"{DIM}bt  {RST}"
+        print(f"  {t.get('entry_date','—'):<12}{exit_date:<12}"
+              f"{(t.get('entry_price') if t.get('entry_price') is not None else 0.0):>8.2f}{exit_price:>8.2f}"
+              f"  {col}{pnl:>+7.2f}%{RST} {col}{stars}{RST}"
+              f"  {days:>4}{score:>4}  {src_tag}  {DIM}{t.get('reason','—')}{RST}")
 
 def print_alert(a):
     col = M if a['days_ago']==0 else Y
-    rr  = a.get('rr_ratio', '?')
-    rr_col = G if (rr != '?' and rr >= 1.5) else (Y if rr != '?' and rr >= 1.0 else R)
+    rr  = a.get('rr_ratio')  # puede ser None si sl_pct_val==0
+    rr_col = G if (rr is not None and rr >= 1.5) else (Y if rr is not None and rr >= 1.0 else R)
     print(f"\n  {BOLD}🚨 {M}{a['ticker']}{RST} {DIM}{a['name']}{RST}")
     print(f"  {col}{BOLD}{a['urgency']}{RST}  {a['date']}  "
           f"${a['price']:.2f}  Score {G}{a['score']}/100{RST}")
+    cur_pnl = a.get('current_pnl', 0)
+    cur_price = a.get('current_price')
+    pnl_col = G if cur_pnl >= 0 else R
+    if cur_price:
+        print(f"  Precio actual:  {pnl_col}${cur_price:.2f} ({cur_pnl:+.2f}%){RST}")
     print(f"  SL fijo:        {R}${a['stop_loss']:.2f} (-{a['stop_pct']}%){RST}")
     print(f"  TP objetivo:    {G}${a['take_profit']:.2f} (+{a['tp_pct']}%){RST}")
     print(f"  Trailing stop:  activa tras +{a.get('trail_act','?')}% → "
           f"stop a {a.get('trail_atr','?')}×ATR del máximo")
     print(f"  Salida por tiempo: máx {a.get('max_days','?')} días hábiles")
-    print(f"  R/R: {rr_col}{BOLD}{rr}:1{RST}  "
-          f"{DIM}({'bueno ✓' if rr != '?' and rr >= 1.5 else 'ajustado ⚠' if rr != '?' and rr >= 1.0 else 'bajo ✗'}){RST}")
+    print(f"  R/R: {rr_col}{BOLD}{rr if rr is not None else '—'}:1{RST}  "
+          f"{DIM}({'bueno ✓' if rr is not None and rr >= 1.5 else 'ajustado ⚠' if rr is not None and rr >= 1.0 else 'bajo ✗' if rr is not None else 'sin datos'}){RST}")
 
 # ══════════════════════════════════════════════════════════════════
 # UNIVERSE
@@ -443,9 +424,13 @@ OPTIONS_PROXY = {
 
 def fmtOI_py(n):
     if n is None or n == 0: return "0"
-    if n >= 1_000_000: return f"{n/1_000_000:.1f}M".rstrip('0').rstrip('.')+'M' if '.' in f"{n/1_000_000:.1f}" else f"{n/1_000_000:.0f}M"
-    if n >= 1_000: return f"{n/1_000:.1f}K"
-    return str(n)
+    if n >= 1_000_000:
+        s = f"{n/1_000_000:.1f}"
+        return (s.rstrip('0').rstrip('.') + 'M')
+    if n >= 1_000:
+        s = f"{n/1_000:.1f}"
+        return (s.rstrip('0').rstrip('.') + 'K')
+    return str(int(n))
 
 def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaining=None):
     """Obtiene microestructura de opciones con validaciones de calidad de datos."""
@@ -494,24 +479,25 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
         return lp if lp > 0 else 0.0
 
     def pick_best_expiration(expirations, today, min_days=1):
-        """Siempre elige el vencimiento más líquido (20-45 días).
-        La IV se extrae de ahí y luego se escala al horizonte que se necesite.
-        Si no hay entre 20-45d, coge el más cercano disponible ≥ min_days."""
+        """Elige el vencimiento más líquido (20-45 días idealmente).
+        Recorre TODOS los vencimientos para no perderse el rango ideal.
+        Si no hay entre 20-45d, usa el más cercano >= min_days."""
         from datetime import datetime as dt
         candidates = []
         for exp in expirations:
-            d = (dt.strptime(exp, "%Y-%m-%d") - today).days
+            try:
+                d = (dt.strptime(exp, "%Y-%m-%d") - today).days
+            except ValueError:
+                continue
             if d >= min_days:
                 candidates.append((exp, d))
-            if len(candidates) >= 8:
-                break
         if not candidates:
             return None, 0
-        # Preferir el rango más líquido
+        # Preferir el rango más líquido (20-45 días)
         preferred = [(e, d) for e, d in candidates if 20 <= d <= 45]
         if preferred:
-            return preferred[0]
-        # Si no hay, el más cercano disponible
+            return preferred[0]  # el más cercano dentro del rango ideal
+        # Si no hay en el rango ideal, el más cercano disponible
         return candidates[0]
 
     try:
@@ -684,7 +670,7 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
 
         # ── IV RANK ───────────────────────────────────────────────────
         iv_rank = None
-        atm_iv  = round(atm_iv_ann, 1) if atm_iv_ann else None
+        atm_iv  = round(atm_iv_ann, 1) if atm_iv_ann is not None else None
         hv_252  = None
         hv_21   = None
         try:
@@ -861,8 +847,8 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
             "skew_detail":       skew_detail,
             "iv_rank":           iv_rank,
             "atm_iv":            atm_iv,
-            "hv_252":            round(hv_252, 1) if hv_252 else None,
-            "hv_21":             round(hv_21, 1) if hv_21 else None,
+            "hv_252":            round(hv_252, 1) if hv_252 is not None else None,
+            "hv_21":             round(hv_21, 1) if hv_21 is not None else None,
             "oi_map":            oi_list,
             "oi_using_volume":   oi_using_volume,
             "call_walls":        call_walls,
@@ -872,103 +858,120 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
             "verdict_color":     vc,
             "verdict_msg":       vm,
             "data_quality":      data_quality,
-            "total_call_oi":     int(c_oi),
-            "total_put_oi":      int(p_oi),
+            "total_call_oi":     int(round(c_oi)),
+            "total_put_oi":      int(round(p_oi)),
         }
-    except BaseException as e:
+    except Exception as e:
         return {"error": str(e)}
 
+
+# ══════════════════════════════════════════════════════════════════
+# PERSISTENCIA Y MERGE — gestión del estado en optimal_params.json
+# ══════════════════════════════════════════════════════════════════
+
 def _recalc_metrics(trades):
-    """Recalcula metrics_oos a partir de una lista de trades rich (dicts con 'pnl').
-    Solo usa trades con exit_date definida (cerrados). Ignora el trade abierto si existe.
-    """
-    pnls = np.array([
-        t['pnl'] for t in trades
-        if t.get('pnl') is not None and t.get('exit_date')
-    ])
-    if len(pnls) < 4:
-        return None
+    """Recalcula métricas a partir de lista de trades rich con campo 'pnl'."""
+    pnls = np.array([t['pnl'] for t in trades if t.get('pnl') is not None and t.get('exit_date')])
+    if len(pnls) < 4: return None
     wins = pnls[pnls > 0]; loss = pnls[pnls <= 0]
     n = len(pnls); wr = len(wins) / n * 100
     pf = abs(wins.sum() / loss.sum()) if loss.sum() != 0 else (99.0 if len(wins) > 0 else 0)
     dd = float(np.min(np.cumsum(pnls) - np.maximum.accumulate(np.cumsum(pnls))))
     sh = float(pnls.mean() / pnls.std() * np.sqrt(26)) if pnls.std() > 0 else 0
-    p3 = float((pnls >= 3).mean() * 100)
-    p5 = float((pnls >= 5).mean() * 100)
-    return dict(
-        n=n, wr=round(wr,3), pf=round(pf,3), sharpe=round(sh,3),
-        dd=round(dd,3), p3=round(p3,3), p5=round(p5,3),
-        avg_w=round(float(wins.mean()),3) if len(wins) else 0,
-        avg_l=round(float(loss.mean()),3) if len(loss) else 0,
-        total=round(float(pnls.sum()),3),
-    )
+    p3 = float((pnls >= 3).mean() * 100); p5 = float((pnls >= 5).mean() * 100)
+    return dict(n=n, wr=round(wr,3), pf=round(pf,3), sharpe=round(sh,3),
+                dd=round(dd,3), p3=round(p3,3), p5=round(p5,3),
+                avg_w=round(float(wins.mean()),3) if len(wins) else 0,
+                avg_l=round(float(loss.mean()),3) if len(loss) else 0,
+                total=round(float(pnls.sum()),3))
 
 
-def merge_trades_into_cache(cache, all_data):
-    """Mergea trades nuevos cerrados en optimal_params.json de forma robusta:
-
-    Estrategia:
-    - Solo añade trades cuya entry_date sea POSTERIOR a la última entry_date ya guardada.
-      Esto evita re-procesar todo el backtest histórico y elimina el riesgo de duplicados
-      por ajustes retroactivos de yfinance.
-    - Si el JSON no tiene trades previos (primera vez), acepta todos los trades del engine.
-    - Tras añadir, recalcula metrics_oos con el historial completo y actualiza all_data
-      para que el dashboard refleje las métricas actualizadas.
-
-    Clave de deduplicación secundaria: entry_date (por si acaso la fecha límite falla).
+def merge_into_cache(cache, ticker, trades_new, alert_new, optimized_at):
     """
-    updated = []
-    for ticker, asset in all_data.items():
-        if ticker not in cache:
-            continue
-        new_trades = asset.get('trades', [])
-        if not new_trades:
-            continue
+    Gestiona el estado persistido para un ticker en optimal_params.json.
 
-        existing = cache[ticker].get('trades', [])
+    TRADES:
+    - Marca todos los trades del JSON sin 'source' como 'backtest'
+    - Solo añade trades con entry_date > optimized_at (genuinamente nuevos post-optimización)
+    - Los trades nuevos se marcan como 'live'
+    - NO toca metrics_oos — responsabilidad del optimizer
 
-        # Fecha límite: solo aceptamos trades con entry_date > última fecha ya guardada
-        # Si no hay historial previo, aceptamos todos (primera población del JSON)
-        if existing:
-            last_saved_date = max(t['entry_date'] for t in existing)
+    ALERTA ACTIVA (open_alert):
+    - Primera aparición: persiste precio/SL/TP originales en open_alert
+    - Apariciones siguientes mismo trade (misma entry_date): devuelve precios fijos
+    - Trade cerrado: limpia open_alert
+    - Retorna el alert con precios corregidos (o None)
+    """
+    entry = cache[ticker]
+
+    # ── 1. Marcar trades existentes sin source ────────────────────
+    existing = entry.get('trades', [])
+    dirty = False
+    for t in existing:
+        if 'source' not in t:
+            t['source'] = 'backtest'
+            dirty = True
+
+    # ── 2. Añadir trades genuinamente nuevos ──────────────────────
+    # "Nuevo" = entry_date posterior a optimized_at (fecha en que se optimizó)
+    # Esto evita re-añadir trades históricos del backtest
+    # Sin fecha de optimización no podemos distinguir backtest de live — no añadir
+    if not optimized_at:
+        cutoff = None
+    else:
+        cutoff = optimized_at[:10]
+    existing_dates = {t['entry_date'] for t in existing if t.get('entry_date')}
+    added = 0
+    for t in trades_new:
+        ed = t.get('entry_date', '')
+        if not t.get('exit_date'): continue      # trade abierto — no añadir
+        if cutoff is None: continue              # sin optimized_at → no marcar nada live
+        if ed <= cutoff: continue                # trade anterior a la optimización — backtest
+        if ed in existing_dates: continue        # ya existe
+        existing.append(dict(t, source='live'))
+        existing_dates.add(ed)
+        added += 1
+        dirty = True
+
+    # Siempre persistir la lista (puede tener source=backtest recién añadido)
+    entry['trades'] = existing
+    if added > 0:
+        existing.sort(key=lambda t: t.get('entry_date') or '')
+        entry['trades_updated_at'] = datetime.now().isoformat()
+
+    # ── 3. Gestión de alerta activa persistida ────────────────────
+    alert_fixed = None
+    if alert_new:
+        entry_date = alert_new.get('date', '')
+        saved = entry.get('open_alert')
+        if saved and saved.get('date') == entry_date:
+            # Trade ya conocido — devolver precios originales fijos
+            alert_fixed = dict(alert_new)
+            alert_fixed['price']       = saved['price']
+            alert_fixed['stop_loss']   = saved['stop_loss']
+            alert_fixed['take_profit'] = saved['take_profit']
+            alert_fixed['stop_pct']    = saved.get('stop_pct', alert_new.get('stop_pct'))
+            alert_fixed['rr_ratio']    = saved.get('rr_ratio', alert_new.get('rr_ratio'))
         else:
-            last_saved_date = '1900-01-01'  # primera vez: acepta todo
+            # Nueva alerta — persistir y usar tal cual
+            entry['open_alert'] = {
+                'date':        entry_date,
+                'price':       alert_new['price'],
+                'stop_loss':   alert_new['stop_loss'],
+                'take_profit': alert_new['take_profit'],
+                'stop_pct':    alert_new.get('stop_pct'),
+                'rr_ratio':    alert_new.get('rr_ratio'),
+            }
+            alert_fixed = dict(alert_new)
+            dirty = True
+    else:
+        # Sin alerta — limpiar open_alert si existía
+        if entry.get('open_alert'):
+            entry.pop('open_alert', None)
+            dirty = True
 
-        # Set de fechas ya existentes para deduplicación secundaria
-        existing_dates = {t['entry_date'] for t in existing}
+    return alert_fixed, added, dirty
 
-        added = 0
-        for t in new_trades:
-            entry_date = t.get('entry_date', '')
-            exit_date  = t.get('exit_date', '')
-            # Solo trades cerrados (tienen exit_date) y más recientes que el historial
-            if not exit_date:
-                continue
-            if entry_date <= last_saved_date and entry_date in existing_dates:
-                continue  # ya existe con seguridad
-            if entry_date <= last_saved_date:
-                continue  # más antiguo que lo que ya tenemos — ignorar
-
-            t_copy = dict(t, source='live')  # marcar explícitamente como trade real
-            existing.append(t_copy)
-            existing_dates.add(entry_date)
-            added += 1
-
-        # Marcar trades existentes sin source como 'backtest' (vienen del optimizer)
-        for t in existing:
-            if 'source' not in t:
-                t['source'] = 'backtest'
-
-        if added > 0:
-            existing.sort(key=lambda t: t['entry_date'])
-            cache[ticker]['trades'] = existing
-            # NO recalculamos metrics_oos aquí — eso es responsabilidad del optimizer.
-            # El engine solo acumula trades; las métricas se actualizan cuando
-            # el usuario re-corre el optimizer (o el modo UPDATE_TRADES).
-            cache[ticker]['trades_updated_at'] = datetime.now().isoformat()
-            updated.append((ticker, added, len(existing)))
-
-    return updated
 
 
 def _generate_dashboard(data, out_path):
@@ -1001,6 +1004,9 @@ header{height:60px;border-bottom:1px solid var(--border);padding:0 2rem;display:
 .logo-sub{font-family:var(--mono);font-size:.58rem;color:var(--text3);font-weight:300;letter-spacing:.1em;text-transform:uppercase;margin-top:.08rem}
 .header-right{display:flex;align-items:center;gap:.75rem}
 .ts{font-family:var(--mono);font-size:.63rem;color:var(--text3)}
+.macro-pill{font-family:var(--mono);font-size:.58rem;padding:.18rem .55rem;border-radius:20px;font-weight:500;letter-spacing:.05em}
+.macro-pill.bull{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.25)}
+.macro-pill.bear{background:rgba(244,63,94,.12);color:var(--red);border:1px solid rgba(244,63,94,.25)}
 .live-dot{width:6px;height:6px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:breathe 2.5s ease-in-out infinite;flex-shrink:0}
 @keyframes breathe{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(1.5)}}
 main{max-width:1680px;margin:0 auto;padding:2rem;display:flex;flex-direction:column;gap:1.5rem}
@@ -1193,6 +1199,7 @@ canvas{display:block;width:100%;height:100%}
     </div>
   </div>
   <div class="header-right">
+    <div id="macro-hdr"></div>
     <div class="live-dot"></div>
     <div class="ts" id="gt"></div>
   </div>
@@ -1218,7 +1225,7 @@ canvas{display:block;width:100%;height:100%}
     <div class="oos-badge">⚡ Métricas OOS — validación fuera de muestra</div>
     <div class="tbl-wrap">
       <table class="tbl">
-        <thead><tr><th>Activo</th><th>Win% OOS</th><th>PF</th><th>Sharpe</th><th>Avg Win</th><th>Avg Loss</th><th>≥3%</th><th>Max DD</th><th>Total OOS</th><th>Trades</th><th>Estado</th></tr></thead>
+        <thead><tr><th>Activo</th><th>Win% OOS</th><th>PF</th><th>Sharpe</th><th>Avg Win</th><th>Avg Loss</th><th>≥3%</th><th>Max DD</th><th>Total OOS</th><th>Trades</th><th>Historial</th><th>Estado</th></tr></thead>
         <tbody id="atb"></tbody>
       </table>
     </div>
@@ -1229,7 +1236,8 @@ canvas{display:block;width:100%;height:100%}
       <button class="close-btn" onclick="closePanel()">✕</button>
     </div>
     <div class="dp-body">
-      <div class="oos-badge" style="margin-bottom:1rem">⚡ Métricas OOS · Historial completo abajo</div>
+      <div class="oos-badge" style="margin-bottom:.5rem">⚡ Métricas OOS del optimizer</div>
+      <div id="dp-meta" style="font-size:.62rem;color:var(--text3);margin-bottom:1rem;font-family:var(--mono)"></div>
       <div class="ema50-ind" id="asset-ema50"></div>
       <div class="mini-grid" id="mss"></div>
       <div class="charts-grid">
@@ -1244,7 +1252,7 @@ canvas{display:block;width:100%;height:100%}
         <div class="sec-title" style="margin-bottom:.55rem">Historial completo de trades</div>
         <div style="overflow-x:auto">
           <table class="trades-tbl">
-            <thead><tr><th>Entrada</th><th>Salida</th><th>Ent$</th><th>Sal$</th><th>SL</th><th>TP</th><th>P&amp;L</th><th>Días</th><th>Razón</th><th>Origen</th></tr></thead>
+            <thead><tr><th>Entrada</th><th>Salida</th><th>Ent$</th><th>Sal$</th><th>SL</th><th>TP</th><th>P&amp;L</th><th>Máx</th><th>Días</th><th>Razón</th><th>Origen</th></tr></thead>
             <tbody id="ttb"></tbody>
           </table>
         </div>
@@ -1272,9 +1280,10 @@ function drawChart(id,datasets,opts){
   ctx.strokeStyle='rgba(26,34,54,.9)';ctx.lineWidth=1;
   for(let g=0;g<=4;g++){const y=pad.t+g/4*cH;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();}
   let all=datasets.flatMap(d=>d.data.filter(v=>v!=null&&!isNaN(v)));
+  if(!all.length)return;
   let mn=opts.min??Math.min(...all),mx=opts.max??Math.max(...all);
   if(mx===mn){mx+=1;mn-=1;}const rng=mx-mn;
-  const xp=(i,n)=>pad.l+i/(n-1)*cW,yp=v=>pad.t+(1-(v-mn)/rng)*cH;
+  const xp=(i,n)=>pad.l+i/Math.max(n-1,1)*cW,yp=v=>pad.t+(1-(v-mn)/rng)*cH;
   (opts.refs||[]).forEach(r=>{
     ctx.strokeStyle=r.c||'rgba(255,255,255,.1)';ctx.lineWidth=1;ctx.setLineDash([3,4]);
     const y=yp(r.v);ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();ctx.setLineDash([]);
@@ -1306,6 +1315,7 @@ function drawChart(id,datasets,opts){
 }
 
 if(D.generated_at){const d=new Date(D.generated_at);document.getElementById('gt').textContent='Actualizado '+d.toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'});}
+if(D.macro_filter){const _m=D.macro_filter,_hdr=document.getElementById('macro-hdr');if(_hdr)_hdr.innerHTML='<span class="macro-pill '+(_m.spy_above?'bull':'bear')+'">SPY '+(_m.spy_above?'▲ Alcista':'▼ Bajista')+'</span>';}
 
 const mf=D.macro_filter;
 if(mf){
@@ -1346,8 +1356,8 @@ const al=D.alerts||[];
 if(al.length){
   document.getElementById('ab').classList.add('on');
   document.getElementById('ac').innerHTML=al.map(a=>{
-    const rrc=a.rr_ratio>=1.5?'good':a.rr_ratio>=1.0?'ok':'bad';
-    const rrl=a.rr_ratio>=1.5?'bueno ✓':a.rr_ratio>=1.0?'ajustado ⚠':'bajo ✗';
+    const rrc=a.rr_ratio==null?'ok':a.rr_ratio>=1.5?'good':a.rr_ratio>=1.0?'ok':'bad';
+    const rrl=a.rr_ratio==null?'sin datos':a.rr_ratio>=1.5?'bueno ✓':a.rr_ratio>=1.0?'ajustado ⚠':'bajo ✗';
     return `<div class="alert-card fade-in ${a.days_ago===0?'today':''}" onclick="openAsset('${a.ticker}')">
       <div class="al-top">
         <div class="al-ticker">${a.ticker}</div>
@@ -1355,21 +1365,40 @@ if(al.length){
       </div>
       <div class="al-name">${a.name||''}</div>
       <div class="al-date">📅 ${a.date} · <span style="color:var(--text3)">Día ${a.days_ago+1} de ${a.max_days??'?'} hábiles</span></div>
-      <div class="al-price">$${a.price?.toFixed(2)}</div>
+      <div class="al-price">
+        $${a.price?.toFixed(2)??'—'}
+        ${a.current_pnl!=null?`<span style="margin-left:.75rem;font-size:.82rem;font-weight:600;color:${a.current_pnl>=0?'var(--green)':'var(--red)'}">${a.current_pnl>=0?'+':''}${a.current_pnl.toFixed(2)}% actual</span>`:''}
+      </div>
       <div class="al-levels">
         <div class="lvl sl"><div class="lvl-lbl">Stop Loss</div><div class="lvl-val sl">$${a.stop_loss?.toFixed(2)} <span class="lvl-pct">-${a.stop_pct}%</span></div></div>
         <div class="lvl tp"><div class="lvl-lbl">Take Profit</div><div class="lvl-val tp">$${a.take_profit?.toFixed(2)} <span class="lvl-pct">+${a.tp_pct}%</span></div></div>
       </div>
       <div class="al-rr ${rrc}">⚖ R/R ${a.rr_ratio??'?'}:1 <span style="opacity:.65;font-size:.63rem"> ${rrl}</span></div>
+      ${(()=>{
+        const cur_move=(a.current_pnl!=null)?a.current_pnl:0;
+        const tp_pct_full=a.tp_pct||0;
+        const pct_done=tp_pct_full>0?Math.min(100,Math.max(0,(cur_move/tp_pct_full*100))).toFixed(0):null;
+        const bar_col=cur_move<0?'var(--red)':cur_move>0?'var(--green)':'var(--text3)';
+        return pct_done!=null?`<div style="margin-bottom:.6rem">
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:.57rem;color:var(--text3);margin-bottom:.22rem">
+            <span>Progreso hacia TP</span><span style="color:${bar_col}">${pct_done}%</span>
+          </div>
+          <div style="height:3px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden">
+            <div style="height:100%;width:${pct_done}%;background:${bar_col};border-radius:2px;transition:width .5s"></div>
+          </div>
+        </div>`:''})()}
       <div class="al-info">
-        <span style="color:var(--accent)">Trailing:</span> activa tras +${a.trail_act??'?'}% → stop ${a.trail_atr??'?'}×ATR del máximo<br>
-        <span style="color:var(--accent)">Tiempo máx:</span> ${a.max_days??'?'} días hábiles
+        <span style="color:var(--accent)">Trailing:</span> activa tras +${a.trail_act??'?'}% → stop ${a.trail_atr??'?'}×ATR del máximo
+        ${a.trail_sl!=null?`· <span style="color:var(--yellow)">SL trail actual: $${a.trail_sl?.toFixed(2)}</span>`:''}
+        <br>
+        <span style="color:var(--accent)">Tiempo máx:</span> ${a.max_days??'?'} días hábiles · día ${(a.days_ago??0)+1}
       </div>
       <div class="al-chips">
         ${a.rsi?`<span class="chip">RSI ${a.rsi}</span>`:''}
         ${a.adx?`<span class="chip">ADX ${a.adx}</span>`:''}
         ${a.vol_ratio?`<span class="chip">Vol ×${a.vol_ratio}</span>`:''}
-        <span class="chip">Score ${a.score}/100</span>
+        <span class="chip">Score entrada ${a.score}/100</span>
+        ${a.score_now!=null&&a.days_ago>0?`<span class="chip" style="background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.2);color:var(--accent)">Score hoy ${a.score_now}/100</span>`:''}
       </div>
       ${a.ema50_ok != null ? `<div class="al-ema50 ${a.ema50_ok ? 'above' : 'below'}">
         ${a.ema50_ok
@@ -1390,6 +1419,8 @@ assets.forEach(a=>{
   if(a.alert)na++;
 });
 const ash=ss.length?ss.reduce((a,b)=>a+b)/ss.length:0,apf=ps.length?ps.reduce((a,b)=>a+b)/ps.length:0,wr=nt?nw/nt*100:0;
+let totalLive=0,totalBt=0;
+assets.forEach(a=>{(a.trades||[]).forEach(t=>{if(t.source==='live')totalLive++;else totalBt++;});});
 const stats=[
   {l:'Activos',v:assets.length,c:'blue',s:'en universo'},
   {l:'Alertas activas',v:na,c:na?'red':'muted',s:'señales de compra'},
@@ -1397,24 +1428,29 @@ const stats=[
   {l:'Profit Factor',v:apf.toFixed(2),c:apf>=1.5?'green':'yellow',s:'promedio OOS'},
   {l:'Sharpe',v:ash.toFixed(2),c:ash>=1?'green':'yellow',s:'promedio OOS'},
   {l:'Retorno OOS',v:(tp>=0?'+':'')+tp.toFixed(1)+'%',c:tp>=0?'green':'red',s:'suma OOS'},
+  {l:'Trades live',v:totalLive,c:totalLive>0?'green':'muted',s:`+${totalBt} backtest`},
 ];
 document.getElementById('sr').innerHTML=stats.map(s=>`<div class="stat-card fade-in"><div class="stat-lbl">${s.l}</div><div class="stat-val ${s.c}">${s.v}</div><div class="stat-sub">${s.s}</div></div>`).join('');
 
 assets.sort((a,b)=>((b.metrics_oos||{}).sharpe||0)-((a.metrics_oos||{}).sharpe||0));
 document.getElementById('atb').innerHTML=assets.map(a=>{
   const m=a.metrics_oos||{},ha=!!a.alert;
-  const wc=m.wr>=55?'g':m.wr>=45?'y':'r',pc=m.pf>=1.5?'g':m.pf>=1?'y':'r',sc=m.sharpe>=1?'g':m.sharpe>=0.5?'y':'r',tc=m.total>=0?'pos':'neg';
+  const wc=!m.wr?'r':m.wr>=55?'g':m.wr>=45?'y':'r',pc=!m.pf?'r':m.pf>=1.5?'g':m.pf>=1?'y':'r',sc=!m.sharpe?'r':m.sharpe>=1?'g':m.sharpe>=0.5?'y':'r',tc=(m.total||0)>=0?'pos':'neg';
+  const liveCount=(a.trades||[]).filter(t=>t.source==='live').length;
+  const updDate=a.trades_updated_at?a.trades_updated_at.slice(0,10):'';
+  const histBadge=liveCount>0?`<span class="bdg y" title="Última act: ${updDate}">+${liveCount} live</span>`:`<span style="font-size:.62rem;color:var(--text3)">${(a.trades||[]).length} bt</span>`;
   return `<tr onclick="openAsset('${a.ticker}')">
     <td><div class="tbl-tk">${a.ticker}</div><div class="tbl-nm">${a.name||''}</div></td>
     <td><span class="bdg ${wc}">${m.wr?.toFixed(1)||'—'}%</span></td>
     <td><span class="bdg ${pc}">${m.pf?.toFixed(2)||'—'}</span></td>
     <td><span class="bdg ${sc}">${m.sharpe?.toFixed(2)||'—'}</span></td>
     <td class="pos">+${m.avg_w?.toFixed(2)||'—'}%</td>
-    <td class="neg">${m.avg_l?.toFixed(2)||'—'}%</td>
+    <td class="neg">${m.avg_l!=null?m.avg_l.toFixed(2)+'%':'—'}</td>
     <td>${m.p3?.toFixed(0)||'—'}%</td>
     <td class="neg">${m.dd?.toFixed(1)||'—'}%</td>
     <td class="${tc}">${m.total>=0?'+':''}${m.total?.toFixed(1)||'—'}%</td>
     <td>${m.n||'—'}</td>
+    <td>${histBadge}</td>
     <td>${ha?'<span class="bdg live">🚨 SEÑAL</span>':'<span class="bdg g">OK</span>'}</td>
   </tr>`;
 }).join('');
@@ -1423,6 +1459,12 @@ function openAsset(ticker){
   const a=D.assets[ticker];if(!a)return;
   document.getElementById('ptk').textContent=ticker;
   document.getElementById('ptn').textContent=a.name||'';
+  // Meta info: optimización + historial
+  const liveN=(a.trades||[]).filter(t=>t.source==='live').length;
+  const btN=(a.trades||[]).filter(t=>t.source!=='live').length;
+  const updStr=a.trades_updated_at?` · act. ${a.trades_updated_at.slice(0,10)}`:'';
+  document.getElementById('dp-meta').textContent=
+    `Optimizado: ${a.optimized_at||'—'}${updStr} · ${liveN} live / ${btN} backtest`;
   const mf=D.macro_filter,el50=document.getElementById('asset-ema50');
   if(el50){
     if(mf&&!mf.spy_above&&a.asset_ema50_val!=null){
@@ -1445,15 +1487,24 @@ function openAsset(ticker){
   ];
   document.getElementById('mss').innerHTML=minis.map(s=>`<div class="mini-c"><div class="mini-v" style="color:${s.c}">${s.v}</div><div class="mini-l">${s.l}</div></div>`).join('');
   const trades=a.trades||[];
-  document.getElementById('ttb').innerHTML=trades.map(t=>{
-    const c=t.pnl>=0?'var(--green)':'var(--red)',bw=Math.min(Math.abs(t.pnl)*4,60),stars=t.pnl>=5?' ★★':t.pnl>=3?' ★':'';
+  const tradesDesc=[...trades].reverse();
+  const totalPnl=trades.reduce((s,t)=>s+(t.pnl||0),0);
+  const wins=trades.filter(t=>(t.pnl||0)>0).length;
+  const liveT=trades.filter(t=>t.source==='live').length;
+  document.getElementById('ttb').innerHTML=tradesDesc.map(t=>{
+    const pnl=t.pnl??0,c=pnl>=0?'var(--green)':'var(--red)',bw=Math.min(Math.abs(pnl)*4,60),stars=pnl>=5?' ★★':pnl>=3?' ★':'';
     const srcBadge=t.source==='live'?'<span class="src-live">live</span>':'<span class="src-bt">bt</span>';
-    return `<tr><td>${t.entry_date}</td><td>${t.exit_date}</td><td>$${t.entry_price}</td><td>$${t.exit_price}</td><td style="color:var(--red)">$${t.stop_loss}</td><td style="color:var(--green)">$${t.take_profit}</td><td><div class="pnl-row"><span style="color:${c}">${t.pnl>=0?'+':''}${t.pnl.toFixed(2)}%${stars}</span><div class="pnl-pill" style="width:${bw}px;background:${c}"></div></div></td><td>${t.days}d</td><td style="font-size:.62rem;color:var(--text3)">${t.reason}</td><td>${srcBadge}</td></tr>`;
-  }).join('');
+    const pk=t.peak_pnl!=null?`<span style="color:rgba(16,185,129,.6);font-size:.65rem">+${t.peak_pnl.toFixed(1)}%</span>`:'—';
+    return `<tr><td>${t.entry_date||'—'}</td><td>${t.exit_date||'—'}</td><td>$${(t.entry_price||0).toFixed(2)}</td><td>${t.exit_price?'$'+t.exit_price.toFixed(2):'—'}</td><td style="color:var(--red)">${t.stop_loss?'$'+t.stop_loss.toFixed(2):'—'}</td><td style="color:var(--green)">${t.take_profit?'$'+t.take_profit.toFixed(2):'—'}</td><td><div class="pnl-row"><span style="color:${c}">${pnl>=0?'+':''}${pnl.toFixed(2)}%${stars}</span><div class="pnl-pill" style="width:${bw}px;background:${c}"></div></div></td><td>${pk}</td><td>${(t.days||0)}d</td><td style="font-size:.62rem;color:var(--text3)">${t.reason||'—'}</td><td>${srcBadge}</td></tr>`;
+  }).join('')+`<tr style="border-top:1px solid var(--border2);font-weight:600">
+    <td colspan="6" style="font-family:var(--mono);font-size:.62rem;color:var(--text3)">TOTAL · ${trades.length} trades · WR ${trades.length?((wins/trades.length)*100).toFixed(1):0}% · ${liveT} live</td>
+    <td style="color:${totalPnl>=0?'var(--green)':'var(--red)'};">${totalPnl>=0?'+':''}${totalPnl.toFixed(2)}%</td>
+    <td colspan="4"></td>
+  </tr>`;
   const kp=['rsi_p','rsi_lo','rsi_hi','ema_f','ema_s','ema_t','macd_f','macd_s','adx_min','score_min','tp_pct','atr_stop','max_days','vol_min','trail_act','trail_atr'];
   document.getElementById('prg').innerHTML=kp.filter(k=>p[k]!==undefined).map(k=>`<div class="param-item"><div class="param-key">${k}</div><div class="param-val">${p[k]}</div></div>`).join('');
   if(trades.length){
-    const pnls=trades.map(t=>t.pnl);
+    const pnls=trades.map(t=>t.pnl??0).filter(v=>v!==null&&!isNaN(v));
     const bins=[[-99,-10],[-10,-5],[-5,-3],[-3,0],[0,3],[3,5],[5,10],[10,99]],lbls=['<-10','-10→-5','-5→-3','-3→0','0→3','3→5','5→10','>10'];
     const cnts=bins.map(([lo,hi])=>pnls.filter(p=>p>lo&&p<=hi).length),mx=Math.max(...cnts,1);
     document.getElementById('dcc').innerHTML=cnts.map((c,i)=>{
@@ -1506,7 +1557,7 @@ function renderOptions(opt,entry_price,take_profit,stop_loss){
   const pcrC=opt.pcr==null?'var(--text2)':opt.pcr>1.5?'var(--red)':opt.pcr>1.2?'#fb923c':opt.pcr<0.6?'var(--green)':opt.pcr<0.8?'#6ee7b7':'var(--yellow)';
   const skC=opt.skew==null?'var(--text2)':opt.skew>25?'var(--red)':opt.skew>10?'#fb923c':opt.skew<-10?'var(--green)':'var(--yellow)';
   const mpC=opt.max_pain_pct>3?'var(--green)':opt.max_pain_pct<-3?'var(--red)':'var(--yellow)';
-  const ivC=opt.iv_rank>70?'var(--red)':opt.iv_rank<30?'var(--green)':'var(--yellow)';
+  const ivC=opt.iv_rank==null?'var(--text2)':opt.iv_rank>70?'var(--red)':opt.iv_rank<30?'var(--green)':'var(--yellow)';
   const dqC=opt.data_quality==='alta'?'var(--green)':opt.data_quality==='media'?'var(--yellow)':'var(--red)';
   const cards=[
     {l:'Put/Call Ratio',v:opt.pcr??'—',c:pcrC,s:opt.pcr==null?(opt.pcr_source||'sin datos'):opt.pcr>1.5?'Muy bajista · contrarian posible':opt.pcr>1.2?'Bajista moderado':opt.pcr<0.6?'Alcista fuerte':opt.pcr<0.8?'Leve sesgo alcista':'Neutro (0.8–1.2)'},
@@ -1552,225 +1603,240 @@ function renderOptions(opt,entry_price,take_profit,stop_loss){
     out_path.write_text(html, encoding='utf-8')
     print(f"  Dashboard: {out_path}")
 
-
 def main():
     TICKER_SOLO  = None
     SOLO_ALERTAS = False
 
     if not CACHE_FILE.exists():
-        print(f"{R}Error: optimal_params.json no encontrado.{RST}")
-        return
+        print(f"{R}Error: optimal_params.json no encontrado.{RST}"); return
 
     cache = json.loads(CACHE_FILE.read_text())
+
+    # ── Proteger métricas originales del optimizer ────────────────
+    # metrics_oos_optimizer: campo inmutable que guarda las métricas del optimizer.
+    # Se escribe UNA SOLA VEZ la primera vez que corre el engine.
+    # El engine nunca lo sobreescribe — es la fuente de verdad de las métricas.
+    cache_changed = False
+    for tk, entry in cache.items():
+        if 'metrics_oos' in entry and 'metrics_oos_optimizer' not in entry:
+            entry['metrics_oos_optimizer'] = {k: v for k, v in entry['metrics_oos'].items()}
+            cache_changed = True
+    # Nota: si cache_changed=True, cache_dirty también lo será → se guarda al final del loop
+
     print(f"\n{B}{'═'*65}{RST}")
-    print(f"{BOLD}{C}  ⚡  SWING EDGE ENGINE  v2{RST}")
-    print(f"{DIM}  {len(cache)} activos · métricas OOS · historial completo{RST}")
+    print(f"{BOLD}{C}  ⚡  SWING EDGE ENGINE  v2.2{RST}")
+    print(f"{DIM}  {len(cache)} activos · métricas OOS · historial acumulado{RST}")
     print(f"{B}{'═'*65}{RST}\n")
 
     print("  Descargando SPY (1y para filtro macro)...")
-    spy = yf.download("SPY", period="1y", auto_adjust=True, progress=False)
-    if isinstance(spy.columns, pd.MultiIndex): spy.columns=spy.columns.get_level_values(0)
-    spy_c = spy['Close'].squeeze()
-    spy_e = spy_c.ewm(span=50, adjust=False).mean()
-    spy_above = bool(spy_c.iloc[-1] > spy_e.iloc[-1])
-    print(f"  SPY={spy_c.iloc[-1]:.2f} EMA50={spy_e.iloc[-1]:.2f} → {'✅ ALCISTA' if spy_above else '🔴 BAJISTA'} (filtro macro {'OFF' if spy_above else 'ACTIVO'})")
+    try:
+        spy = yf.download("SPY", period="1y", auto_adjust=True, progress=False)
+        if isinstance(spy.columns, pd.MultiIndex): spy.columns = spy.columns.get_level_values(0)
+        if spy.empty or len(spy) < 10:
+            raise ValueError("SPY: datos insuficientes")
+        spy_c    = spy['Close'].squeeze()
+        spy_e    = spy_c.ewm(span=50, adjust=False).mean()
+        spy_above = bool(spy_c.iloc[-1] > spy_e.iloc[-1])
+        print(f"  SPY={spy_c.iloc[-1]:.2f} EMA50={spy_e.iloc[-1]:.2f} → "
+              f"{'✅ ALCISTA' if spy_above else '🔴 BAJISTA'} "
+              f"(filtro macro {'OFF' if spy_above else 'ACTIVO'})")
+    except Exception as e_spy:
+        print(f"  {Y}⚠ SPY no disponible ({e_spy}) — filtro macro desactivado{RST}")
+        spy_c = pd.Series(dtype=float)
+        spy_e = pd.Series(dtype=float)
+        spy_above = True  # fallback conservador: sin filtro macro
 
-    tickers = [TICKER_SOLO] if TICKER_SOLO else list(cache.keys())
+    tickers  = [TICKER_SOLO] if TICKER_SOLO else list(cache.keys())
     alerts   = []
-    blocked  = []   # señales bloqueadas por filtro macro
+    blocked  = []
     all_data = {}
+    cache_dirty = cache_changed
 
     for ticker in tickers:
         if ticker not in cache:
             print(f"  {Y}⚠ {ticker} no en caché{RST}"); continue
 
-        entry  = cache[ticker]
-        p      = entry['params']
-        name   = UNIVERSE.get(ticker, ticker)
-        # ── CAMBIO CLAVE: usar métricas OOS del optimizer ──────
-        m_oos  = entry.get('metrics_oos', {})
+        entry = cache[ticker]
+        if 'params' not in entry:
+            print(f"  {Y}⚠ {ticker}: sin params en caché — omitido{RST}"); continue
+        p     = entry['params']
+        name  = UNIVERSE.get(ticker, ticker)
+        # SIEMPRE usar métricas del optimizer (campo protegido)
+        m_oos = entry.get('metrics_oos_optimizer') or entry.get('metrics_oos', {})
+        optimized_at = entry.get('optimized_at', '')
 
         print(f"  ↓ {ticker}...", end=" ", flush=True)
         try:
             df_raw = yf.download(ticker, period=PERIOD, auto_adjust=True, progress=False)
             if isinstance(df_raw.columns, pd.MultiIndex):
                 df_raw.columns = df_raw.columns.get_level_values(0)
-            if len(df_raw) < 60:
-                print("❌ pocos datos"); continue
+            if len(df_raw) < 60: print("❌ pocos datos"); continue
             print(f"✓ {len(df_raw)}d")
         except Exception as e:
             print(f"❌ {e}"); continue
 
         # ── Filtro macro combinado ────────────────────────────────
-        # Si SPY alcista → macro = True siempre (todas las señales pasan)
-        # Si SPY bajista → macro = True solo si activo está por encima de su EMA50
-        #   (el activo va contra la corriente bajista del mercado)
         if not spy_above:
-            asset_close = df_raw['Close'].squeeze()
-            asset_ema50 = asset_close.ewm(span=50, adjust=False).mean()
-            asset_above_series = (asset_close > asset_ema50)
-            # macro[i] = True si el activo está por encima de su EMA50 en esa barra
-            # ignoramos completamente spy_filter — ya sabemos que SPY es bajista
-            macro = asset_above_series.reindex(df_raw.index, method='ffill').fillna(False).values
-            asset_ema50_ok  = bool(asset_close.iloc[-1] > asset_ema50.iloc[-1])
-            asset_ema50_val = round(float(asset_ema50.iloc[-1]), 2)
+            asset_close      = df_raw['Close'].squeeze()
+            asset_ema50      = asset_close.ewm(span=50, adjust=False).mean()
+            macro            = (asset_close > asset_ema50).values
+            asset_ema50_ok   = bool(asset_close.iloc[-1] > asset_ema50.iloc[-1])
+            asset_ema50_val  = round(float(asset_ema50.iloc[-1]), 2)
         else:
-            # SPY alcista: macro = True siempre
-            macro = np.ones(len(df_raw), dtype=bool)
+            macro           = np.ones(len(df_raw), dtype=bool)
             asset_ema50_ok  = True
             asset_ema50_val = None
 
         use_invert = entry.get('invert', ticker in INVERSE_TICKERS or ticker in VIX_TICKERS)
-        ind    = calc_ind(df_raw, p, use_invert)
-        sigs   = get_signals(ind, p, macro, use_invert)
-
-        # ── Diagnóstico: señales sin filtro macro vs con filtro ────
-        sigs_raw  = get_signals(ind, p, macro=None, invert_macro=False)
-        n_raw     = int(sigs_raw.sum())
-        n_final   = int(sigs.sum())
+        ind      = calc_ind(df_raw, p, use_invert)
+        sigs     = get_signals(ind, p, macro, use_invert)
+        sigs_raw = get_signals(ind, p, macro=None, invert_macro=use_invert)
+        n_raw    = int(sigs_raw.sum())
+        n_final  = int(sigs.sum())
         n_blocked = n_raw - n_final
 
-        scores = np.array([score_bar(ind, i, p) if i>=35 else 0
-                           for i in range(len(ind['c']))])
+        scores = np.array([score_bar(ind, i, p) if i >= 35 else 0 for i in range(len(ind['c']))])
 
-        # Historial completo de trades + trade actualmente abierto
-        # Si el backtest con macro no detecta open_trade, intentar con sigs_raw
-        # Evita que un trade abierto desaparezca por reajuste de EMA50 al añadir barras
+        # ── Backtest + open_trade ─────────────────────────────────
         trades, open_trade = build_rich_trades(ind, sigs, p, ticker)
+        # Fallback: si el filtro macro eliminó el open_trade por reajuste de EMA, recuperarlo
         if open_trade is None:
             _, open_trade_raw = build_rich_trades(ind, sigs_raw, p, ticker)
-            if open_trade_raw:
-                current_real = float(ind['close'][-1])
-                if current_real > open_trade_raw['stop_loss']:
-                    open_trade = open_trade_raw
+            if open_trade_raw and float(ind['close'][-1]) > open_trade_raw['stop_loss']:
+                open_trade = open_trade_raw
 
-        # ── Terminal: mostrar métricas OOS ─────────────────────
+        # ── Métricas en terminal ──────────────────────────────────
         if not SOLO_ALERTAS and m_oos:
             print_summary(ticker, name, m_oos, p)
-            print_trades(trades, ticker)
+            # Mostrar historial acumulado del JSON (no el backtest recalculado)
+            trades_display = entry.get('trades') or trades
+            print_trades(trades_display, ticker)
 
-        alert = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
+        # ── Alerta bruta del engine ───────────────────────────────
+        alert_raw = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
+        if alert_raw:
+            alert_raw['ema50_ok']  = asset_ema50_ok
+            alert_raw['ema50_val'] = asset_ema50_val
 
-        # Enriquecer alerta con estado EMA50 actual del activo
-        if alert:
-            alert['ema50_ok']  = asset_ema50_ok
-            alert['ema50_val'] = asset_ema50_val
+        # ── Merge en cache: fija precios y añade trades nuevos ────
+        alert_final, added, dirty = merge_into_cache(
+            cache, ticker, trades, alert_raw, optimized_at
+        )
+        if dirty: cache_dirty = True
 
-        # ── Bloqueadas por macro: solo si NO hay alerta activa ──
-        # Un activo con trade abierto nunca puede estar en "bloqueadas" —
-        # el filtro macro solo aplica en la entrada, no cancela trades en curso
+        # ── Bloqueadas por macro (solo si sin alerta activa) ──────
         recent_blocked = False
-        if not alert:
+        if not alert_final:
             n_total = len(ind['c'])
-            if not spy_above and asset_ema50_ok:
-                recent_blocked = False  # activo por encima de EMA50 → señales permitidas
-            else:
+            # Solo buscar señales bloqueadas si SPY bajista (filtro macro activo)
+            # Si activo está sobre EMA50, las señales NO están bloqueadas — omitir
+            macro_blocking = not spy_above and not asset_ema50_ok
+            if macro_blocking:
                 for i in range(n_total-1, max(n_total-4, 35), -1):
-                    if sigs_raw[i]==1 and sigs[i]==0:
+                    if sigs_raw[i] == 1 and sigs[i] == 0:
                         recent_blocked = True; break
         if recent_blocked:
-            if not spy_above and not asset_ema50_ok:
-                motivo = f"SPY bajista + {ticker} bajo EMA50"
-            elif not spy_above:
-                motivo = "SPY bajo EMA50"
-            else:
-                motivo = "filtro macro"
+            motivo = (f"SPY bajista + {ticker} bajo EMA50" if not spy_above and not asset_ema50_ok
+                      else "SPY bajo EMA50" if not spy_above else "filtro macro")
             print(f"  {Y}⚡ Señal reciente bloqueada por macro ({motivo}){RST}")
             blocked.append({"ticker": ticker, "name": name, "motivo": motivo})
         elif n_blocked > 0:
             print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
+
+        # ── Opciones (solo si hay alerta activa) ─────────────────
         opt_data = None
-        if alert:
-            alerts.append(alert)
-            print_alert(alert)
+        if alert_final:
+            alerts.append(alert_final)
+            print_alert(alert_final)
+            if added > 0:
+                print(f"  {G}+{added} trade(s) nuevo(s) registrado(s){RST}")
             print(f"  📊 Obteniendo opciones...", end=" ", flush=True)
             try:
-                days_remaining = max(1, p['max_days'] - alert['days_ago'])
-                opt_data = fetch_options_data(ticker, alert['price'], alert['take_profit'], alert['stop_loss'],
-                                              days_remaining=days_remaining)
+                days_remaining = max(1, p['max_days'] - alert_final['days_ago'])
+                opt_data = fetch_options_data(
+                    ticker, alert_final['price'], alert_final['take_profit'],
+                    alert_final['stop_loss'], days_remaining=days_remaining
+                )
                 if opt_data and not opt_data.get('error'):
-                    print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% Veredicto={opt_data.get('verdict','—')}")
+                    print(f"✓ PCR={opt_data.get('pcr','—')} ImplMove=±{opt_data.get('implied_move_pct','—')}% "
+                          f"Veredicto={opt_data.get('verdict','—')}")
                 else:
                     print(f"⚠ {opt_data.get('error','sin datos') if opt_data else 'sin datos'}")
             except Exception as e_opt:
-                print(f"⚠ Error opciones: {e_opt}")
-                opt_data = None
+                print(f"⚠ Error opciones: {e_opt}"); opt_data = None
 
         price_hist = build_price_history(ind, sigs, scores)
+
+        # trades para el dashboard = historial acumulado del JSON
+        trades_for_dash = entry.get('trades') or trades
+
         all_data[ticker] = {
-            "ticker":        ticker,
-            "name":          name,
-            "params":        p,
-            "metrics_oos":   m_oos,
-            "trades":        trades,
-            "price_history": price_hist,
-            "alert":         alert,
-            "options":       opt_data,
-            "optimized_at":  entry.get('optimized_at','')[:10],
+            "ticker":          ticker,
+            "name":            name,
+            "params":          p,
+            "metrics_oos":     m_oos,
+            "trades":          trades_for_dash,   # historial acumulado, no recalculado
+            "price_history":   price_hist,
+            "alert":           alert_final,
+            "options":         opt_data,
+            "optimized_at":    optimized_at[:10] if optimized_at else '',
+            "trades_updated_at": entry.get('trades_updated_at', ''),
             "asset_ema50_ok":  asset_ema50_ok,
             "asset_ema50_val": asset_ema50_val,
         }
+
+    # ── Guardar cache si hubo cambios ────────────────────────────
+    if cache_dirty:
+        CACHE_FILE.write_text(json.dumps(cache, indent=2))
 
     if alerts:
         print(f"\n{M}{'═'*65}{RST}")
         print(f"{BOLD}{M}  🚨 {len(alerts)} ALERTA(S) ACTIVA(S){RST}")
         print(f"{M}{'═'*65}{RST}")
         for a in sorted(alerts, key=lambda x: x['days_ago']):
-            col = M if a['days_ago']==0 else Y
+            col = M if a['days_ago'] == 0 else Y
             print(f"  {col}{a['urgency']:<8}{RST}  {BOLD}{a['ticker']:<8}{RST}"
                   f"  ${a['price']:.2f}"
                   f"  SL:{R}${a['stop_loss']:.2f}{RST}"
                   f"  TP:{G}${a['take_profit']:.2f}{RST}"
-                  f"  R/R:{a.get('rr_ratio','?')}  Score:{a['score']}")
+                  f"  R/R:{a.get('rr_ratio') or '—'}  Score:{a['score']}")
     else:
         print(f"\n  {Y}Sin alertas activas hoy.{RST}")
 
     def _sanitize(obj):
-        """Convierte recursivamente tipos numpy a tipos Python nativos."""
-        if isinstance(obj, dict):   return {k: _sanitize(v) for k, v in obj.items()}
-        if isinstance(obj, list):   return [_sanitize(v) for v in obj]
+        if isinstance(obj, dict):    return {k: _sanitize(v) for k, v in obj.items()}
+        if isinstance(obj, list):    return [_sanitize(v) for v in obj]
         if isinstance(obj, np.bool_):    return bool(obj)
         if isinstance(obj, np.integer):  return int(obj)
-        if isinstance(obj, np.floating): return None if np.isnan(obj) else float(obj)
+        if isinstance(obj, np.floating): return None if (np.isnan(obj) or np.isinf(obj)) else float(obj)
         if isinstance(obj, np.ndarray):  return [_sanitize(v) for v in obj.tolist()]
-        if isinstance(obj, float) and np.isnan(obj): return None
+        if isinstance(obj, float) and (np.isnan(obj) or np.isinf(obj)): return None
         return obj
 
-    # ── Merge trades nuevos en optimal_params.json ──────────────
-    # IMPORTANTE: ocurre ANTES de construir dashboard_data para que
-    # el dashboard ya refleje las métricas actualizadas post-merge
-    updated = merge_trades_into_cache(cache, all_data)
-    if updated:
-        CACHE_FILE.write_text(json.dumps(cache, indent=2))
-        print(f"\n  {G}→ optimal_params.json actualizado con trades nuevos:{RST}")
-        for ticker, added, total in updated:
-            m = cache[ticker].get('metrics_oos', {})
-            print(f"     {BOLD}{ticker}{RST}: +{added} trade(s) · total {total} trades "
-                  f"· WR={m.get('wr',0):.1f}% Sharpe={m.get('sharpe',0):.2f} PF={m.get('pf',0):.2f}")
-    else:
-        print(f"\n  {DIM}→ optimal_params.json sin cambios (sin trades nuevos cerrados){RST}")
-
+    # macro_filter — seguros si spy_c está vacío (fallback)
+    spy_last  = round(float(spy_c.iloc[-1]), 2) if len(spy_c) > 0 else None
+    spy_ema   = round(float(spy_e.iloc[-1]), 2) if len(spy_e) > 0 else None
+    spy_dist  = round((spy_last / spy_ema - 1) * 100, 2) if spy_last and spy_ema else None
     dashboard_data = {
-        "generated_at":    datetime.now().isoformat(),
-        "alerts":          alerts,
+        "generated_at":     datetime.now().isoformat(),
+        "alerts":           alerts,
         "blocked_by_macro": blocked,
-        "assets":          all_data,
+        "assets":           all_data,
         "macro_filter": {
-            "spy_price":    round(float(spy_c.iloc[-1]), 2),
-            "spy_ema50":    round(float(spy_e.iloc[-1]), 2),
-            "spy_above":    spy_above,
-            "distance_pct": round((float(spy_c.iloc[-1]) / float(spy_e.iloc[-1]) - 1) * 100, 2),
+            "spy_price":     spy_last,
+            "spy_ema50":     spy_ema,
+            "spy_above":     spy_above,
+            "distance_pct":  spy_dist,
             "filter_active": not spy_above,
-            "n_blocked":    len(blocked),
+            "n_blocked":     len(blocked),
         },
     }
 
     clean_data = _sanitize(dashboard_data)
     OUTPUT_FILE.write_text(json.dumps(clean_data, ensure_ascii=False, indent=2))
     _generate_dashboard(clean_data, BASE_DIR / "dashboard.html")
-
     print(f"\n  {G}→ dashboard_data.json generado{RST}")
-    print(f"  {G}→ dashboard.html generado (abre directamente en el navegador){RST}\n")
+    print(f"  {G}→ dashboard.html generado{RST}\n")
 
 if __name__ == "__main__":
     main()
