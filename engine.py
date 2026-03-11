@@ -878,6 +878,67 @@ def fetch_options_data(ticker, entry_price, take_profit, stop_loss, days_remaini
     except BaseException as e:
         return {"error": str(e)}
 
+def _recalc_metrics(trades):
+    """Recalcula metrics_oos a partir de una lista de trades rich (dicts con 'pnl')."""
+    pnls = np.array([t['pnl'] for t in trades if t.get('pnl') is not None])
+    if len(pnls) < 4:
+        return None
+    wins = pnls[pnls > 0]; loss = pnls[pnls <= 0]
+    n = len(pnls); wr = len(wins) / n * 100
+    pf = abs(wins.sum() / loss.sum()) if loss.sum() != 0 else (99.0 if len(wins) > 0 else 0)
+    dd = float(np.min(np.cumsum(pnls) - np.maximum.accumulate(np.cumsum(pnls))))
+    sh = float(pnls.mean() / pnls.std() * np.sqrt(26)) if pnls.std() > 0 else 0
+    p3 = float((pnls >= 3).mean() * 100)
+    p5 = float((pnls >= 5).mean() * 100)
+    return dict(
+        n=n, wr=round(wr,3), pf=round(pf,3), sharpe=round(sh,3),
+        dd=round(dd,3), p3=round(p3,3), p5=round(p5,3),
+        avg_w=round(float(wins.mean()),3) if len(wins) else 0,
+        avg_l=round(float(loss.mean()),3) if len(loss) else 0,
+        total=round(float(pnls.sum()),3),
+    )
+
+
+def merge_trades_into_cache(cache, all_data):
+    """Mergea trades nuevos cerrados del engine en optimal_params.json
+    y recalcula metrics_oos con el historial completo acumulado.
+    Clave de deduplicación: (ticker, entry_date).
+    """
+    updated = []
+    for ticker, asset in all_data.items():
+        if ticker not in cache:
+            continue
+        new_trades = asset.get('trades', [])
+        if not new_trades:
+            continue
+
+        existing = cache[ticker].get('trades', [])
+        existing_keys = {(t.get('ticker', ticker), t['entry_date']) for t in existing}
+
+        added = 0
+        for t in new_trades:
+            key = (t.get('ticker', ticker), t['entry_date'])
+            if key not in existing_keys:
+                existing.append(t)
+                existing_keys.add(key)
+                added += 1
+
+        if added > 0:
+            # Ordenar por fecha de entrada
+            existing.sort(key=lambda t: t['entry_date'])
+            cache[ticker]['trades'] = existing
+
+            # Recalcular métricas con historial completo
+            new_metrics = _recalc_metrics(existing)
+            if new_metrics:
+                cache[ticker]['metrics_oos'] = new_metrics
+
+            cache[ticker]['trades_updated_at'] = datetime.now().isoformat()
+            updated.append((ticker, added, len(existing)))
+
+    return updated
+
+
 def _generate_dashboard(data, out_path):
     import json as _json
     data_js = _json.dumps(data, ensure_ascii=False)
@@ -1654,6 +1715,17 @@ def main():
         if isinstance(obj, np.ndarray):  return [_sanitize(v) for v in obj.tolist()]
         if isinstance(obj, float) and np.isnan(obj): return None
         return obj
+
+    # ── Merge trades nuevos en optimal_params.json ──────────────
+    # Acumula el historial día a día y recalcula métricas OOS
+    updated = merge_trades_into_cache(cache, all_data)
+    if updated:
+        CACHE_FILE.write_text(json.dumps(cache, indent=2))
+        print(f"\n  {G}→ optimal_params.json actualizado con trades nuevos:{RST}")
+        for ticker, added, total in updated:
+            print(f"     {BOLD}{ticker}{RST}: +{added} trade(s) nuevo(s) · historial total: {total} trades")
+    else:
+        print(f"\n  {DIM}→ optimal_params.json sin cambios (sin trades nuevos cerrados){RST}")
 
     clean_data = _sanitize(dashboard_data)
     OUTPUT_FILE.write_text(json.dumps(clean_data, ensure_ascii=False, indent=2))
