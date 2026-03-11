@@ -962,6 +962,12 @@ main{max-width:1680px;margin:0 auto;padding:2rem;display:flex;flex-direction:col
 .al-chips{display:flex;flex-wrap:wrap;gap:.3rem}
 .chip{font-family:var(--mono);font-size:.6rem;padding:.15rem .45rem;border-radius:5px;background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.18);color:var(--blue)}
 .rr-legend{font-size:.63rem;color:var(--text3);margin-top:.8rem;padding-top:.65rem;border-top:1px solid var(--border);line-height:2}
+.al-ema50{display:flex;align-items:center;gap:.38rem;font-family:var(--mono);font-size:.62rem;margin-top:.55rem;padding:.3rem .55rem;border-radius:6px}
+.al-ema50.above{background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);color:var(--green)}
+.al-ema50.below{background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.18);color:var(--red)}
+.al-ema50-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.al-ema50.above .al-ema50-dot{background:var(--green);box-shadow:0 0 6px var(--green)}
+.al-ema50.below .al-ema50-dot{background:var(--red);box-shadow:0 0 6px var(--red)}
 /* BLOCKED */
 .blocked-sec{display:none}.blocked-sec.on{display:block}
 .blocked-hd{display:flex;align-items:center;gap:.55rem;margin-bottom:.55rem}
@@ -1270,6 +1276,12 @@ if(al.length){
         ${a.vol_ratio?`<span class="chip">Vol ×${a.vol_ratio}</span>`:''}
         <span class="chip">Score ${a.score}/100</span>
       </div>
+      ${a.ema50_ok != null ? `<div class="al-ema50 ${a.ema50_ok ? 'above' : 'below'}">
+        ${a.ema50_ok
+          ? `<span class="al-ema50-dot"></span>Precio por encima de EMA50${a.ema50_val ? ` (${a.ema50_val})` : ''}`
+          : `<span class="al-ema50-dot"></span>Precio por debajo de EMA50${a.ema50_val ? ` (${a.ema50_val})` : ''}`
+        }
+      </div>` : ''}
     </div>`;
   }).join('');
   document.getElementById('rr-note').innerHTML='⚖ <strong>R/R</strong>: cuánto ganas por cada euro arriesgado · <span style="color:var(--green)">≥1.5 bueno</span> · <span style="color:var(--yellow)">1.0–1.5 ajustado</span> · <span style="color:var(--red)">&lt;1.0 desfavorable</span>';
@@ -1517,43 +1529,17 @@ def main():
         sigs   = get_signals(ind, p, macro, use_invert)
 
         # ── Diagnóstico: señales sin filtro macro vs con filtro ────
-        sigs_raw = get_signals(ind, p, macro=None, invert_macro=False)
-        n_raw    = int(sigs_raw.sum())
-        n_final  = int(sigs.sum())
+        sigs_raw  = get_signals(ind, p, macro=None, invert_macro=False)
+        n_raw     = int(sigs_raw.sum())
+        n_final   = int(sigs.sum())
         n_blocked = n_raw - n_final
-        # Señal potencial reciente bloqueada por macro
-        # Un activo está "bloqueado" solo si:
-        # 1. Tiene señal técnica reciente (sigs_raw=1)
-        # 2. El filtro combinado la bloquea (sigs=0)
-        # 3. Y la razón es el filtro — no que el activo pase el filtro hoy
-        recent_blocked = False
-        n_total = len(ind['c'])
-        # Si SPY bajista pero activo por encima de su EMA50 → pasa el filtro → no bloqueado
-        if not spy_above and asset_ema50_ok:
-            recent_blocked = False  # señales permitidas para este activo
-        else:
-            for i in range(n_total-1, max(n_total-4, 35), -1):
-                if sigs_raw[i]==1 and sigs[i]==0:
-                    recent_blocked = True; break
-        if recent_blocked:
-            if not spy_above and not asset_ema50_ok:
-                motivo = f"SPY bajista + {ticker} bajo EMA50"
-            elif not spy_above:
-                motivo = "SPY bajo EMA50"
-            else:
-                motivo = "filtro macro"
-            print(f"  {Y}⚡ Señal reciente bloqueada por macro ({motivo}){RST}")
-            blocked.append({"ticker": ticker, "name": name, "motivo": motivo})
-        elif n_blocked > 0:
-            print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
 
         scores = np.array([score_bar(ind, i, p) if i>=35 else 0
                            for i in range(len(ind['c']))])
 
         # Historial completo de trades + trade actualmente abierto
-        # IMPORTANTE: para detectar el open_trade usamos también sigs_raw (sin filtro macro)
-        # El filtro macro solo aplica en la ENTRADA — una vez abierto el trade,
-        # que la EMA50 se reajuste al añadir barras nuevas no debe eliminarlo retroactivamente
+        # Si el backtest con macro no detecta open_trade, intentar con sigs_raw
+        # Evita que un trade abierto desaparezca por reajuste de EMA50 al añadir barras
         trades, open_trade = build_rich_trades(ind, sigs, p, ticker)
         if open_trade is None:
             _, open_trade_raw = build_rich_trades(ind, sigs_raw, p, ticker)
@@ -1567,7 +1553,36 @@ def main():
             print_summary(ticker, name, m_oos, p)
             print_trades(trades, ticker)
 
-        alert   = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
+        alert = check_alert(ind, sigs, p, ticker, name, trades, open_trade)
+
+        # Enriquecer alerta con estado EMA50 actual del activo
+        if alert:
+            alert['ema50_ok']  = asset_ema50_ok
+            alert['ema50_val'] = asset_ema50_val
+
+        # ── Bloqueadas por macro: solo si NO hay alerta activa ──
+        # Un activo con trade abierto nunca puede estar en "bloqueadas" —
+        # el filtro macro solo aplica en la entrada, no cancela trades en curso
+        recent_blocked = False
+        if not alert:
+            n_total = len(ind['c'])
+            if not spy_above and asset_ema50_ok:
+                recent_blocked = False  # activo por encima de EMA50 → señales permitidas
+            else:
+                for i in range(n_total-1, max(n_total-4, 35), -1):
+                    if sigs_raw[i]==1 and sigs[i]==0:
+                        recent_blocked = True; break
+        if recent_blocked:
+            if not spy_above and not asset_ema50_ok:
+                motivo = f"SPY bajista + {ticker} bajo EMA50"
+            elif not spy_above:
+                motivo = "SPY bajo EMA50"
+            else:
+                motivo = "filtro macro"
+            print(f"  {Y}⚡ Señal reciente bloqueada por macro ({motivo}){RST}")
+            blocked.append({"ticker": ticker, "name": name, "motivo": motivo})
+        elif n_blocked > 0:
+            print(f"  {DIM}Señales históricas: {n_raw} brutas → {n_final} tras macro ({n_blocked} bloqueadas){RST}")
         opt_data = None
         if alert:
             alerts.append(alert)
