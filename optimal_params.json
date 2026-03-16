@@ -3492,6 +3492,14 @@
       "avg_w": 5.523,
       "avg_l": -4.634,
       "total": 94.41
+    },
+    "open_alert": {
+      "date": "2026-03-10",
+      "price": 60.51,
+      "stop_loss": 56.74,
+      "take_profit": 65.35,
+      "stop_pct": 6.23,
+      "rr_ratio": 1.28
     }
   },
   "SEC0.DE": {
@@ -4193,12 +4201,12 @@
       "total": 89.56
     },
     "open_alert": {
-      "date": "2026-02-26",
-      "price": 11.64,
-      "stop_loss": 10.95,
-      "take_profit": 12.58,
-      "stop_pct": 5.93,
-      "rr_ratio": 1.35
+      "date": "2026-03-10",
+      "price": 11.31,
+      "stop_loss": 10.39,
+      "take_profit": 12.21,
+      "stop_pct": 8.13,
+      "rr_ratio": 0.98
     }
   },
   "NDXH.PA": {
@@ -7054,6 +7062,14 @@
       "avg_w": 4.132,
       "avg_l": -2.022,
       "total": 58.02
+    },
+    "open_alert": {
+      "date": "2026-03-04",
+      "price": 254.35,
+      "stop_loss": 239.02,
+      "take_profit": 284.87,
+      "stop_pct": 6.03,
+      "rr_ratio": 1.99
     }
   },
   "ZPDE.DE": {
@@ -7636,12 +7652,12 @@
       "total": 39.43
     },
     "open_alert": {
-      "date": "2026-03-16",
-      "price": 40.7,
-      "stop_loss": 38.24,
-      "take_profit": 44.77,
-      "stop_pct": 6.04,
-      "rr_ratio": 1.65
+      "date": "2026-03-10",
+      "price": 38.37,
+      "stop_loss": 39.13,
+      "take_profit": 42.21,
+      "stop_pct": 1.98,
+      "rr_ratio": 5.05
     }
   },
   "ZPDJ.DE": {
@@ -16059,14 +16075,6 @@
       "avg_w": 6.443,
       "avg_l": -5.012,
       "total": 85.16
-    },
-    "open_alert": {
-      "date": "2026-03-03",
-      "price": 579.09,
-      "stop_loss": 489.5,
-      "take_profit": 613.84,
-      "stop_pct": 15.47,
-      "rr_ratio": 0.39
     }
   },
   "SMCI": {
@@ -20775,9 +20783,26 @@
         "entry_rsi": 62.7,
         "entry_adx": 21.9,
         "source": "backtest"
+      },
+      {
+        "ticker": "NIO",
+        "entry_date": "2026-03-11",
+        "exit_date": "2026-03-16",
+        "entry_price": 5.47,
+        "exit_price": 6.14,
+        "stop_loss": 5.46,
+        "take_profit": 6.13,
+        "pnl": 12.26,
+        "peak_pnl": 12.26,
+        "days": 3,
+        "reason": "Take Profit \u2705",
+        "score": 80,
+        "entry_rsi": 63.1,
+        "entry_adx": 26.8,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.449186",
+    "trades_updated_at": "2026-03-16T14:56:51.267033",
     "metrics_oos_optimizer": {
       "n": 24,
       "wr": 54.167,
@@ -20789,14 +20814,6 @@
       "avg_w": 12.321,
       "avg_l": -7.297,
       "total": 79.9
-    },
-    "open_alert": {
-      "date": "2026-03-11",
-      "price": 5.49,
-      "stop_loss": 4.9,
-      "take_profit": 6.14,
-      "stop_pct": 10.75,
-      "rr_ratio": 1.12
     }
   },
   "OSCR": {
