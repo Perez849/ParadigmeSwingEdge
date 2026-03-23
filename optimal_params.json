@@ -5860,6 +5860,14 @@
       "avg_w": 4.271,
       "avg_l": -4.479,
       "total": 47.71
+    },
+    "open_alert": {
+      "date": "2026-03-10",
+      "price": 1438.0,
+      "stop_loss": 1317.87,
+      "take_profit": 1553.04,
+      "stop_pct": 8.35,
+      "rr_ratio": 0.96
     }
   },
   "IBCF.DE": {
@@ -7637,9 +7645,26 @@
         "entry_rsi": 77.5,
         "entry_adx": 60.8,
         "source": "backtest"
+      },
+      {
+        "ticker": "ZPDE.DE",
+        "entry_date": "2026-03-10",
+        "exit_date": "2026-03-23",
+        "entry_price": 38.37,
+        "exit_price": 40.38,
+        "stop_loss": 40.53,
+        "take_profit": 42.21,
+        "pnl": 5.23,
+        "peak_pnl": 8.35,
+        "days": 9,
+        "reason": "Stop Loss",
+        "score": 61,
+        "entry_rsi": 55.1,
+        "entry_adx": 42.0,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.447081",
+    "trades_updated_at": "2026-03-23T11:48:46.517493",
     "metrics_oos_optimizer": {
       "n": 30,
       "wr": 56.667,
@@ -7651,14 +7676,6 @@
       "avg_w": 4.342,
       "avg_l": -2.645,
       "total": 39.43
-    },
-    "open_alert": {
-      "date": "2026-03-10",
-      "price": 38.37,
-      "stop_loss": 39.13,
-      "take_profit": 42.21,
-      "stop_pct": 1.98,
-      "rr_ratio": 5.05
     }
   },
   "ZPDJ.DE": {
