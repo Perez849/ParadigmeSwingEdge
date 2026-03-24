@@ -20333,9 +20333,26 @@
         "entry_rsi": 85.2,
         "entry_adx": 36.0,
         "source": "backtest"
+      },
+      {
+        "ticker": "KRW.PA",
+        "entry_date": "2026-03-10",
+        "exit_date": "2026-03-24",
+        "entry_price": 131.13,
+        "exit_price": 126.94,
+        "stop_loss": 111.57,
+        "take_profit": 139.0,
+        "pnl": -3.2,
+        "peak_pnl": 0.59,
+        "days": 10,
+        "reason": "Tiempo (10d)",
+        "score": 65,
+        "entry_rsi": 53.5,
+        "entry_adx": 38.2,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.449077",
+    "trades_updated_at": "2026-03-24T08:48:34.940962",
     "metrics_oos_optimizer": {
       "n": 32,
       "wr": 78.125,
@@ -20347,14 +20364,6 @@
       "avg_w": 3.91,
       "avg_l": -2.926,
       "total": 77.28
-    },
-    "open_alert": {
-      "date": "2026-03-10",
-      "price": 131.13,
-      "stop_loss": 111.57,
-      "take_profit": 139.0,
-      "stop_pct": 14.92,
-      "rr_ratio": 0.4
     }
   },
   "NIO": {
