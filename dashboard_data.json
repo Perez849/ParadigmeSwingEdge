@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-03-26T08:01:03.029544",
+  "generated_at": "2026-03-26T09:58:20.117039",
   "alerts": [
     {
       "ticker": "VVSM.DE",
       "name": "VanEck Semiconductor UCIT ETF",
       "date": "2026-03-10",
-      "urgency": "HACE 11d",
-      "days_ago": 11,
+      "urgency": "HACE 12d",
+      "days_ago": 12,
       "price": 60.51,
-      "current_price": 60.78,
-      "current_pnl": 0.45,
+      "current_price": 59.62,
+      "current_pnl": -1.47,
       "stop_loss": 56.74,
       "take_profit": 65.35,
       "stop_pct": 6.23,
       "tp_pct": 8.0,
       "rr_ratio": 1.28,
-      "score_now": 55,
+      "score_now": 17,
       "score": 68,
       "rsi": 50.6,
       "adx": 22.9,
@@ -23,25 +23,25 @@
       "max_days": 15,
       "trail_act": 5.0,
       "trail_atr": 2.0,
-      "trail_sl": 56.57,
+      "trail_sl": 55.49,
       "ema50_ok": true,
-      "ema50_val": 59.29
+      "ema50_val": 59.31
     },
     {
       "ticker": "SEC0.DE",
       "name": "iShares MSCI Global Semiconductors UCIT",
       "date": "2026-03-10",
-      "urgency": "HACE 11d",
-      "days_ago": 11,
+      "urgency": "HACE 12d",
+      "days_ago": 12,
       "price": 11.31,
-      "current_price": 11.35,
-      "current_pnl": 0.35,
+      "current_price": 11.09,
+      "current_pnl": -1.93,
       "stop_loss": 10.39,
       "take_profit": 12.21,
       "stop_pct": 8.13,
       "tp_pct": 8.0,
       "rr_ratio": 0.98,
-      "score_now": 54,
+      "score_now": 26,
       "score": 63,
       "rsi": 50.8,
       "adx": 24.9,
@@ -49,51 +49,25 @@
       "max_days": 15,
       "trail_act": 5.0,
       "trail_atr": 2.0,
-      "trail_sl": 10.51,
+      "trail_sl": 10.27,
       "ema50_ok": true,
       "ema50_val": 11.0
-    },
-    {
-      "ticker": "LQQ.PA",
-      "name": "Amundi Nasdaq 100 Daily 2x Lev UCIT",
-      "date": "2026-03-10",
-      "urgency": "HACE 11d",
-      "days_ago": 11,
-      "price": 1438.0,
-      "current_price": 1342.6,
-      "current_pnl": -6.63,
-      "stop_loss": 1317.87,
-      "take_profit": 1553.04,
-      "stop_pct": 8.35,
-      "tp_pct": 8.0,
-      "rr_ratio": 0.96,
-      "score_now": 22,
-      "score": 68,
-      "rsi": 53.0,
-      "adx": 19.7,
-      "vol_ratio": 1.37,
-      "max_days": 12,
-      "trail_act": 3.5,
-      "trail_atr": 1.2,
-      "trail_sl": 1290.83,
-      "ema50_ok": false,
-      "ema50_val": 1410.85
     },
     {
       "ticker": "ENR.DE",
       "name": "Siemens Energy AG",
       "date": "2026-03-25",
-      "urgency": "HOY",
-      "days_ago": 0,
+      "urgency": "HACE 1d",
+      "days_ago": 1,
       "price": 158.4,
-      "current_price": 158.4,
-      "current_pnl": -0.0,
+      "current_price": 151.85,
+      "current_pnl": -4.14,
       "stop_loss": 137.24,
       "take_profit": 177.41,
       "stop_pct": 13.36,
       "tp_pct": 12.0,
       "rr_ratio": 0.9,
-      "score_now": 64,
+      "score_now": 32,
       "score": 64,
       "rsi": 57.4,
       "adx": 25.6,
@@ -101,9 +75,9 @@
       "max_days": 8,
       "trail_act": 3.5,
       "trail_atr": 1.5,
-      "trail_sl": 143.98,
+      "trail_sl": 138.02,
       "ema50_ok": true,
-      "ema50_val": 147.95
+      "ema50_val": 148.1
     }
   ],
   "blocked_by_macro": [],
@@ -657,23 +631,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 52.05,
-          "high": 52.41,
-          "low": 51.45,
-          "close": 52.0,
-          "volume": 10754,
-          "ema_f": 51.47,
-          "ema_s": 50.38,
-          "ema_t": 49.12,
-          "rsi": 58.3,
-          "adx": 24.9,
-          "macd_h": 0.327,
-          "vol_r": 0.45,
-          "signal": 1,
-          "score": 77
-        },
         {
           "date": "2025-11-18",
           "open": 50.39,
@@ -2186,6 +2143,23 @@
           "vol_r": 0.76,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-03-26",
+          "open": 60.71,
+          "high": 60.8,
+          "low": 59.92,
+          "close": 59.92,
+          "volume": 5069,
+          "ema_f": 62.22,
+          "ema_s": 67.58,
+          "ema_t": 67.53,
+          "rsi": 31.8,
+          "adx": 43.9,
+          "macd_h": -1.104,
+          "vol_r": 0.13,
+          "signal": 0,
+          "score": 15
         }
       ],
       "alert": null,
@@ -2193,7 +2167,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.445608",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 67.84
+      "asset_ema50_val": 67.53
     },
     "IS0E.DE": {
       "ticker": "IS0E.DE",
@@ -3050,23 +3024,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 30.16,
-          "high": 31.17,
-          "low": 30.14,
-          "close": 31.16,
-          "volume": 191992,
-          "ema_f": 29.24,
-          "ema_s": 29.05,
-          "ema_t": 26.14,
-          "rsi": 68.7,
-          "adx": 21.0,
-          "macd_h": 0.271,
-          "vol_r": 0.61,
-          "signal": 0,
-          "score": 85
-        },
         {
           "date": "2025-11-13",
           "open": 31.48,
@@ -4579,6 +4536,23 @@
           "vol_r": 1.27,
           "signal": 0,
           "score": 25
+        },
+        {
+          "date": "2026-03-26",
+          "open": 33.65,
+          "high": 33.65,
+          "low": 33.12,
+          "close": 33.22,
+          "volume": 57598,
+          "ema_f": 34.98,
+          "ema_s": 37.24,
+          "ema_t": 35.6,
+          "rsi": 31.5,
+          "adx": 45.4,
+          "macd_h": -0.752,
+          "vol_r": 0.14,
+          "signal": 0,
+          "score": 15
         }
       ],
       "alert": null,
@@ -4586,7 +4560,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T13:58:41.398521",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 37.75
+      "asset_ema50_val": 37.57
     },
     "SLVR.DE": {
       "ticker": "SLVR.DE",
@@ -5273,23 +5247,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 27.98,
-          "high": 28.78,
-          "low": 27.84,
-          "close": 28.72,
-          "volume": 424501,
-          "ema_f": 27.32,
-          "ema_s": 27.53,
-          "ema_t": 24.67,
-          "rsi": 63.5,
-          "adx": 28.1,
-          "macd_h": 0.007,
-          "vol_r": 1.37,
-          "signal": 0,
-          "score": 83
-        },
         {
           "date": "2025-11-13",
           "open": 29.15,
@@ -6802,6 +6759,23 @@
           "vol_r": 0.81,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-03-26",
+          "open": 34.46,
+          "high": 34.46,
+          "low": 33.97,
+          "close": 34.08,
+          "volume": 88208,
+          "ema_f": 36.23,
+          "ema_s": 38.27,
+          "ema_t": 36.62,
+          "rsi": 32.1,
+          "adx": 42.0,
+          "macd_h": -0.748,
+          "vol_r": 0.21,
+          "signal": 0,
+          "score": 15
         }
       ],
       "alert": null,
@@ -6809,7 +6783,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446038",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 39.36
+      "asset_ema50_val": 39.16
     },
     "VVMX.DE": {
       "ticker": "VVMX.DE",
@@ -7326,23 +7300,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 11.37,
-          "high": 11.51,
-          "low": 11.36,
-          "close": 11.38,
-          "volume": 165090,
-          "ema_f": 11.25,
-          "ema_s": 11.38,
-          "ema_t": 11.03,
-          "rsi": 50.2,
-          "adx": 19.9,
-          "macd_h": -0.034,
-          "vol_r": 0.44,
-          "signal": 0,
-          "score": 45
-        },
         {
           "date": "2025-11-13",
           "open": 11.79,
@@ -8855,14 +8812,31 @@
           "vol_r": 0.72,
           "signal": 0,
           "score": 58
+        },
+        {
+          "date": "2026-03-26",
+          "open": 14.82,
+          "high": 14.82,
+          "low": 14.58,
+          "close": 14.62,
+          "volume": 48646,
+          "ema_f": 14.76,
+          "ema_s": 15.02,
+          "ema_t": 14.83,
+          "rsi": 46.6,
+          "adx": 32.4,
+          "macd_h": -0.108,
+          "vol_r": 0.16,
+          "signal": 0,
+          "score": 22
         }
       ],
       "alert": null,
       "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446173",
-      "asset_ema50_ok": true,
-      "asset_ema50_val": 14.84
+      "asset_ema50_ok": false,
+      "asset_ema50_val": 14.83
     },
     "VVSM.DE": {
       "ticker": "VVSM.DE",
@@ -9600,23 +9574,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 52.32,
-          "high": 52.8,
-          "low": 52.23,
-          "close": 52.63,
-          "volume": 59194,
-          "ema_f": 52.01,
-          "ema_s": 51.19,
-          "ema_t": 45.76,
-          "rsi": 55.1,
-          "adx": 27.9,
-          "macd_h": -0.372,
-          "vol_r": 0.61,
-          "signal": 0,
-          "score": 70
-        },
         {
           "date": "2025-11-13",
           "open": 52.46,
@@ -11129,23 +11086,40 @@
           "vol_r": 0.91,
           "signal": 0,
           "score": 55
+        },
+        {
+          "date": "2026-03-26",
+          "open": 60.31,
+          "high": 60.31,
+          "low": 59.46,
+          "close": 59.62,
+          "volume": 41519,
+          "ema_f": 60.1,
+          "ema_s": 60.12,
+          "ema_t": 56.52,
+          "rsi": 46.5,
+          "adx": 22.4,
+          "macd_h": -0.061,
+          "vol_r": 0.29,
+          "signal": 0,
+          "score": 17
         }
       ],
       "alert": {
         "ticker": "VVSM.DE",
         "name": "VanEck Semiconductor UCIT ETF",
         "date": "2026-03-10",
-        "urgency": "HACE 11d",
-        "days_ago": 11,
+        "urgency": "HACE 12d",
+        "days_ago": 12,
         "price": 60.51,
-        "current_price": 60.78,
-        "current_pnl": 0.45,
+        "current_price": 59.62,
+        "current_pnl": -1.47,
         "stop_loss": 56.74,
         "take_profit": 65.35,
         "stop_pct": 6.23,
         "tp_pct": 8.0,
         "rr_ratio": 1.28,
-        "score_now": 55,
+        "score_now": 17,
         "score": 68,
         "rsi": 50.6,
         "adx": 22.9,
@@ -11153,16 +11127,16 @@
         "max_days": 15,
         "trail_act": 5.0,
         "trail_atr": 2.0,
-        "trail_sl": 56.57,
+        "trail_sl": 55.49,
         "ema50_ok": true,
-        "ema50_val": 59.29
+        "ema50_val": 59.31
       },
       "options": {
         "options_ticker": "SMH",
         "is_proxy": true,
         "expiration": "2026-04-17",
         "days_to_exp": 21,
-        "days_remaining": 4,
+        "days_remaining": 3,
         "trade_expiring_soon": false,
         "proxy_price": 399.02,
         "pcr": 2.71,
@@ -11170,9 +11144,9 @@
         "max_pain": 60.51,
         "max_pain_pct": 0.0,
         "max_pain_valid": false,
-        "implied_move_pct": 3.5,
-        "implied_up": 62.63,
-        "implied_down": 58.39,
+        "implied_move_pct": 3.0,
+        "implied_up": 62.33,
+        "implied_down": 58.69,
         "tp_in_range": false,
         "skew": 44.2,
         "skew_detail": {
@@ -11339,7 +11313,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.5% para los 4d restantes (IV anualizada: 41.8%). El mercado solo descuenta ±3.5% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.0% para los 3d restantes (IV anualizada: 41.8%). El mercado solo descuenta ±3.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "warning",
@@ -11364,7 +11338,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446304",
       "asset_ema50_ok": true,
-      "asset_ema50_val": 59.29
+      "asset_ema50_val": 59.31
     },
     "SEC0.DE": {
       "ticker": "SEC0.DE",
@@ -12034,23 +12008,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 9.42,
-          "high": 9.49,
-          "low": 9.4,
-          "close": 9.47,
-          "volume": 155336,
-          "ema_f": 9.4,
-          "ema_s": 9.06,
-          "ema_t": 8.7,
-          "rsi": 56.3,
-          "adx": 24.8,
-          "macd_h": -0.054,
-          "vol_r": 0.75,
-          "signal": 0,
-          "score": 59
-        },
         {
           "date": "2025-11-13",
           "open": 9.44,
@@ -13563,23 +13520,40 @@
           "vol_r": 0.78,
           "signal": 0,
           "score": 54
+        },
+        {
+          "date": "2026-03-26",
+          "open": 11.2,
+          "high": 11.26,
+          "low": 11.06,
+          "close": 11.09,
+          "volume": 58816,
+          "ema_f": 11.2,
+          "ema_s": 11.19,
+          "ema_t": 11.0,
+          "rsi": 45.6,
+          "adx": 21.1,
+          "macd_h": -0.023,
+          "vol_r": 0.2,
+          "signal": 0,
+          "score": 26
         }
       ],
       "alert": {
         "ticker": "SEC0.DE",
         "name": "iShares MSCI Global Semiconductors UCIT",
         "date": "2026-03-10",
-        "urgency": "HACE 11d",
-        "days_ago": 11,
+        "urgency": "HACE 12d",
+        "days_ago": 12,
         "price": 11.31,
-        "current_price": 11.35,
-        "current_pnl": 0.35,
+        "current_price": 11.09,
+        "current_pnl": -1.93,
         "stop_loss": 10.39,
         "take_profit": 12.21,
         "stop_pct": 8.13,
         "tp_pct": 8.0,
         "rr_ratio": 0.98,
-        "score_now": 54,
+        "score_now": 26,
         "score": 63,
         "rsi": 50.8,
         "adx": 24.9,
@@ -13587,7 +13561,7 @@
         "max_days": 15,
         "trail_act": 5.0,
         "trail_atr": 2.0,
-        "trail_sl": 10.51,
+        "trail_sl": 10.27,
         "ema50_ok": true,
         "ema50_val": 11.0
       },
@@ -13596,7 +13570,7 @@
         "is_proxy": true,
         "expiration": "2026-04-17",
         "days_to_exp": 21,
-        "days_remaining": 4,
+        "days_remaining": 3,
         "trade_expiring_soon": false,
         "proxy_price": 399.02,
         "pcr": 2.71,
@@ -13604,9 +13578,9 @@
         "max_pain": 11.31,
         "max_pain_pct": 0.0,
         "max_pain_valid": false,
-        "implied_move_pct": 3.5,
-        "implied_up": 11.71,
-        "implied_down": 10.91,
+        "implied_move_pct": 3.0,
+        "implied_up": 11.65,
+        "implied_down": 10.97,
         "tp_in_range": false,
         "skew": 44.2,
         "skew_detail": {
@@ -13773,7 +13747,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.5% para los 4d restantes (IV anualizada: 41.8%). El mercado solo descuenta ±3.5% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.0% para los 3d restantes (IV anualizada: 41.8%). El mercado solo descuenta ±3.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "warning",
@@ -14553,23 +14527,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 578.1,
-          "high": 579.1,
-          "low": 570.0,
-          "close": 572.9,
-          "volume": 1868,
-          "ema_f": 579.93,
-          "ema_s": 579.55,
-          "ema_t": 528.54,
-          "rsi": 37.9,
-          "adx": 28.0,
-          "macd_h": -2.338,
-          "vol_r": 1.14,
-          "signal": 0,
-          "score": 20
-        },
         {
           "date": "2025-11-18",
           "open": 564.7,
@@ -16082,6 +16039,23 @@
           "vol_r": 0.34,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-03-26",
+          "open": 547.4,
+          "high": 547.4,
+          "low": 545.0,
+          "close": 545.0,
+          "volume": 152,
+          "ema_f": 556.31,
+          "ema_s": 558.58,
+          "ema_t": 554.54,
+          "rsi": 31.3,
+          "adx": 36.3,
+          "macd_h": -1.325,
+          "vol_r": 0.11,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
@@ -16089,7 +16063,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446555",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 567.27
+      "asset_ema50_val": 566.39
     },
     "LQQ.PA": {
       "ticker": "LQQ.PA",
@@ -16929,23 +16903,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 1485.2,
-          "high": 1490.0,
-          "low": 1444.0,
-          "close": 1457.6,
-          "volume": 3830,
-          "ema_f": 1498.25,
-          "ema_s": 1491.28,
-          "ema_t": 1290.25,
-          "rsi": 45.1,
-          "adx": 30.3,
-          "macd_h": -11.087,
-          "vol_r": 0.72,
-          "signal": 0,
-          "score": 32
-        },
         {
           "date": "2025-11-18",
           "open": 1419.8,
@@ -18458,216 +18415,31 @@
           "vol_r": 0.51,
           "signal": 0,
           "score": 22
+        },
+        {
+          "date": "2026-03-26",
+          "open": 1326.2,
+          "high": 1328.2,
+          "low": 1308.6,
+          "close": 1311.8,
+          "volume": 996,
+          "ema_f": 1364.63,
+          "ema_s": 1381.41,
+          "ema_t": 1376.11,
+          "rsi": 36.4,
+          "adx": 34.0,
+          "macd_h": -6.304,
+          "vol_r": 0.26,
+          "signal": 0,
+          "score": 0
         }
       ],
-      "alert": {
-        "ticker": "LQQ.PA",
-        "name": "Amundi Nasdaq 100 Daily 2x Lev UCIT",
-        "date": "2026-03-10",
-        "urgency": "HACE 11d",
-        "days_ago": 11,
-        "price": 1438.0,
-        "current_price": 1342.6,
-        "current_pnl": -6.63,
-        "stop_loss": 1317.87,
-        "take_profit": 1553.04,
-        "stop_pct": 8.35,
-        "tp_pct": 8.0,
-        "rr_ratio": 0.96,
-        "score_now": 22,
-        "score": 68,
-        "rsi": 53.0,
-        "adx": 19.7,
-        "vol_ratio": 1.37,
-        "max_days": 12,
-        "trail_act": 3.5,
-        "trail_atr": 1.2,
-        "trail_sl": 1290.83,
-        "ema50_ok": false,
-        "ema50_val": 1410.85
-      },
-      "options": {
-        "options_ticker": "QQQ",
-        "is_proxy": true,
-        "expiration": "2026-04-17",
-        "days_to_exp": 21,
-        "days_remaining": 1,
-        "trade_expiring_soon": true,
-        "proxy_price": 587.82,
-        "pcr": 1.42,
-        "pcr_source": "volume",
-        "max_pain": 1438.0,
-        "max_pain_pct": 0.0,
-        "max_pain_valid": false,
-        "implied_move_pct": 1.1,
-        "implied_up": 1453.82,
-        "implied_down": 1422.18,
-        "tp_in_range": false,
-        "skew": 159.8,
-        "skew_detail": {
-          "put_strike": 1365.05,
-          "call_strike": 1509.38,
-          "put_price": 6.08,
-          "call_price": 2.29
-        },
-        "iv_rank": 96.0,
-        "atm_iv": 25.6,
-        "hv_252": 22.4,
-        "hv_21": 17.1,
-        "oi_map": [
-          {
-            "strike_proxy": 545.0,
-            "strike_asset": 1333.25,
-            "call_oi": 63,
-            "put_oi": 3622,
-            "total_oi": 3685,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 550.0,
-            "strike_asset": 1345.48,
-            "call_oi": 80,
-            "put_oi": 3624,
-            "total_oi": 3704,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 564.0,
-            "strike_asset": 1379.73,
-            "call_oi": 1,
-            "put_oi": 6126,
-            "total_oi": 6127,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 570.0,
-            "strike_asset": 1394.41,
-            "call_oi": 19,
-            "put_oi": 7856,
-            "total_oi": 7875,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 574.0,
-            "strike_asset": 1404.19,
-            "call_oi": 1,
-            "put_oi": 6294,
-            "total_oi": 6295,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 575.0,
-            "strike_asset": 1406.64,
-            "call_oi": 14,
-            "put_oi": 3719,
-            "total_oi": 3733,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 580.0,
-            "strike_asset": 1418.87,
-            "call_oi": 102,
-            "put_oi": 7656,
-            "total_oi": 7758,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 585.0,
-            "strike_asset": 1431.1,
-            "call_oi": 937,
-            "put_oi": 6799,
-            "total_oi": 7736,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 590.0,
-            "strike_asset": 1443.33,
-            "call_oi": 5825,
-            "put_oi": 5299,
-            "total_oi": 11124,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 592.0,
-            "strike_asset": 1448.23,
-            "call_oi": 8751,
-            "put_oi": 414,
-            "total_oi": 9165,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 600.0,
-            "strike_asset": 1467.8,
-            "call_oi": 6270,
-            "put_oi": 1245,
-            "total_oi": 7515,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 605.0,
-            "strike_asset": 1480.03,
-            "call_oi": 3115,
-            "put_oi": 44,
-            "total_oi": 3159,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 610.0,
-            "strike_asset": 1492.26,
-            "call_oi": 2122,
-            "put_oi": 4387,
-            "total_oi": 6509,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 620.0,
-            "strike_asset": 1516.72,
-            "call_oi": 3106,
-            "put_oi": 264,
-            "total_oi": 3370,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 630.0,
-            "strike_asset": 1541.19,
-            "call_oi": 6295,
-            "put_oi": 14,
-            "total_oi": 6309,
-            "dominant": "CALL"
-          }
-        ],
-        "oi_using_volume": true,
-        "call_walls": [],
-        "put_walls": [],
-        "signals": [
-          {
-            "type": "bearish",
-            "msg": "PCR 1.42 — más puts que calls. Los inversores están comprando cobertura bajista, lo que sugiere cautela en el mercado. No es extremo pero es moderadamente bajista."
-          },
-          {
-            "type": "bearish",
-            "msg": "Skew muy pronunciado +159.8% — las puts OTM (1365.05, precio 6.08) cuestan bastante más que las calls OTM (1509.38, precio 2.29). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
-          },
-          {
-            "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±1.1% para los 1d restantes (IV anualizada: 25.6%). El mercado solo descuenta ±1.1% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
-          },
-          {
-            "type": "warning",
-            "msg": "IV Rank 96% — la volatilidad implícita está en el percentil 96 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
-          }
-        ],
-        "verdict": "CONTRADICE",
-        "verdict_color": "red",
-        "verdict_msg": "Opciones muestran sesgo bajista (2 señales negativas). Considera reducir tamaño o esperar confirmación adicional.",
-        "data_quality": "alta",
-        "total_call_oi": 62837,
-        "total_put_oi": 89147
-      },
+      "alert": null,
+      "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-23T09:59:02.463225",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 1410.85
+      "asset_ema50_val": 1406.97
     },
     "IBCF.DE": {
       "ticker": "IBCF.DE",
@@ -19439,23 +19211,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 142.49,
-          "high": 142.68,
-          "low": 141.84,
-          "close": 142.07,
-          "volume": 15876,
-          "ema_f": 141.02,
-          "ema_s": 140.31,
-          "ema_t": 130.45,
-          "rsi": 58.1,
-          "adx": 18.8,
-          "macd_h": -0.125,
-          "vol_r": 0.89,
-          "signal": 0,
-          "score": 60
-        },
         {
           "date": "2025-11-13",
           "open": 142.4,
@@ -20968,6 +20723,23 @@
           "vol_r": 0.75,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-03-26",
+          "open": 135.7,
+          "high": 135.7,
+          "low": 134.99,
+          "close": 135.05,
+          "volume": 7483,
+          "ema_f": 136.48,
+          "ema_s": 138.77,
+          "ema_t": 136.84,
+          "rsi": 33.6,
+          "adx": 45.4,
+          "macd_h": -0.243,
+          "vol_r": 0.31,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
@@ -20975,7 +20747,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446821",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 140.34
+      "asset_ema50_val": 140.13
     },
     "DBPG.DE": {
       "ticker": "DBPG.DE",
@@ -21356,23 +21128,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 258.5,
-          "high": 259.3,
-          "low": 255.35,
-          "close": 256.45,
-          "volume": 5368,
-          "ema_f": 253.42,
-          "ema_s": 250.57,
-          "ema_t": 245.77,
-          "rsi": 53.8,
-          "adx": 12.4,
-          "macd_h": -1.268,
-          "vol_r": 0.53,
-          "signal": 0,
-          "score": 47
-        },
         {
           "date": "2025-11-13",
           "open": 257.3,
@@ -22885,6 +22640,23 @@
           "vol_r": 1.12,
           "signal": 0,
           "score": 18
+        },
+        {
+          "date": "2026-03-26",
+          "open": 233.95,
+          "high": 233.95,
+          "low": 231.2,
+          "close": 231.3,
+          "volume": 5584,
+          "ema_f": 239.8,
+          "ema_s": 244.36,
+          "ema_t": 247.14,
+          "rsi": 34.8,
+          "adx": 42.7,
+          "macd_h": -1.417,
+          "vol_r": 0.27,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
@@ -22892,7 +22664,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446958",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 247.79
+      "asset_ema50_val": 247.14
     },
     "ZPDE.DE": {
       "ticker": "ZPDE.DE",
@@ -23460,23 +23232,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 31.32,
-          "high": 31.32,
-          "low": 30.83,
-          "close": 30.83,
-          "volume": 9603,
-          "ema_f": 30.61,
-          "ema_s": 30.15,
-          "ema_t": 29.84,
-          "rsi": 60.6,
-          "adx": 24.4,
-          "macd_h": 0.103,
-          "vol_r": 0.74,
-          "signal": 1,
-          "score": 77
-        },
         {
           "date": "2025-11-13",
           "open": 30.75,
@@ -24989,6 +24744,23 @@
           "vol_r": 0.8,
           "signal": 0,
           "score": 49
+        },
+        {
+          "date": "2026-03-26",
+          "open": 42.3,
+          "high": 42.4,
+          "low": 42.22,
+          "close": 42.38,
+          "volume": 16082,
+          "ema_f": 41.58,
+          "ema_s": 39.2,
+          "ema_t": 35.18,
+          "rsi": 76.6,
+          "adx": 46.2,
+          "macd_h": 0.077,
+          "vol_r": 0.3,
+          "signal": 0,
+          "score": 49
         }
       ],
       "alert": null,
@@ -24996,7 +24768,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-23T11:48:46.517493",
       "asset_ema50_ok": true,
-      "asset_ema50_val": 37.42
+      "asset_ema50_val": 37.61
     },
     "ZPDJ.DE": {
       "ticker": "ZPDJ.DE",
@@ -25751,23 +25523,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 64.47,
-          "high": 64.84,
-          "low": 64.47,
-          "close": 64.84,
-          "volume": 576,
-          "ema_f": 63.96,
-          "ema_s": 63.58,
-          "ema_t": 58.94,
-          "rsi": 70.1,
-          "adx": 18.3,
-          "macd_h": -0.019,
-          "vol_r": 0.1,
-          "signal": 0,
-          "score": 34
-        },
         {
           "date": "2025-11-13",
           "open": 64.63,
@@ -27280,6 +27035,23 @@
           "vol_r": 0.48,
           "signal": 0,
           "score": 40
+        },
+        {
+          "date": "2026-03-26",
+          "open": 67.42,
+          "high": 67.42,
+          "low": 66.94,
+          "close": 66.94,
+          "volume": 739,
+          "ema_f": 67.5,
+          "ema_s": 68.03,
+          "ema_t": 63.89,
+          "rsi": 43.7,
+          "adx": 30.4,
+          "macd_h": -0.133,
+          "vol_r": 0.09,
+          "signal": 0,
+          "score": 25
         }
       ],
       "alert": null,
@@ -27287,7 +27059,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447205",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 68.14
+      "asset_ema50_val": 68.09
     },
     "EXV1.DE": {
       "ticker": "EXV1.DE",
@@ -28229,23 +28001,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-13",
-          "open": 32.82,
-          "high": 32.88,
-          "low": 32.63,
-          "close": 32.63,
-          "volume": 85359,
-          "ema_f": 31.85,
-          "ema_s": 31.15,
-          "ema_t": 30.41,
-          "rsi": 82.5,
-          "adx": 34.2,
-          "macd_h": 0.196,
-          "vol_r": 0.59,
-          "signal": 0,
-          "score": 57
-        },
         {
           "date": "2025-11-14",
           "open": 32.14,
@@ -29758,6 +29513,23 @@
           "vol_r": 1.13,
           "signal": 0,
           "score": 33
+        },
+        {
+          "date": "2026-03-26",
+          "open": 32.94,
+          "high": 32.96,
+          "low": 32.63,
+          "close": 32.65,
+          "volume": 135668,
+          "ema_f": 32.81,
+          "ema_s": 33.5,
+          "ema_t": 34.27,
+          "rsi": 43.8,
+          "adx": 34.9,
+          "macd_h": 0.006,
+          "vol_r": 0.22,
+          "signal": 0,
+          "score": 37
         }
       ],
       "alert": null,
@@ -29765,7 +29537,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447335",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 34.34
+      "asset_ema50_val": 34.27
     },
     "EMXC.DE": {
       "ticker": "EMXC.DE",
@@ -30554,23 +30326,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 29.5,
-          "high": 29.56,
-          "low": 29.34,
-          "close": 29.36,
-          "volume": 123319,
-          "ema_f": 29.28,
-          "ema_s": 29.12,
-          "ema_t": 26.25,
-          "rsi": 52.6,
-          "adx": 11.0,
-          "macd_h": -0.118,
-          "vol_r": 2.05,
-          "signal": 1,
-          "score": 69
-        },
         {
           "date": "2025-11-13",
           "open": 29.4,
@@ -32083,14 +31838,31 @@
           "vol_r": 0.41,
           "signal": 0,
           "score": 32
+        },
+        {
+          "date": "2026-03-26",
+          "open": 32.66,
+          "high": 32.66,
+          "low": 32.36,
+          "close": 32.36,
+          "volume": 14833,
+          "ema_f": 32.79,
+          "ema_s": 33.19,
+          "ema_t": 29.7,
+          "rsi": 41.1,
+          "adx": 27.3,
+          "macd_h": -0.097,
+          "vol_r": 0.13,
+          "signal": 0,
+          "score": 10
         }
       ],
       "alert": null,
       "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447458",
-      "asset_ema50_ok": true,
-      "asset_ema50_val": 32.89
+      "asset_ema50_ok": false,
+      "asset_ema50_val": 32.87
     },
     "IBEXA.MC": {
       "ticker": "IBEXA.MC",
@@ -32709,23 +32481,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 56.39,
-          "high": 56.56,
-          "low": 55.02,
-          "close": 55.3,
-          "volume": 40043,
-          "ema_f": 55.64,
-          "ema_s": 54.25,
-          "ema_t": 52.16,
-          "rsi": 48.1,
-          "adx": 25.4,
-          "macd_h": 0.03,
-          "vol_r": 1.69,
-          "signal": 0,
-          "score": 87
-        },
         {
           "date": "2025-11-18",
           "open": 54.06,
@@ -34238,6 +33993,23 @@
           "vol_r": 0.71,
           "signal": 0,
           "score": 28
+        },
+        {
+          "date": "2026-03-26",
+          "open": 60.92,
+          "high": 61.15,
+          "low": 60.15,
+          "close": 60.15,
+          "volume": 9914,
+          "ema_f": 61.19,
+          "ema_s": 62.83,
+          "ema_t": 63.67,
+          "rsi": 42.8,
+          "adx": 37.0,
+          "macd_h": -0.008,
+          "vol_r": 0.17,
+          "signal": 0,
+          "score": 15
         }
       ],
       "alert": null,
@@ -34245,7 +34017,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447575",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 63.81
+      "asset_ema50_val": 63.67
     },
     "WTIF.DE": {
       "ticker": "WTIF.DE",
@@ -35017,23 +34789,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 43.36,
-          "high": 43.61,
-          "low": 43.36,
-          "close": 43.53,
-          "volume": 419,
-          "ema_f": 42.63,
-          "ema_s": 42.08,
-          "ema_t": 41.24,
-          "rsi": 66.5,
-          "adx": 20.2,
-          "macd_h": 0.038,
-          "vol_r": 0.18,
-          "signal": 0,
-          "score": 57
-        },
         {
           "date": "2025-11-13",
           "open": 43.66,
@@ -36546,6 +36301,23 @@
           "vol_r": 0.67,
           "signal": 0,
           "score": 53
+        },
+        {
+          "date": "2026-03-26",
+          "open": 49.7,
+          "high": 49.7,
+          "low": 49.33,
+          "close": 49.33,
+          "volume": 451,
+          "ema_f": 49.09,
+          "ema_s": 49.57,
+          "ema_t": 49.14,
+          "rsi": 48.7,
+          "adx": 23.4,
+          "macd_h": 0.04,
+          "vol_r": 0.07,
+          "signal": 0,
+          "score": 60
         }
       ],
       "alert": null,
@@ -37495,23 +37267,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-13",
-          "open": 52.98,
-          "high": 53.28,
-          "low": 52.27,
-          "close": 52.38,
-          "volume": 180967,
-          "ema_f": 53.42,
-          "ema_s": 53.79,
-          "ema_t": 53.28,
-          "rsi": 38.3,
-          "adx": 24.3,
-          "macd_h": -0.302,
-          "vol_r": 0.47,
-          "signal": 0,
-          "score": 0
-        },
         {
           "date": "2025-11-14",
           "open": 51.77,
@@ -39024,14 +38779,31 @@
           "vol_r": 0.53,
           "signal": 0,
           "score": 32
+        },
+        {
+          "date": "2026-03-26",
+          "open": 60.22,
+          "high": 60.22,
+          "low": 59.57,
+          "close": 59.66,
+          "volume": 19243,
+          "ema_f": 60.79,
+          "ema_s": 60.91,
+          "ema_t": 59.81,
+          "rsi": 41.5,
+          "adx": 33.1,
+          "macd_h": -0.477,
+          "vol_r": 0.1,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
       "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447829",
-      "asset_ema50_ok": true,
-      "asset_ema50_val": 59.82
+      "asset_ema50_ok": false,
+      "asset_ema50_val": 59.81
     },
     "WPM": {
       "ticker": "WPM",
@@ -58115,23 +57887,6 @@
       ],
       "price_history": [
         {
-          "date": "2025-11-13",
-          "open": 106.89,
-          "high": 106.89,
-          "low": 106.89,
-          "close": 106.89,
-          "volume": 0,
-          "ema_f": 106.2,
-          "ema_s": 104.69,
-          "ema_t": 101.83,
-          "rsi": 57.1,
-          "adx": 15.7,
-          "macd_h": -0.066,
-          "vol_r": 0.0,
-          "signal": 0,
-          "score": 35
-        },
-        {
           "date": "2025-11-14",
           "open": 112.02,
           "high": 112.32,
@@ -59643,23 +59398,40 @@
           "vol_r": 0.81,
           "signal": 1,
           "score": 64
+        },
+        {
+          "date": "2026-03-26",
+          "open": 155.0,
+          "high": 155.1,
+          "low": 151.3,
+          "close": 151.85,
+          "volume": 443995,
+          "ema_f": 151.26,
+          "ema_s": 152.07,
+          "ema_t": 148.1,
+          "rsi": 49.9,
+          "adx": 24.5,
+          "macd_h": 0.001,
+          "vol_r": 0.15,
+          "signal": 0,
+          "score": 32
         }
       ],
       "alert": {
         "ticker": "ENR.DE",
         "name": "Siemens Energy AG",
         "date": "2026-03-25",
-        "urgency": "HOY",
-        "days_ago": 0,
+        "urgency": "HACE 1d",
+        "days_ago": 1,
         "price": 158.4,
-        "current_price": 158.4,
-        "current_pnl": -0.0,
+        "current_price": 151.85,
+        "current_pnl": -4.14,
         "stop_loss": 137.24,
         "take_profit": 177.41,
         "stop_pct": 13.36,
         "tp_pct": 12.0,
         "rr_ratio": 0.9,
-        "score_now": 64,
+        "score_now": 32,
         "score": 64,
         "rsi": 57.4,
         "adx": 25.6,
@@ -59667,16 +59439,16 @@
         "max_days": 8,
         "trail_act": 3.5,
         "trail_atr": 1.5,
-        "trail_sl": 143.98,
+        "trail_sl": 138.02,
         "ema50_ok": true,
-        "ema50_val": 147.95
+        "ema50_val": 148.1
       },
       "options": {
         "options_ticker": "XLE",
         "is_proxy": true,
         "expiration": "2026-04-17",
         "days_to_exp": 21,
-        "days_remaining": 8,
+        "days_remaining": 7,
         "trade_expiring_soon": false,
         "proxy_price": 60.57,
         "pcr": 0.1,
@@ -59684,9 +59456,9 @@
         "max_pain": 196.14,
         "max_pain_pct": 23.8,
         "max_pain_valid": true,
-        "implied_move_pct": 3.3,
-        "implied_up": 163.63,
-        "implied_down": 153.17,
+        "implied_move_pct": 3.1,
+        "implied_up": 163.31,
+        "implied_down": 153.49,
         "tp_in_range": false,
         "skew": 56.4,
         "skew_detail": {
@@ -59731,7 +59503,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+12.0%) está FUERA del implied move ±3.3% para los 8d restantes (IV anualizada: 28.2%). El mercado solo descuenta ±3.3% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+12.0%) está FUERA del implied move ±3.1% para los 7d restantes (IV anualizada: 28.2%). El mercado solo descuenta ±3.1% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "bullish",
@@ -59752,7 +59524,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-20T08:36:50.938387",
       "asset_ema50_ok": true,
-      "asset_ema50_val": 147.95
+      "asset_ema50_val": 148.1
     },
     "KRW.PA": {
       "ticker": "KRW.PA",
@@ -60354,23 +60126,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 87.79,
-          "high": 88.0,
-          "low": 87.0,
-          "close": 87.59,
-          "volume": 848,
-          "ema_f": 87.32,
-          "ema_s": 85.59,
-          "ema_t": 75.09,
-          "rsi": 50.1,
-          "adx": 20.7,
-          "macd_h": -0.538,
-          "vol_r": 0.21,
-          "signal": 0,
-          "score": 47
-        },
         {
           "date": "2025-11-18",
           "open": 84.52,
@@ -61883,13 +61638,30 @@
           "vol_r": 0.62,
           "signal": 0,
           "score": 39
+        },
+        {
+          "date": "2026-03-26",
+          "open": 122.82,
+          "high": 122.82,
+          "low": 121.0,
+          "close": 121.54,
+          "volume": 3360,
+          "ema_f": 127.01,
+          "ema_s": 126.66,
+          "ema_t": 110.26,
+          "rsi": 33.9,
+          "adx": 23.8,
+          "macd_h": -0.888,
+          "vol_r": 0.15,
+          "signal": 0,
+          "score": 5
         }
       ],
       "alert": null,
       "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-24T08:48:34.940962",
-      "asset_ema50_ok": true,
+      "asset_ema50_ok": false,
       "asset_ema50_val": 121.59
     },
     "NIO": {
@@ -73047,23 +72819,6 @@
       ],
       "price_history": [
         {
-          "date": "2025-11-12",
-          "open": 0.16,
-          "high": 0.16,
-          "low": 0.16,
-          "close": 0.16,
-          "volume": 1851250,
-          "ema_f": 0.71,
-          "ema_s": 0.71,
-          "ema_t": 0.71,
-          "rsi": 56.0,
-          "adx": 11.5,
-          "macd_h": 0.0,
-          "vol_r": 0.12,
-          "signal": 1,
-          "score": 62
-        },
-        {
           "date": "2025-11-13",
           "open": 0.16,
           "high": 0.17,
@@ -74575,6 +74330,23 @@
           "vol_r": 0.49,
           "signal": 0,
           "score": 10
+        },
+        {
+          "date": "2026-03-26",
+          "open": 0.18,
+          "high": 0.18,
+          "low": 0.18,
+          "close": 0.18,
+          "volume": 276702,
+          "ema_f": 0.7,
+          "ema_s": 0.71,
+          "ema_t": 0.71,
+          "rsi": 34.6,
+          "adx": 43.9,
+          "macd_h": -0.0,
+          "vol_r": 0.03,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
@@ -75422,23 +75194,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-17",
-          "open": 0.43,
-          "high": 0.44,
-          "low": 0.43,
-          "close": 0.44,
-          "volume": 3095416,
-          "ema_f": 2.93,
-          "ema_s": 2.92,
-          "ema_t": 2.86,
-          "rsi": 57.9,
-          "adx": 26.3,
-          "macd_h": 0.0,
-          "vol_r": 1.08,
-          "signal": 0,
-          "score": 72
-        },
         {
           "date": "2025-11-18",
           "open": 0.45,
@@ -76951,6 +76706,23 @@
           "vol_r": 0.67,
           "signal": 0,
           "score": 35
+        },
+        {
+          "date": "2026-03-26",
+          "open": 0.39,
+          "high": 0.39,
+          "low": 0.38,
+          "close": 0.39,
+          "volume": 1973613,
+          "ema_f": 2.99,
+          "ema_s": 3.0,
+          "ema_t": 2.97,
+          "rsi": 44.2,
+          "adx": 36.5,
+          "macd_h": -0.0,
+          "vol_r": 0.24,
+          "signal": 0,
+          "score": 27
         }
       ],
       "alert": null,
@@ -77832,23 +77604,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-12",
-          "open": 0.79,
-          "high": 0.8,
-          "low": 0.79,
-          "close": 0.8,
-          "volume": 723871,
-          "ema_f": 4.13,
-          "ema_s": 4.13,
-          "ema_t": 4.12,
-          "rsi": 51.9,
-          "adx": 16.2,
-          "macd_h": -0.0,
-          "vol_r": 0.56,
-          "signal": 0,
-          "score": 32
-        },
         {
           "date": "2025-11-13",
           "open": 0.8,
@@ -79359,6 +79114,23 @@
           "adx": 34.6,
           "macd_h": -0.001,
           "vol_r": 0.43,
+          "signal": 0,
+          "score": 10
+        },
+        {
+          "date": "2026-03-26",
+          "open": 0.83,
+          "high": 0.84,
+          "low": 0.83,
+          "close": 0.84,
+          "volume": 545500,
+          "ema_f": 4.11,
+          "ema_s": 4.13,
+          "ema_t": 4.16,
+          "rsi": 39.0,
+          "adx": 35.0,
+          "macd_h": -0.001,
+          "vol_r": 0.23,
           "signal": 0,
           "score": 10
         }
