@@ -2725,14 +2725,6 @@
       "avg_w": 10.333,
       "avg_l": -4.046,
       "total": 73.64
-    },
-    "open_alert": {
-      "date": "2026-03-30",
-      "price": 15.18,
-      "stop_loss": 14.02,
-      "take_profit": 17.0,
-      "stop_pct": 7.64,
-      "rr_ratio": 1.57
     }
   },
   "VVSM.DE": {
@@ -3486,9 +3478,26 @@
         "entry_rsi": 65.8,
         "entry_adx": 22.6,
         "source": "backtest"
+      },
+      {
+        "ticker": "VVSM.DE",
+        "entry_date": "2026-03-10",
+        "exit_date": "2026-03-30",
+        "entry_price": 60.51,
+        "exit_price": 55.6,
+        "stop_loss": 56.74,
+        "take_profit": 65.35,
+        "pnl": -8.11,
+        "peak_pnl": 0.79,
+        "days": 14,
+        "reason": "Stop Loss",
+        "score": 68,
+        "entry_rsi": 50.6,
+        "entry_adx": 22.9,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.446304",
+    "trades_updated_at": "2026-03-30T15:00:55.935257",
     "metrics_oos_optimizer": {
       "n": 41,
       "wr": 68.293,
@@ -3500,14 +3509,6 @@
       "avg_w": 5.523,
       "avg_l": -4.634,
       "total": 94.41
-    },
-    "open_alert": {
-      "date": "2026-03-10",
-      "price": 60.51,
-      "stop_loss": 56.74,
-      "take_profit": 65.35,
-      "stop_pct": 6.23,
-      "rr_ratio": 1.28
     }
   },
   "SEC0.DE": {
@@ -4193,9 +4194,26 @@
         "entry_rsi": 60.2,
         "entry_adx": 26.9,
         "source": "backtest"
+      },
+      {
+        "ticker": "SEC0.DE",
+        "entry_date": "2026-03-10",
+        "exit_date": "2026-03-30",
+        "entry_price": 11.31,
+        "exit_price": 10.38,
+        "stop_loss": 10.39,
+        "take_profit": 12.21,
+        "pnl": -8.17,
+        "peak_pnl": 1.04,
+        "days": 14,
+        "reason": "Stop Loss",
+        "score": 63,
+        "entry_rsi": 50.8,
+        "entry_adx": 24.9,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.446431",
+    "trades_updated_at": "2026-03-30T15:00:56.166660",
     "metrics_oos_optimizer": {
       "n": 37,
       "wr": 67.568,
@@ -4207,14 +4225,6 @@
       "avg_w": 5.559,
       "avg_l": -4.118,
       "total": 89.56
-    },
-    "open_alert": {
-      "date": "2026-03-10",
-      "price": 11.31,
-      "stop_loss": 10.39,
-      "take_profit": 12.21,
-      "stop_pct": 8.13,
-      "rr_ratio": 0.98
     }
   },
   "NDXH.PA": {
