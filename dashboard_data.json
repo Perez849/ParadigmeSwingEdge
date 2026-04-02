@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-02T18:52:48.419353",
+  "generated_at": "2026-04-02T19:48:23.617855",
   "alerts": [
     {
       "ticker": "GLDM.PA",
@@ -190,14 +190,14 @@
       "urgency": "HACE 1d",
       "days_ago": 1,
       "price": 135.75,
-      "current_price": 136.36,
-      "current_pnl": -0.32,
+      "current_price": 135.97,
+      "current_pnl": -0.61,
       "stop_loss": 118.28,
       "take_profit": 143.89,
       "stop_pct": 12.87,
       "tp_pct": 6.0,
       "rr_ratio": 0.47,
-      "score_now": 78,
+      "score_now": 70,
       "score": 88,
       "rsi": 52.5,
       "adx": 42.3,
@@ -205,9 +205,9 @@
       "max_days": 10,
       "trail_act": 5.0,
       "trail_atr": 1.5,
-      "trail_sl": 125.86,
+      "trail_sl": 125.5,
       "ema50_ok": true,
-      "ema50_val": 134.97
+      "ema50_val": 134.95
     },
     {
       "ticker": "CCJ",
@@ -216,8 +216,8 @@
       "urgency": "HACE 1d",
       "days_ago": 1,
       "price": 113.31,
-      "current_price": 112.29,
-      "current_pnl": 1.04,
+      "current_price": 112.66,
+      "current_pnl": 1.38,
       "stop_loss": 103.2,
       "take_profit": 117.84,
       "stop_pct": 8.92,
@@ -231,9 +231,9 @@
       "max_days": 12,
       "trail_act": 3.5,
       "trail_atr": 2.0,
-      "trail_sl": 100.94,
+      "trail_sl": 101.27,
       "ema50_ok": true,
-      "ema50_val": 110.73
+      "ema50_val": 110.74
     },
     {
       "ticker": "ENR.DE",
@@ -268,8 +268,8 @@
       "urgency": "HACE 1d",
       "days_ago": 1,
       "price": 6.12,
-      "current_price": 6.25,
-      "current_pnl": 0.83,
+      "current_price": 6.26,
+      "current_pnl": 1.05,
       "stop_loss": 5.52,
       "take_profit": 6.85,
       "stop_pct": 9.8,
@@ -283,7 +283,7 @@
       "max_days": 12,
       "trail_act": 3.5,
       "trail_atr": 1.2,
-      "trail_sl": 5.85,
+      "trail_sl": 5.86,
       "ema50_ok": true,
       "ema50_val": 5.39
     },
@@ -2429,31 +2429,31 @@
         "days_to_exp": 21,
         "days_remaining": 11,
         "trade_expiring_soon": false,
-        "proxy_price": 428.71,
+        "proxy_price": 428.87,
         "pcr": 1.08,
         "pcr_source": "oi",
-        "max_pain": 68.22,
-        "max_pain_pct": 1.5,
+        "max_pain": 68.19,
+        "max_pain_pct": 1.4,
         "max_pain_valid": true,
-        "implied_move_pct": 5.1,
-        "implied_up": 70.66,
-        "implied_down": 63.8,
+        "implied_move_pct": 5.0,
+        "implied_up": 70.59,
+        "implied_down": 63.87,
         "tp_in_range": false,
-        "skew": 17.4,
+        "skew": -1.5,
         "skew_detail": {
-          "put_strike": 63.83,
-          "call_strike": 70.57,
-          "put_price": 7.43,
-          "call_price": 6.2
+          "put_strike": 63.8,
+          "call_strike": 70.54,
+          "put_price": 6.62,
+          "call_price": 6.5
         },
-        "iv_rank": 59.0,
-        "atm_iv": 36.6,
+        "iv_rank": 57.0,
+        "atm_iv": 36.1,
         "hv_252": 28.0,
         "hv_21": 36.5,
         "oi_map": [
           {
             "strike_proxy": 375.0,
-            "strike_asset": 58.81,
+            "strike_asset": 58.79,
             "call_oi": 7,
             "put_oi": 2190,
             "total_oi": 2197,
@@ -2461,7 +2461,7 @@
           },
           {
             "strike_proxy": 390.0,
-            "strike_asset": 61.16,
+            "strike_asset": 61.14,
             "call_oi": 125,
             "put_oi": 4650,
             "total_oi": 4775,
@@ -2469,7 +2469,7 @@
           },
           {
             "strike_proxy": 395.0,
-            "strike_asset": 61.94,
+            "strike_asset": 61.92,
             "call_oi": 21,
             "put_oi": 4684,
             "total_oi": 4705,
@@ -2477,7 +2477,7 @@
           },
           {
             "strike_proxy": 400.0,
-            "strike_asset": 62.73,
+            "strike_asset": 62.7,
             "call_oi": 61,
             "put_oi": 1082,
             "total_oi": 1143,
@@ -2485,7 +2485,7 @@
           },
           {
             "strike_proxy": 417.0,
-            "strike_asset": 65.39,
+            "strike_asset": 65.37,
             "call_oi": 1210,
             "put_oi": 96,
             "total_oi": 1306,
@@ -2493,7 +2493,7 @@
           },
           {
             "strike_proxy": 418.0,
-            "strike_asset": 65.55,
+            "strike_asset": 65.53,
             "call_oi": 1237,
             "put_oi": 20,
             "total_oi": 1257,
@@ -2501,7 +2501,7 @@
           },
           {
             "strike_proxy": 420.0,
-            "strike_asset": 65.86,
+            "strike_asset": 65.84,
             "call_oi": 729,
             "put_oi": 1428,
             "total_oi": 2157,
@@ -2509,7 +2509,7 @@
           },
           {
             "strike_proxy": 445.0,
-            "strike_asset": 69.78,
+            "strike_asset": 69.76,
             "call_oi": 1247,
             "put_oi": 197,
             "total_oi": 1444,
@@ -2517,7 +2517,7 @@
           },
           {
             "strike_proxy": 450.0,
-            "strike_asset": 70.57,
+            "strike_asset": 70.54,
             "call_oi": 774,
             "put_oi": 262,
             "total_oi": 1036,
@@ -2525,7 +2525,7 @@
           },
           {
             "strike_proxy": 451.0,
-            "strike_asset": 70.73,
+            "strike_asset": 70.7,
             "call_oi": 46,
             "put_oi": 1088,
             "total_oi": 1134,
@@ -2533,7 +2533,7 @@
           },
           {
             "strike_proxy": 452.0,
-            "strike_asset": 70.88,
+            "strike_asset": 70.86,
             "call_oi": 89,
             "put_oi": 1105,
             "total_oi": 1194,
@@ -2541,7 +2541,7 @@
           },
           {
             "strike_proxy": 455.0,
-            "strike_asset": 71.35,
+            "strike_asset": 71.33,
             "call_oi": 3064,
             "put_oi": 392,
             "total_oi": 3456,
@@ -2549,7 +2549,7 @@
           },
           {
             "strike_proxy": 460.0,
-            "strike_asset": 72.14,
+            "strike_asset": 72.11,
             "call_oi": 3426,
             "put_oi": 303,
             "total_oi": 3729,
@@ -2557,7 +2557,7 @@
           },
           {
             "strike_proxy": 500.0,
-            "strike_asset": 78.41,
+            "strike_asset": 78.38,
             "call_oi": 1279,
             "put_oi": 0,
             "total_oi": 1279,
@@ -2565,7 +2565,7 @@
           },
           {
             "strike_proxy": 535.0,
-            "strike_asset": 83.9,
+            "strike_asset": 83.87,
             "call_oi": 1700,
             "put_oi": 0,
             "total_oi": 1700,
@@ -2577,7 +2577,7 @@
         "put_walls": [
           {
             "strike_proxy": 390.0,
-            "strike_asset": 61.16,
+            "strike_asset": 61.14,
             "call_oi": 125,
             "put_oi": 4650,
             "total_oi": 4775,
@@ -2585,7 +2585,7 @@
           },
           {
             "strike_proxy": 395.0,
-            "strike_asset": 61.94,
+            "strike_asset": 61.92,
             "call_oi": 21,
             "put_oi": 4684,
             "total_oi": 4705,
@@ -2598,29 +2598,29 @@
             "msg": "PCR 1.08 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
           },
           {
-            "type": "bearish",
-            "msg": "Skew moderado +17.4% — puts OTM (63.83) más caras que calls OTM (70.57). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "type": "neutral",
+            "msg": "Skew equilibrado -1.5% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+12.0%) está FUERA del implied move ±5.1% para los 11d restantes (IV anualizada: 36.6%). El mercado solo descuenta ±5.1% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+12.0%) está FUERA del implied move ±5.0% para los 11d restantes (IV anualizada: 36.1%). El mercado solo descuenta ±5.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 68.22 (+1.5% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
+            "msg": "Max Pain en 68.19 (+1.4% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 59% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 57% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 61.16 (OI 4.7K), 61.94 (OI 4.7K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 61.14 (OI 4.7K), 61.92 (OI 4.7K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
-        "verdict": "CONTRADICE",
-        "verdict_color": "red",
-        "verdict_msg": "Opciones muestran sesgo bajista (1 señales negativas). Considera reducir tamaño o esperar confirmación adicional.",
+        "verdict": "CONFIRMA CON CAUTELA",
+        "verdict_color": "yellow",
+        "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
         "total_call_oi": 26470,
         "total_put_oi": 28523
@@ -5049,31 +5049,31 @@
         "days_to_exp": 21,
         "days_remaining": 15,
         "trade_expiring_soon": false,
-        "proxy_price": 95.09,
+        "proxy_price": 94.58,
         "pcr": 0.87,
         "pcr_source": "oi",
-        "max_pain": 35.78,
-        "max_pain_pct": -5.4,
+        "max_pain": 35.97,
+        "max_pain_pct": -4.8,
         "max_pain_valid": true,
-        "implied_move_pct": 9.6,
-        "implied_up": 41.43,
-        "implied_down": 34.17,
+        "implied_move_pct": 9.7,
+        "implied_up": 41.47,
+        "implied_down": 34.13,
         "tp_in_range": true,
-        "skew": 3.3,
+        "skew": -14.8,
         "skew_detail": {
-          "put_strike": 35.78,
-          "call_strike": 39.75,
-          "put_price": 3.4,
-          "call_price": 3.17
+          "put_strike": 35.97,
+          "call_strike": 39.57,
+          "put_price": 3.2,
+          "call_price": 3.62
         },
-        "iv_rank": 75.0,
-        "atm_iv": 59.0,
+        "iv_rank": 77.0,
+        "atm_iv": 60.1,
         "hv_252": 46.3,
-        "hv_21": 59.5,
+        "hv_21": 59.6,
         "oi_map": [
           {
             "strike_proxy": 75.0,
-            "strike_asset": 29.81,
+            "strike_asset": 29.97,
             "call_oi": 23,
             "put_oi": 235,
             "total_oi": 258,
@@ -5081,7 +5081,7 @@
           },
           {
             "strike_proxy": 80.0,
-            "strike_asset": 31.8,
+            "strike_asset": 31.97,
             "call_oi": 62,
             "put_oi": 742,
             "total_oi": 804,
@@ -5089,7 +5089,7 @@
           },
           {
             "strike_proxy": 82.0,
-            "strike_asset": 32.6,
+            "strike_asset": 32.77,
             "call_oi": 15,
             "put_oi": 174,
             "total_oi": 189,
@@ -5097,7 +5097,7 @@
           },
           {
             "strike_proxy": 85.0,
-            "strike_asset": 33.79,
+            "strike_asset": 33.97,
             "call_oi": 70,
             "put_oi": 129,
             "total_oi": 199,
@@ -5105,7 +5105,7 @@
           },
           {
             "strike_proxy": 87.0,
-            "strike_asset": 34.58,
+            "strike_asset": 34.77,
             "call_oi": 27,
             "put_oi": 649,
             "total_oi": 676,
@@ -5113,7 +5113,7 @@
           },
           {
             "strike_proxy": 88.0,
-            "strike_asset": 34.98,
+            "strike_asset": 35.17,
             "call_oi": 76,
             "put_oi": 626,
             "total_oi": 702,
@@ -5121,7 +5121,7 @@
           },
           {
             "strike_proxy": 90.0,
-            "strike_asset": 35.78,
+            "strike_asset": 35.97,
             "call_oi": 196,
             "put_oi": 229,
             "total_oi": 425,
@@ -5129,7 +5129,7 @@
           },
           {
             "strike_proxy": 91.0,
-            "strike_asset": 36.17,
+            "strike_asset": 36.37,
             "call_oi": 86,
             "put_oi": 166,
             "total_oi": 252,
@@ -5137,7 +5137,7 @@
           },
           {
             "strike_proxy": 95.0,
-            "strike_asset": 37.76,
+            "strike_asset": 37.97,
             "call_oi": 153,
             "put_oi": 60,
             "total_oi": 213,
@@ -5145,7 +5145,7 @@
           },
           {
             "strike_proxy": 97.0,
-            "strike_asset": 38.56,
+            "strike_asset": 38.77,
             "call_oi": 96,
             "put_oi": 37,
             "total_oi": 133,
@@ -5153,7 +5153,7 @@
           },
           {
             "strike_proxy": 98.0,
-            "strike_asset": 38.96,
+            "strike_asset": 39.17,
             "call_oi": 424,
             "put_oi": 29,
             "total_oi": 453,
@@ -5161,7 +5161,7 @@
           },
           {
             "strike_proxy": 100.0,
-            "strike_asset": 39.75,
+            "strike_asset": 39.97,
             "call_oi": 1817,
             "put_oi": 51,
             "total_oi": 1868,
@@ -5169,7 +5169,7 @@
           },
           {
             "strike_proxy": 101.0,
-            "strike_asset": 40.15,
+            "strike_asset": 40.37,
             "call_oi": 37,
             "put_oi": 145,
             "total_oi": 182,
@@ -5177,7 +5177,7 @@
           },
           {
             "strike_proxy": 105.0,
-            "strike_asset": 41.74,
+            "strike_asset": 41.96,
             "call_oi": 119,
             "put_oi": 13,
             "total_oi": 132,
@@ -5185,7 +5185,7 @@
           },
           {
             "strike_proxy": 110.0,
-            "strike_asset": 43.73,
+            "strike_asset": 43.96,
             "call_oi": 151,
             "put_oi": 10,
             "total_oi": 161,
@@ -5196,7 +5196,7 @@
         "call_walls": [
           {
             "strike_proxy": 100.0,
-            "strike_asset": 39.75,
+            "strike_asset": 39.97,
             "call_oi": 1817,
             "put_oi": 51,
             "total_oi": 1868,
@@ -5210,32 +5210,32 @@
             "msg": "PCR 0.87 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
           },
           {
-            "type": "neutral",
-            "msg": "Skew equilibrado 3.3% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
+            "type": "bullish",
+            "msg": "Skew invertido -14.8% — calls OTM (39.57, precio 3.62) más caras que puts OTM (35.97, precio 3.2). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+4.0%) está dentro del implied move ±9.6% calculado para los 15d restantes del trade (IV anualizada: 59.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-22.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+4.0%) está dentro del implied move ±9.7% calculado para los 15d restantes del trade (IV anualizada: 60.1%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-22.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 35.78 (-5.4% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 35.78."
+            "msg": "Max Pain en 35.97 (-4.8% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 35.97."
           },
           {
             "type": "warning",
-            "msg": "IV Rank 75% — la volatilidad implícita está en el percentil 75 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
+            "msg": "IV Rank 77% — la volatilidad implícita está en el percentil 77 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
           },
           {
             "type": "neutral",
-            "msg": "Muros de calls (resistencia gamma): 39.75 (OI 1.8K). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
+            "msg": "Muros de calls (resistencia gamma): 39.97 (OI 1.8K). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
           }
         ],
         "verdict": "CONFIRMA CON CAUTELA",
         "verdict_color": "yellow",
         "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
-        "total_call_oi": 4465,
-        "total_put_oi": 3887
+        "total_call_oi": 4475,
+        "total_put_oi": 3892
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T13:58:41.398521",
@@ -7491,31 +7491,31 @@
         "days_to_exp": 21,
         "days_remaining": 15,
         "trade_expiring_soon": false,
-        "proxy_price": 65.84,
+        "proxy_price": 65.75,
         "pcr": 1.36,
         "pcr_source": "oi",
-        "max_pain": 41.04,
-        "max_pain_pct": 6.3,
+        "max_pain": 41.09,
+        "max_pain_pct": 6.5,
         "max_pain_valid": true,
-        "implied_move_pct": 10.9,
-        "implied_up": 42.81,
-        "implied_down": 34.39,
+        "implied_move_pct": 10.8,
+        "implied_up": 42.77,
+        "implied_down": 34.43,
         "tp_in_range": true,
-        "skew": 15.7,
+        "skew": -24.4,
         "skew_detail": {
-          "put_strike": 36.93,
-          "call_strike": 40.45,
-          "put_price": 3.0,
+          "put_strike": 36.4,
+          "call_strike": 40.5,
+          "put_price": 2.52,
           "call_price": 2.88
         },
         "iv_rank": 40.0,
-        "atm_iv": 67.4,
+        "atm_iv": 66.9,
         "hv_252": 57.3,
         "hv_21": 59.2,
         "oi_map": [
           {
             "strike_proxy": 50.0,
-            "strike_asset": 29.31,
+            "strike_asset": 29.35,
             "call_oi": 134,
             "put_oi": 9312,
             "total_oi": 9446,
@@ -7523,7 +7523,7 @@
           },
           {
             "strike_proxy": 55.0,
-            "strike_asset": 32.24,
+            "strike_asset": 32.29,
             "call_oi": 69,
             "put_oi": 4512,
             "total_oi": 4581,
@@ -7531,7 +7531,7 @@
           },
           {
             "strike_proxy": 58.0,
-            "strike_asset": 34.0,
+            "strike_asset": 34.05,
             "call_oi": 23,
             "put_oi": 3210,
             "total_oi": 3233,
@@ -7539,7 +7539,7 @@
           },
           {
             "strike_proxy": 60.0,
-            "strike_asset": 35.18,
+            "strike_asset": 35.22,
             "call_oi": 868,
             "put_oi": 2344,
             "total_oi": 3212,
@@ -7547,7 +7547,7 @@
           },
           {
             "strike_proxy": 62.0,
-            "strike_asset": 36.35,
+            "strike_asset": 36.4,
             "call_oi": 688,
             "put_oi": 1564,
             "total_oi": 2252,
@@ -7555,7 +7555,7 @@
           },
           {
             "strike_proxy": 63.0,
-            "strike_asset": 36.93,
+            "strike_asset": 36.98,
             "call_oi": 548,
             "put_oi": 2401,
             "total_oi": 2949,
@@ -7563,7 +7563,7 @@
           },
           {
             "strike_proxy": 64.0,
-            "strike_asset": 37.52,
+            "strike_asset": 37.57,
             "call_oi": 929,
             "put_oi": 1299,
             "total_oi": 2228,
@@ -7571,7 +7571,7 @@
           },
           {
             "strike_proxy": 65.0,
-            "strike_asset": 38.11,
+            "strike_asset": 38.16,
             "call_oi": 940,
             "put_oi": 2020,
             "total_oi": 2960,
@@ -7579,7 +7579,7 @@
           },
           {
             "strike_proxy": 68.0,
-            "strike_asset": 39.87,
+            "strike_asset": 39.92,
             "call_oi": 1267,
             "put_oi": 794,
             "total_oi": 2061,
@@ -7587,7 +7587,7 @@
           },
           {
             "strike_proxy": 70.0,
-            "strike_asset": 41.04,
+            "strike_asset": 41.09,
             "call_oi": 3058,
             "put_oi": 4429,
             "total_oi": 7487,
@@ -7595,7 +7595,7 @@
           },
           {
             "strike_proxy": 73.0,
-            "strike_asset": 42.8,
+            "strike_asset": 42.85,
             "call_oi": 1753,
             "put_oi": 364,
             "total_oi": 2117,
@@ -7603,7 +7603,7 @@
           },
           {
             "strike_proxy": 76.0,
-            "strike_asset": 44.56,
+            "strike_asset": 44.61,
             "call_oi": 3930,
             "put_oi": 160,
             "total_oi": 4090,
@@ -7611,7 +7611,7 @@
           },
           {
             "strike_proxy": 76.5,
-            "strike_asset": 44.85,
+            "strike_asset": 44.91,
             "call_oi": 156,
             "put_oi": 1889,
             "total_oi": 2045,
@@ -7619,7 +7619,7 @@
           },
           {
             "strike_proxy": 78.0,
-            "strike_asset": 45.73,
+            "strike_asset": 45.79,
             "call_oi": 3958,
             "put_oi": 91,
             "total_oi": 4049,
@@ -7627,7 +7627,7 @@
           },
           {
             "strike_proxy": 80.0,
-            "strike_asset": 46.9,
+            "strike_asset": 46.96,
             "call_oi": 2157,
             "put_oi": 349,
             "total_oi": 2506,
@@ -7639,7 +7639,7 @@
         "put_walls": [
           {
             "strike_proxy": 50.0,
-            "strike_asset": 29.31,
+            "strike_asset": 29.35,
             "call_oi": 134,
             "put_oi": 9312,
             "total_oi": 9446,
@@ -7647,7 +7647,7 @@
           },
           {
             "strike_proxy": 70.0,
-            "strike_asset": 41.04,
+            "strike_asset": 41.09,
             "call_oi": 3058,
             "put_oi": 4429,
             "total_oi": 7487,
@@ -7660,16 +7660,16 @@
             "msg": "PCR 1.36 — más puts que calls. Los inversores están comprando cobertura bajista, lo que sugiere cautela en el mercado. No es extremo pero es moderadamente bajista."
           },
           {
-            "type": "bearish",
-            "msg": "Skew moderado +15.7% — puts OTM (36.93) más caras que calls OTM (40.45). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "type": "bullish",
+            "msg": "Skew invertido -24.4% — calls OTM (40.5, precio 2.88) más caras que puts OTM (36.4, precio 2.52). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+10.0%) está dentro del implied move ±10.9% calculado para los 15d restantes del trade (IV anualizada: 67.4%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.3%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+10.0%) está dentro del implied move ±10.8% calculado para los 15d restantes del trade (IV anualizada: 66.9%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.3%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bullish",
-            "msg": "Max Pain en 41.04 (+6.3% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
+            "msg": "Max Pain en 41.09 (+6.5% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
           },
           {
             "type": "neutral",
@@ -7677,12 +7677,12 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 29.31 (OI 9.3K), 41.04 (OI 4.4K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 29.35 (OI 9.3K), 41.09 (OI 4.4K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
-        "verdict": "NEUTRO",
-        "verdict_color": "yellow",
-        "verdict_msg": "Opciones no dan señal clara. La técnica manda — las opciones no contradicen la entrada.",
+        "verdict": "CONFIRMA",
+        "verdict_color": "green",
+        "verdict_msg": "Opciones confirman sesgo alcista (3 señales positivas vs 1 negativas). Convicción alta.",
         "data_quality": "alta",
         "total_call_oi": 32841,
         "total_put_oi": 44676
@@ -9771,20 +9771,20 @@
         "days_to_exp": 42,
         "days_remaining": 15,
         "trade_expiring_soon": false,
-        "proxy_price": 88.57,
+        "proxy_price": 88.64,
         "pcr": 0.26,
         "pcr_source": "oi",
-        "max_pain": 12.9,
-        "max_pain_pct": -15.3,
+        "max_pain": 12.89,
+        "max_pain_pct": -15.4,
         "max_pain_valid": true,
         "implied_move_pct": 9.0,
         "implied_up": 16.6,
         "implied_down": 13.86,
         "tp_in_range": false,
-        "skew": 71.1,
+        "skew": 66.0,
         "skew_detail": {
-          "put_strike": 14.62,
-          "call_strike": 16.34,
+          "put_strike": 14.6,
+          "call_strike": 16.32,
           "put_price": 4.75,
           "call_price": 5.0
         },
@@ -9795,7 +9795,7 @@
         "oi_map": [
           {
             "strike_proxy": 67.0,
-            "strike_asset": 11.52,
+            "strike_asset": 11.51,
             "call_oi": 59,
             "put_oi": 13,
             "total_oi": 72,
@@ -9803,7 +9803,7 @@
           },
           {
             "strike_proxy": 68.0,
-            "strike_asset": 11.69,
+            "strike_asset": 11.68,
             "call_oi": 52,
             "put_oi": 3,
             "total_oi": 55,
@@ -9819,7 +9819,7 @@
           },
           {
             "strike_proxy": 70.0,
-            "strike_asset": 12.04,
+            "strike_asset": 12.03,
             "call_oi": 226,
             "put_oi": 494,
             "total_oi": 720,
@@ -9827,7 +9827,7 @@
           },
           {
             "strike_proxy": 75.0,
-            "strike_asset": 12.9,
+            "strike_asset": 12.89,
             "call_oi": 750,
             "put_oi": 226,
             "total_oi": 976,
@@ -9835,7 +9835,7 @@
           },
           {
             "strike_proxy": 80.0,
-            "strike_asset": 13.76,
+            "strike_asset": 13.75,
             "call_oi": 588,
             "put_oi": 279,
             "total_oi": 867,
@@ -9843,7 +9843,7 @@
           },
           {
             "strike_proxy": 85.0,
-            "strike_asset": 14.62,
+            "strike_asset": 14.6,
             "call_oi": 741,
             "put_oi": 73,
             "total_oi": 814,
@@ -9851,7 +9851,7 @@
           },
           {
             "strike_proxy": 90.0,
-            "strike_asset": 15.48,
+            "strike_asset": 15.46,
             "call_oi": 769,
             "put_oi": 46,
             "total_oi": 815,
@@ -9859,7 +9859,7 @@
           },
           {
             "strike_proxy": 95.0,
-            "strike_asset": 16.34,
+            "strike_asset": 16.32,
             "call_oi": 437,
             "put_oi": 54,
             "total_oi": 491,
@@ -9867,7 +9867,7 @@
           },
           {
             "strike_proxy": 100.0,
-            "strike_asset": 17.2,
+            "strike_asset": 17.18,
             "call_oi": 597,
             "put_oi": 43,
             "total_oi": 640,
@@ -9875,7 +9875,7 @@
           },
           {
             "strike_proxy": 105.0,
-            "strike_asset": 18.06,
+            "strike_asset": 18.04,
             "call_oi": 210,
             "put_oi": 10,
             "total_oi": 220,
@@ -9883,7 +9883,7 @@
           },
           {
             "strike_proxy": 110.0,
-            "strike_asset": 18.91,
+            "strike_asset": 18.9,
             "call_oi": 503,
             "put_oi": 20,
             "total_oi": 523,
@@ -9900,7 +9900,7 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew muy pronunciado +71.1% — las puts OTM (14.62, precio 4.75) cuestan bastante más que las calls OTM (16.34, precio 5.0). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
+            "msg": "Skew muy pronunciado +66.0% — las puts OTM (14.6, precio 4.75) cuestan bastante más que las calls OTM (16.32, precio 5.0). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
           },
           {
             "type": "warning",
@@ -9908,7 +9908,7 @@
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 12.9 (-15.3% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 12.9."
+            "msg": "Max Pain en 12.89 (-15.4% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 12.89."
           },
           {
             "type": "neutral",
@@ -30249,20 +30249,20 @@
         "days_to_exp": 42,
         "days_remaining": 7,
         "trade_expiring_soon": false,
-        "proxy_price": 35.22,
+        "proxy_price": 35.21,
         "pcr": null,
         "pcr_source": "datos insuficientes (ratio anómalo)",
-        "max_pain": 34.85,
+        "max_pain": 34.87,
         "max_pain_pct": 2.2,
         "max_pain_valid": true,
         "implied_move_pct": null,
         "implied_up": null,
         "implied_down": null,
         "tp_in_range": null,
-        "skew": -69.3,
+        "skew": -68.5,
         "skew_detail": {
-          "put_strike": 31.95,
-          "call_strike": 34.85,
+          "put_strike": 31.96,
+          "call_strike": 34.87,
           "put_price": 0.88,
           "call_price": 1.0
         },
@@ -30273,7 +30273,7 @@
         "oi_map": [
           {
             "strike_proxy": 27.0,
-            "strike_asset": 26.14,
+            "strike_asset": 26.15,
             "call_oi": 1,
             "put_oi": 0,
             "total_oi": 1,
@@ -30281,7 +30281,7 @@
           },
           {
             "strike_proxy": 30.0,
-            "strike_asset": 29.04,
+            "strike_asset": 29.05,
             "call_oi": 0,
             "put_oi": 15,
             "total_oi": 15,
@@ -30289,7 +30289,7 @@
           },
           {
             "strike_proxy": 32.0,
-            "strike_asset": 30.98,
+            "strike_asset": 30.99,
             "call_oi": 0,
             "put_oi": 2,
             "total_oi": 2,
@@ -30297,7 +30297,7 @@
           },
           {
             "strike_proxy": 33.0,
-            "strike_asset": 31.95,
+            "strike_asset": 31.96,
             "call_oi": 0,
             "put_oi": 196,
             "total_oi": 196,
@@ -30305,7 +30305,7 @@
           },
           {
             "strike_proxy": 34.0,
-            "strike_asset": 32.91,
+            "strike_asset": 32.93,
             "call_oi": 0,
             "put_oi": 67,
             "total_oi": 67,
@@ -30313,7 +30313,7 @@
           },
           {
             "strike_proxy": 36.0,
-            "strike_asset": 34.85,
+            "strike_asset": 34.87,
             "call_oi": 8,
             "put_oi": 0,
             "total_oi": 8,
@@ -30321,7 +30321,7 @@
           },
           {
             "strike_proxy": 40.0,
-            "strike_asset": 38.72,
+            "strike_asset": 38.74,
             "call_oi": 0,
             "put_oi": 2,
             "total_oi": 2,
@@ -30329,7 +30329,7 @@
           },
           {
             "strike_proxy": 42.0,
-            "strike_asset": 40.66,
+            "strike_asset": 40.68,
             "call_oi": 0,
             "put_oi": 3,
             "total_oi": 3,
@@ -30341,7 +30341,7 @@
         "put_walls": [
           {
             "strike_proxy": 33.0,
-            "strike_asset": 31.95,
+            "strike_asset": 31.96,
             "call_oi": 0,
             "put_oi": 196,
             "total_oi": 196,
@@ -30355,11 +30355,11 @@
           },
           {
             "type": "bullish",
-            "msg": "Skew invertido -69.3% — calls OTM (34.85, precio 1.0) más caras que puts OTM (31.95, precio 0.88). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+            "msg": "Skew invertido -68.5% — calls OTM (34.87, precio 1.0) más caras que puts OTM (31.96, precio 0.88). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 34.85 (+2.2% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
+            "msg": "Max Pain en 34.87 (+2.2% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "warning",
@@ -30367,7 +30367,7 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 31.95 (OI 196). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 31.96 (OI 196). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
         "verdict": "DATOS INSUF.",
@@ -34888,20 +34888,20 @@
         "days_to_exp": 42,
         "days_remaining": 12,
         "trade_expiring_soon": false,
-        "proxy_price": 54.84,
+        "proxy_price": 54.78,
         "pcr": 3.38,
         "pcr_source": "oi",
-        "max_pain": 62.08,
-        "max_pain_pct": -3.4,
+        "max_pain": 62.15,
+        "max_pain_pct": -3.2,
         "max_pain_valid": true,
         "implied_move_pct": null,
         "implied_up": null,
         "implied_down": null,
         "tp_in_range": null,
-        "skew": 10.4,
+        "skew": 15.9,
         "skew_detail": {
-          "put_strike": 60.91,
-          "call_strike": 66.77,
+          "put_strike": 60.98,
+          "call_strike": 66.84,
           "put_price": 1.51,
           "call_price": 1.04
         },
@@ -34912,7 +34912,7 @@
         "oi_map": [
           {
             "strike_proxy": 45.0,
-            "strike_asset": 52.71,
+            "strike_asset": 52.77,
             "call_oi": 0,
             "put_oi": 1,
             "total_oi": 1,
@@ -34920,7 +34920,7 @@
           },
           {
             "strike_proxy": 52.0,
-            "strike_asset": 60.91,
+            "strike_asset": 60.98,
             "call_oi": 1,
             "put_oi": 7,
             "total_oi": 8,
@@ -34928,7 +34928,7 @@
           },
           {
             "strike_proxy": 53.0,
-            "strike_asset": 62.08,
+            "strike_asset": 62.15,
             "call_oi": 0,
             "put_oi": 79,
             "total_oi": 79,
@@ -34936,7 +34936,7 @@
           },
           {
             "strike_proxy": 56.0,
-            "strike_asset": 65.6,
+            "strike_asset": 65.67,
             "call_oi": 0,
             "put_oi": 1,
             "total_oi": 1,
@@ -34944,7 +34944,7 @@
           },
           {
             "strike_proxy": 57.0,
-            "strike_asset": 66.77,
+            "strike_asset": 66.84,
             "call_oi": 25,
             "put_oi": 0,
             "total_oi": 25,
@@ -34956,7 +34956,7 @@
         "put_walls": [
           {
             "strike_proxy": 53.0,
-            "strike_asset": 62.08,
+            "strike_asset": 62.15,
             "call_oi": 0,
             "put_oi": 79,
             "total_oi": 79,
@@ -34970,11 +34970,11 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +10.4% — puts OTM (60.91) más caras que calls OTM (66.77). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew moderado +15.9% — puts OTM (60.98) más caras que calls OTM (66.84). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 62.08 (-3.4% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 62.08."
+            "msg": "Max Pain en 62.15 (-3.2% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 62.15."
           },
           {
             "type": "warning",
@@ -34982,7 +34982,7 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 62.08 (OI 79). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 62.15 (OI 79). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
         "verdict": "CONTRADICE",
@@ -37331,31 +37331,31 @@
         "days_to_exp": 21,
         "days_remaining": 8,
         "trade_expiring_soon": false,
-        "proxy_price": 85.32,
+        "proxy_price": 85.21,
         "pcr": 2.89,
         "pcr_source": "oi",
-        "max_pain": 48.46,
-        "max_pain_pct": -2.1,
+        "max_pain": 48.51,
+        "max_pain_pct": -2.0,
         "max_pain_valid": true,
-        "implied_move_pct": 4.3,
-        "implied_up": 51.64,
-        "implied_down": 47.38,
+        "implied_move_pct": 4.2,
+        "implied_up": 51.59,
+        "implied_down": 47.43,
         "tp_in_range": false,
-        "skew": 37.2,
+        "skew": 41.5,
         "skew_detail": {
-          "put_strike": 47.01,
-          "call_strike": 51.94,
-          "put_price": 1.5,
+          "put_strike": 47.06,
+          "call_strike": 52.0,
+          "put_price": 1.48,
           "call_price": 1.06
         },
         "iv_rank": 100.0,
-        "atm_iv": 36.1,
-        "hv_252": 22.0,
+        "atm_iv": 35.5,
+        "hv_252": 22.1,
         "hv_21": 30.7,
         "oi_map": [
           {
             "strike_proxy": 75.0,
-            "strike_asset": 43.52,
+            "strike_asset": 43.58,
             "call_oi": 0,
             "put_oi": 110,
             "total_oi": 110,
@@ -37363,7 +37363,7 @@
           },
           {
             "strike_proxy": 78.0,
-            "strike_asset": 45.26,
+            "strike_asset": 45.32,
             "call_oi": 0,
             "put_oi": 73,
             "total_oi": 73,
@@ -37371,7 +37371,7 @@
           },
           {
             "strike_proxy": 79.0,
-            "strike_asset": 45.85,
+            "strike_asset": 45.9,
             "call_oi": 0,
             "put_oi": 26,
             "total_oi": 26,
@@ -37379,7 +37379,7 @@
           },
           {
             "strike_proxy": 80.0,
-            "strike_asset": 46.43,
+            "strike_asset": 46.48,
             "call_oi": 0,
             "put_oi": 156,
             "total_oi": 156,
@@ -37387,7 +37387,7 @@
           },
           {
             "strike_proxy": 81.0,
-            "strike_asset": 47.01,
+            "strike_asset": 47.06,
             "call_oi": 0,
             "put_oi": 14,
             "total_oi": 14,
@@ -37395,7 +37395,7 @@
           },
           {
             "strike_proxy": 82.0,
-            "strike_asset": 47.59,
+            "strike_asset": 47.64,
             "call_oi": 2,
             "put_oi": 19,
             "total_oi": 21,
@@ -37403,7 +37403,7 @@
           },
           {
             "strike_proxy": 82.5,
-            "strike_asset": 47.88,
+            "strike_asset": 47.93,
             "call_oi": 120,
             "put_oi": 26,
             "total_oi": 146,
@@ -37411,7 +37411,7 @@
           },
           {
             "strike_proxy": 83.0,
-            "strike_asset": 48.17,
+            "strike_asset": 48.22,
             "call_oi": 0,
             "put_oi": 481,
             "total_oi": 481,
@@ -37419,7 +37419,7 @@
           },
           {
             "strike_proxy": 83.5,
-            "strike_asset": 48.46,
+            "strike_asset": 48.51,
             "call_oi": 120,
             "put_oi": 1,
             "total_oi": 121,
@@ -37427,7 +37427,7 @@
           },
           {
             "strike_proxy": 84.5,
-            "strike_asset": 49.04,
+            "strike_asset": 49.09,
             "call_oi": 0,
             "put_oi": 33,
             "total_oi": 33,
@@ -37435,7 +37435,7 @@
           },
           {
             "strike_proxy": 85.0,
-            "strike_asset": 49.33,
+            "strike_asset": 49.39,
             "call_oi": 6,
             "put_oi": 71,
             "total_oi": 77,
@@ -37443,7 +37443,7 @@
           },
           {
             "strike_proxy": 86.5,
-            "strike_asset": 50.2,
+            "strike_asset": 50.26,
             "call_oi": 17,
             "put_oi": 2,
             "total_oi": 19,
@@ -37451,7 +37451,7 @@
           },
           {
             "strike_proxy": 87.0,
-            "strike_asset": 50.49,
+            "strike_asset": 50.55,
             "call_oi": 13,
             "put_oi": 18,
             "total_oi": 31,
@@ -37459,7 +37459,7 @@
           },
           {
             "strike_proxy": 88.5,
-            "strike_asset": 51.36,
+            "strike_asset": 51.42,
             "call_oi": 15,
             "put_oi": 1,
             "total_oi": 16,
@@ -37467,7 +37467,7 @@
           },
           {
             "strike_proxy": 91.0,
-            "strike_asset": 52.81,
+            "strike_asset": 52.87,
             "call_oi": 18,
             "put_oi": 1,
             "total_oi": 19,
@@ -37479,7 +37479,7 @@
         "put_walls": [
           {
             "strike_proxy": 83.0,
-            "strike_asset": 48.17,
+            "strike_asset": 48.22,
             "call_oi": 0,
             "put_oi": 481,
             "total_oi": 481,
@@ -37493,15 +37493,15 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew muy pronunciado +37.2% — las puts OTM (47.01, precio 1.5) cuestan bastante más que las calls OTM (51.94, precio 1.06). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
+            "msg": "Skew muy pronunciado +41.5% — las puts OTM (47.06, precio 1.48) cuestan bastante más que las calls OTM (52.0, precio 1.06). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±4.3% para los 8d restantes (IV anualizada: 36.1%). El mercado solo descuenta ±4.3% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+8.0%) está FUERA del implied move ±4.2% para los 8d restantes (IV anualizada: 35.5%). El mercado solo descuenta ±4.2% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 48.46 (-2.1% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
+            "msg": "Max Pain en 48.51 (-2.0% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "warning",
@@ -37509,7 +37509,7 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 48.17 (OI 481). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 48.22 (OI 481). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
         "verdict": "CONTRADICE",
@@ -42291,7 +42291,7 @@
           "high": 138.42,
           "low": 132.96,
           "close": 136.8,
-          "volume": 3089000,
+          "volume": 3090100,
           "ema_f": 130.18,
           "ema_s": 133.56,
           "ema_t": 115.6,
@@ -42307,17 +42307,17 @@
           "open": 130.18,
           "high": 137.38,
           "low": 129.23,
-          "close": 136.36,
-          "volume": 1132460,
-          "ema_f": 130.96,
-          "ema_s": 133.77,
+          "close": 135.97,
+          "volume": 1306108,
+          "ema_f": 130.91,
+          "ema_s": 133.74,
           "ema_t": 115.8,
-          "rsi": 52.1,
+          "rsi": 51.8,
           "adx": 36.9,
-          "macd_h": 1.851,
-          "vol_r": 0.41,
+          "macd_h": 1.816,
+          "vol_r": 0.47,
           "signal": 0,
-          "score": 78
+          "score": 70
         }
       ],
       "alert": {
@@ -42327,14 +42327,14 @@
         "urgency": "HACE 1d",
         "days_ago": 1,
         "price": 135.75,
-        "current_price": 136.36,
-        "current_pnl": -0.32,
+        "current_price": 135.97,
+        "current_pnl": -0.61,
         "stop_loss": 118.28,
         "take_profit": 143.89,
         "stop_pct": 12.87,
         "tp_pct": 6.0,
         "rr_ratio": 0.47,
-        "score_now": 78,
+        "score_now": 70,
         "score": 88,
         "rsi": 52.5,
         "adx": 42.3,
@@ -42342,9 +42342,9 @@
         "max_days": 10,
         "trail_act": 5.0,
         "trail_atr": 1.5,
-        "trail_sl": 125.86,
+        "trail_sl": 125.5,
         "ema50_ok": true,
-        "ema50_val": 134.97
+        "ema50_val": 134.95
       },
       "options": {
         "options_ticker": "WPM",
@@ -42353,25 +42353,25 @@
         "days_to_exp": 21,
         "days_remaining": 9,
         "trade_expiring_soon": false,
-        "proxy_price": 136.36,
-        "pcr": 0.99,
+        "proxy_price": 135.97,
+        "pcr": 1.01,
         "pcr_source": "oi",
         "max_pain": 140.0,
-        "max_pain_pct": 2.7,
+        "max_pain_pct": 3.0,
         "max_pain_valid": true,
-        "implied_move_pct": 6.9,
-        "implied_up": 145.12,
-        "implied_down": 126.38,
+        "implied_move_pct": 6.8,
+        "implied_up": 144.98,
+        "implied_down": 126.52,
         "tp_in_range": true,
-        "skew": 10.7,
+        "skew": 26.6,
         "skew_detail": {
           "put_strike": 130.0,
           "call_strike": 143.0,
-          "put_price": 4.4,
-          "call_price": 4.15
+          "put_price": 4.3,
+          "call_price": 4.0
         },
-        "iv_rank": 68.0,
-        "atm_iv": 54.9,
+        "iv_rank": 67.0,
+        "atm_iv": 54.3,
         "hv_252": 44.7,
         "hv_21": 56.7,
         "oi_map": [
@@ -42528,23 +42528,23 @@
         "signals": [
           {
             "type": "neutral",
-            "msg": "PCR 0.99 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
+            "msg": "PCR 1.01 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +10.7% — puts OTM (130.0) más caras que calls OTM (143.0). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew muy pronunciado +26.6% — las puts OTM (130.0, precio 4.3) cuestan bastante más que las calls OTM (143.0, precio 4.0). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+6.0%) está dentro del implied move ±6.9% calculado para los 9d restantes del trade (IV anualizada: 54.9%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-12.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+6.0%) está dentro del implied move ±6.8% calculado para los 9d restantes del trade (IV anualizada: 54.3%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-12.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 140.0 (+2.7% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
+            "msg": "Max Pain en 140.0 (+3.0% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 68% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 67% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -42559,13 +42559,13 @@
         "verdict_color": "yellow",
         "verdict_msg": "Opciones no dan señal clara. La técnica manda — las opciones no contradicen la entrada.",
         "data_quality": "alta",
-        "total_call_oi": 851,
+        "total_call_oi": 835,
         "total_put_oi": 846
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447977",
       "asset_ema50_ok": true,
-      "asset_ema50_val": 134.97
+      "asset_ema50_val": 134.95
     },
     "CCJ": {
       "ticker": "CCJ",
@@ -44805,7 +44805,7 @@
           "high": 114.46,
           "low": 110.74,
           "close": 111.13,
-          "volume": 2879200,
+          "volume": 2879900,
           "ema_f": 107.71,
           "ema_s": 110.28,
           "ema_t": 105.4,
@@ -44821,15 +44821,15 @@
           "open": 106.75,
           "high": 112.68,
           "low": 106.01,
-          "close": 112.29,
-          "volume": 1428618,
-          "ema_f": 108.54,
-          "ema_s": 110.44,
-          "ema_t": 105.53,
-          "rsi": 60.6,
+          "close": 112.66,
+          "volume": 1677602,
+          "ema_f": 108.61,
+          "ema_s": 110.47,
+          "ema_t": 105.54,
+          "rsi": 61.3,
           "adx": 25.4,
-          "macd_h": 0.586,
-          "vol_r": 0.4,
+          "macd_h": 0.607,
+          "vol_r": 0.47,
           "signal": 0,
           "score": 73
         }
@@ -44841,8 +44841,8 @@
         "urgency": "HACE 1d",
         "days_ago": 1,
         "price": 113.31,
-        "current_price": 112.29,
-        "current_pnl": 1.04,
+        "current_price": 112.66,
+        "current_pnl": 1.38,
         "stop_loss": 103.2,
         "take_profit": 117.84,
         "stop_pct": 8.92,
@@ -44856,9 +44856,9 @@
         "max_days": 12,
         "trail_act": 3.5,
         "trail_atr": 2.0,
-        "trail_sl": 100.94,
+        "trail_sl": 101.27,
         "ema50_ok": true,
-        "ema50_val": 110.73
+        "ema50_val": 110.74
       },
       "options": {
         "options_ticker": "CCJ",
@@ -44867,27 +44867,27 @@
         "days_to_exp": 21,
         "days_remaining": 11,
         "trade_expiring_soon": false,
-        "proxy_price": 112.29,
+        "proxy_price": 112.66,
         "pcr": 1.19,
         "pcr_source": "oi",
         "max_pain": 107.0,
-        "max_pain_pct": -4.7,
+        "max_pain_pct": -5.0,
         "max_pain_valid": true,
-        "implied_move_pct": 8.0,
-        "implied_up": 122.37,
-        "implied_down": 104.25,
+        "implied_move_pct": 8.3,
+        "implied_up": 122.71,
+        "implied_down": 103.91,
         "tp_in_range": true,
-        "skew": 24.1,
+        "skew": 3.0,
         "skew_detail": {
           "put_strike": 107.0,
           "call_strike": 118.0,
-          "put_price": 4.22,
-          "call_price": 3.67
+          "put_price": 4.17,
+          "call_price": 3.83
         },
-        "iv_rank": 42.0,
-        "atm_iv": 58.0,
+        "iv_rank": 45.0,
+        "atm_iv": 59.6,
         "hv_252": 54.7,
-        "hv_21": 57.0,
+        "hv_21": 57.1,
         "oi_map": [
           {
             "strike_proxy": 85.0,
@@ -45028,29 +45028,29 @@
             "msg": "PCR 1.19 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
           },
           {
-            "type": "bearish",
-            "msg": "Skew moderado +24.1% — puts OTM (107.0) más caras que calls OTM (118.0). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "type": "neutral",
+            "msg": "Skew equilibrado 3.0% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+4.0%) está dentro del implied move ±8.0% calculado para los 11d restantes del trade (IV anualizada: 58.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+4.0%) está dentro del implied move ±8.3% calculado para los 11d restantes del trade (IV anualizada: 59.6%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 107.0 (-4.7% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 107.0."
+            "msg": "Max Pain en 107.0 (-5.0% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 107.0."
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 42% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 45% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
             "msg": "Muros de puts (soporte gamma): 100.00 (OI 167). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
-        "verdict": "CONTRADICE",
-        "verdict_color": "red",
-        "verdict_msg": "Opciones muestran sesgo bajista (2 señales negativas). Considera reducir tamaño o esperar confirmación adicional.",
+        "verdict": "NEUTRO",
+        "verdict_color": "yellow",
+        "verdict_msg": "Opciones no dan señal clara. La técnica manda — las opciones no contradicen la entrada.",
         "data_quality": "alta",
         "total_call_oi": 908,
         "total_put_oi": 1081
@@ -45058,7 +45058,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.448099",
       "asset_ema50_ok": true,
-      "asset_ema50_val": 110.73
+      "asset_ema50_val": 110.74
     },
     "VST": {
       "ticker": "VST",
@@ -47502,7 +47502,7 @@
           "high": 156.34,
           "low": 151.4,
           "close": 153.96,
-          "volume": 3780600,
+          "volume": 3782800,
           "ema_f": 155.4,
           "ema_s": 158.51,
           "ema_t": 166.03,
@@ -47517,16 +47517,16 @@
           "date": "2026-04-02",
           "open": 151.21,
           "high": 154.56,
-          "low": 150.23,
-          "close": 151.07,
-          "volume": 1691909,
-          "ema_f": 154.86,
-          "ema_s": 158.03,
-          "ema_t": 165.74,
-          "rsi": 43.9,
+          "low": 150.12,
+          "close": 150.85,
+          "volume": 2110727,
+          "ema_f": 154.83,
+          "ema_s": 158.01,
+          "ema_t": 165.73,
+          "rsi": 43.7,
           "adx": 23.6,
-          "macd_h": -0.552,
-          "vol_r": 0.39,
+          "macd_h": -0.566,
+          "vol_r": 0.48,
           "signal": 0,
           "score": 22
         }
@@ -47536,7 +47536,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-20T20:28:22.527459",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 160.59
+      "asset_ema50_val": 160.58
     },
     "AXON": {
       "ticker": "AXON",
@@ -49894,17 +49894,17 @@
           "open": 415.02,
           "high": 422.61,
           "low": 403.03,
-          "close": 411.73,
-          "volume": 643339,
+          "close": 411.75,
+          "volume": 843759,
           "ema_f": 457.26,
           "ema_s": 479.19,
           "ema_t": 578.99,
           "rsi": 26.7,
           "adx": 49.1,
-          "macd_h": -8.733,
-          "vol_r": 0.83,
+          "macd_h": -8.731,
+          "vol_r": 1.08,
           "signal": 0,
-          "score": 3
+          "score": 9
         }
       ],
       "alert": null,
@@ -51999,7 +51999,7 @@
           "high": 23.37,
           "low": 22.35,
           "close": 22.51,
-          "volume": 33380000,
+          "volume": 33420900,
           "ema_f": 23.17,
           "ema_s": 25.92,
           "ema_t": 32.29,
@@ -52015,15 +52015,15 @@
           "open": 21.93,
           "high": 23.33,
           "low": 21.87,
-          "close": 23.25,
-          "volume": 21865769,
-          "ema_f": 23.19,
-          "ema_s": 25.67,
+          "close": 23.13,
+          "volume": 25635015,
+          "ema_f": 23.16,
+          "ema_s": 25.66,
           "ema_t": 32.11,
-          "rsi": 42.9,
+          "rsi": 42.1,
           "adx": 39.2,
-          "macd_h": -0.33,
-          "vol_r": 0.47,
+          "macd_h": -0.338,
+          "vol_r": 0.55,
           "signal": 0,
           "score": 15
         }
@@ -54086,7 +54086,7 @@
           "high": 35.89,
           "low": 34.13,
           "close": 34.33,
-          "volume": 6000200,
+          "volume": 6011800,
           "ema_f": 36.85,
           "ema_s": 39.7,
           "ema_t": 46.55,
@@ -54102,15 +54102,15 @@
           "open": 33.39,
           "high": 34.17,
           "low": 33.09,
-          "close": 33.94,
-          "volume": 3131765,
-          "ema_f": 36.32,
-          "ema_s": 39.16,
+          "close": 33.87,
+          "volume": 3775113,
+          "ema_f": 36.31,
+          "ema_s": 39.15,
           "ema_t": 46.43,
-          "rsi": 25.9,
+          "rsi": 25.6,
           "adx": 45.9,
-          "macd_h": -0.318,
-          "vol_r": 0.48,
+          "macd_h": -0.323,
+          "vol_r": 0.57,
           "signal": 0,
           "score": 15
         }
@@ -54120,7 +54120,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.448580",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 43.44
+      "asset_ema50_val": 43.43
     },
     "RCL": {
       "ticker": "RCL",
@@ -56292,7 +56292,7 @@
           "high": 285.5,
           "low": 278.0,
           "close": 282.06,
-          "volume": 2270800,
+          "volume": 2272100,
           "ema_f": 275.97,
           "ema_s": 281.2,
           "ema_t": 290.51,
@@ -56308,15 +56308,15 @@
           "open": 271.79,
           "high": 280.29,
           "low": 266.44,
-          "close": 273.8,
-          "volume": 1504686,
-          "ema_f": 275.7,
-          "ema_s": 280.63,
-          "ema_t": 290.18,
-          "rsi": 48.9,
+          "close": 274.6,
+          "volume": 1722552,
+          "ema_f": 275.8,
+          "ema_s": 280.69,
+          "ema_t": 290.19,
+          "rsi": 49.6,
           "adx": 22.3,
-          "macd_h": 1.296,
-          "vol_r": 0.59,
+          "macd_h": 1.34,
+          "vol_r": 0.67,
           "signal": 0,
           "score": 35
         }
@@ -56326,7 +56326,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.448696",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 287.35
+      "asset_ema50_val": 287.38
     },
     "F": {
       "ticker": "F",
@@ -58600,7 +58600,7 @@
           "high": 11.69,
           "low": 11.58,
           "close": 11.68,
-          "volume": 33940400,
+          "volume": 33991700,
           "ema_f": 11.69,
           "ema_s": 12.22,
           "ema_t": 12.66,
@@ -58616,15 +58616,15 @@
           "open": 11.47,
           "high": 11.62,
           "low": 11.36,
-          "close": 11.59,
-          "volume": 21023005,
+          "close": 11.58,
+          "volume": 24315892,
           "ema_f": 11.67,
           "ema_s": 12.18,
           "ema_t": 12.64,
-          "rsi": 44.5,
+          "rsi": 44.3,
           "adx": 35.0,
           "macd_h": 0.044,
-          "vol_r": 0.42,
+          "vol_r": 0.48,
           "signal": 0,
           "score": 37
         }
@@ -61106,22 +61106,22 @@
         "days_to_exp": 21,
         "days_remaining": 2,
         "trade_expiring_soon": true,
-        "proxy_price": 59.29,
+        "proxy_price": 59.04,
         "pcr": 0.94,
         "pcr_source": "oi",
-        "max_pain": 156.28,
-        "max_pain_pct": -1.3,
+        "max_pain": 156.94,
+        "max_pain_pct": -0.9,
         "max_pain_valid": true,
         "implied_move_pct": 1.9,
         "implied_up": 161.41,
         "implied_down": 155.39,
         "tp_in_range": false,
-        "skew": 3.2,
+        "skew": -18.4,
         "skew_detail": {
-          "put_strike": 150.93,
-          "call_strike": 165.63,
-          "put_price": 0.8,
-          "call_price": 0.76
+          "put_strike": 150.23,
+          "call_strike": 166.33,
+          "put_price": 0.66,
+          "call_price": 0.79
         },
         "iv_rank": 100.0,
         "atm_iv": 31.9,
@@ -61130,7 +61130,7 @@
         "oi_map": [
           {
             "strike_proxy": 53.5,
-            "strike_asset": 142.92,
+            "strike_asset": 143.52,
             "call_oi": 1,
             "put_oi": 936,
             "total_oi": 937,
@@ -61138,7 +61138,7 @@
           },
           {
             "strike_proxy": 56.5,
-            "strike_asset": 150.93,
+            "strike_asset": 151.57,
             "call_oi": 69,
             "put_oi": 2158,
             "total_oi": 2227,
@@ -61146,7 +61146,7 @@
           },
           {
             "strike_proxy": 57.0,
-            "strike_asset": 152.27,
+            "strike_asset": 152.91,
             "call_oi": 148,
             "put_oi": 585,
             "total_oi": 733,
@@ -61154,7 +61154,7 @@
           },
           {
             "strike_proxy": 57.5,
-            "strike_asset": 153.6,
+            "strike_asset": 154.26,
             "call_oi": 56,
             "put_oi": 918,
             "total_oi": 974,
@@ -61162,7 +61162,7 @@
           },
           {
             "strike_proxy": 58.0,
-            "strike_asset": 154.94,
+            "strike_asset": 155.6,
             "call_oi": 1516,
             "put_oi": 337,
             "total_oi": 1853,
@@ -61170,7 +61170,7 @@
           },
           {
             "strike_proxy": 58.5,
-            "strike_asset": 156.28,
+            "strike_asset": 156.94,
             "call_oi": 159,
             "put_oi": 358,
             "total_oi": 517,
@@ -61178,7 +61178,7 @@
           },
           {
             "strike_proxy": 59.0,
-            "strike_asset": 157.61,
+            "strike_asset": 158.28,
             "call_oi": 190,
             "put_oi": 216,
             "total_oi": 406,
@@ -61186,7 +61186,7 @@
           },
           {
             "strike_proxy": 60.0,
-            "strike_asset": 160.28,
+            "strike_asset": 160.96,
             "call_oi": 637,
             "put_oi": 313,
             "total_oi": 950,
@@ -61194,7 +61194,7 @@
           },
           {
             "strike_proxy": 61.0,
-            "strike_asset": 162.95,
+            "strike_asset": 163.64,
             "call_oi": 1285,
             "put_oi": 436,
             "total_oi": 1721,
@@ -61202,7 +61202,7 @@
           },
           {
             "strike_proxy": 61.5,
-            "strike_asset": 164.29,
+            "strike_asset": 164.99,
             "call_oi": 243,
             "put_oi": 237,
             "total_oi": 480,
@@ -61210,7 +61210,7 @@
           },
           {
             "strike_proxy": 62.0,
-            "strike_asset": 165.63,
+            "strike_asset": 166.33,
             "call_oi": 346,
             "put_oi": 101,
             "total_oi": 447,
@@ -61218,7 +61218,7 @@
           },
           {
             "strike_proxy": 63.0,
-            "strike_asset": 168.3,
+            "strike_asset": 169.01,
             "call_oi": 526,
             "put_oi": 35,
             "total_oi": 561,
@@ -61226,7 +61226,7 @@
           },
           {
             "strike_proxy": 64.0,
-            "strike_asset": 170.97,
+            "strike_asset": 171.69,
             "call_oi": 487,
             "put_oi": 21,
             "total_oi": 508,
@@ -61234,7 +61234,7 @@
           },
           {
             "strike_proxy": 65.0,
-            "strike_asset": 173.64,
+            "strike_asset": 174.38,
             "call_oi": 1236,
             "put_oi": 12,
             "total_oi": 1248,
@@ -61242,7 +61242,7 @@
           },
           {
             "strike_proxy": 70.0,
-            "strike_asset": 187.0,
+            "strike_asset": 187.79,
             "call_oi": 1007,
             "put_oi": 0,
             "total_oi": 1007,
@@ -61254,7 +61254,7 @@
         "put_walls": [
           {
             "strike_proxy": 56.5,
-            "strike_asset": 150.93,
+            "strike_asset": 151.57,
             "call_oi": 69,
             "put_oi": 2158,
             "total_oi": 2227,
@@ -61267,8 +61267,8 @@
             "msg": "PCR 0.94 — neutro (rango normal 0.8-1.2). Posicionamiento equilibrado entre calls y puts, sin sesgo direccional claro."
           },
           {
-            "type": "neutral",
-            "msg": "Skew equilibrado 3.2% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
+            "type": "bullish",
+            "msg": "Skew invertido -18.4% — calls OTM (166.33, precio 0.79) más caras que puts OTM (150.23, precio 0.66). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
@@ -61276,7 +61276,7 @@
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 156.28 (-1.3% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
+            "msg": "Max Pain en 156.94 (-0.9% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "warning",
@@ -61284,7 +61284,7 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 150.93 (OI 2.2K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 151.57 (OI 2.2K). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
         "verdict": "CONFIRMA CON CAUTELA",
@@ -65403,7 +65403,7 @@
           "high": 6.36,
           "low": 6.07,
           "close": 6.2,
-          "volume": 52979900,
+          "volume": 53209900,
           "ema_f": 5.76,
           "ema_s": 5.53,
           "ema_t": 5.34,
@@ -65419,15 +65419,15 @@
           "open": 5.97,
           "high": 6.28,
           "low": 6.0,
-          "close": 6.25,
-          "volume": 24147090,
+          "close": 6.26,
+          "volume": 28720912,
           "ema_f": 5.85,
           "ema_s": 5.59,
           "ema_t": 5.36,
-          "rsi": 65.4,
+          "rsi": 65.7,
           "adx": 26.1,
           "macd_h": 0.031,
-          "vol_r": 0.48,
+          "vol_r": 0.57,
           "signal": 0,
           "score": 42
         }
@@ -65439,8 +65439,8 @@
         "urgency": "HACE 1d",
         "days_ago": 1,
         "price": 6.12,
-        "current_price": 6.25,
-        "current_pnl": 0.83,
+        "current_price": 6.26,
+        "current_pnl": 1.05,
         "stop_loss": 5.52,
         "take_profit": 6.85,
         "stop_pct": 9.8,
@@ -65454,7 +65454,7 @@
         "max_days": 12,
         "trail_act": 3.5,
         "trail_atr": 1.2,
-        "trail_sl": 5.85,
+        "trail_sl": 5.86,
         "ema50_ok": true,
         "ema50_val": 5.39
       },
@@ -65465,25 +65465,25 @@
         "days_to_exp": 21,
         "days_remaining": 11,
         "trade_expiring_soon": false,
-        "proxy_price": 6.25,
+        "proxy_price": 6.26,
         "pcr": 0.5,
         "pcr_source": "oi",
         "max_pain": 6.0,
-        "max_pain_pct": -4.0,
+        "max_pain_pct": -4.2,
         "max_pain_valid": true,
-        "implied_move_pct": 9.0,
-        "implied_up": 6.67,
-        "implied_down": 5.57,
+        "implied_move_pct": 9.9,
+        "implied_up": 6.73,
+        "implied_down": 5.51,
         "tp_in_range": false,
-        "skew": 0.9,
+        "skew": -20.5,
         "skew_detail": {
           "put_strike": 6.0,
           "call_strike": 6.5,
           "put_price": 0.26,
-          "call_price": 0.25
+          "call_price": 0.29
         },
-        "iv_rank": 49.0,
-        "atm_iv": 64.8,
+        "iv_rank": 62.0,
+        "atm_iv": 71.6,
         "hv_252": 62.4,
         "hv_21": 82.9,
         "oi_map": [
@@ -65545,20 +65545,20 @@
             "msg": "PCR 0.5 — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."
           },
           {
-            "type": "neutral",
-            "msg": "Skew equilibrado 0.9% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
+            "type": "bullish",
+            "msg": "Skew invertido -20.5% — calls OTM (6.5, precio 0.29) más caras que puts OTM (6.0, precio 0.26). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+11.9%) está FUERA del implied move ±9.0% para los 11d restantes (IV anualizada: 64.8%). El mercado solo descuenta ±9.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+11.9%) está FUERA del implied move ±9.9% para los 11d restantes (IV anualizada: 71.6%). El mercado solo descuenta ±9.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 6.0 (-4.0% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 6.0."
+            "msg": "Max Pain en 6.0 (-4.2% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 6.0."
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 49% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 62% — volatilidad en rango normal. Ni cara ni barata."
           }
         ],
         "verdict": "CONFIRMA CON CAUTELA",
@@ -67607,7 +67607,7 @@
           "high": 11.81,
           "low": 11.47,
           "close": 11.73,
-          "volume": 4377600,
+          "volume": 4380900,
           "ema_f": 11.78,
           "ema_s": 12.83,
           "ema_t": 14.45,
@@ -67623,15 +67623,15 @@
           "open": 11.39,
           "high": 11.93,
           "low": 11.29,
-          "close": 11.85,
-          "volume": 2592380,
+          "close": 11.86,
+          "volume": 2982345,
           "ema_f": 11.8,
           "ema_s": 12.76,
           "ema_t": 14.4,
-          "rsi": 44.6,
+          "rsi": 44.8,
           "adx": 33.8,
-          "macd_h": -0.043,
-          "vol_r": 0.4,
+          "macd_h": -0.042,
+          "vol_r": 0.46,
           "signal": 0,
           "score": 22
         }
@@ -70000,14 +70000,14 @@
           "high": 126.39,
           "low": 123.12,
           "close": 123.73,
-          "volume": 10264000,
+          "volume": 10297400,
           "ema_f": 125.36,
           "ema_s": 130.61,
           "ema_t": 141.1,
           "rsi": 38.6,
           "adx": 36.3,
           "macd_h": 0.399,
-          "vol_r": 0.84,
+          "vol_r": 0.85,
           "signal": 0,
           "score": 30
         },
@@ -70016,15 +70016,15 @@
           "open": 120.27,
           "high": 122.85,
           "low": 120.14,
-          "close": 121.72,
-          "volume": 6752874,
-          "ema_f": 124.55,
-          "ema_s": 129.76,
+          "close": 121.64,
+          "volume": 7426745,
+          "ema_f": 124.53,
+          "ema_s": 129.75,
           "ema_t": 140.34,
-          "rsi": 34.3,
+          "rsi": 34.1,
           "adx": 36.1,
-          "macd_h": 0.343,
-          "vol_r": 0.58,
+          "macd_h": 0.335,
+          "vol_r": 0.64,
           "signal": 0,
           "score": 22
         }
@@ -71866,7 +71866,7 @@
           "high": 88.45,
           "low": 83.07,
           "close": 83.99,
-          "volume": 11976300,
+          "volume": 12056800,
           "ema_f": 85.44,
           "ema_s": 87.68,
           "ema_t": 71.37,
@@ -71882,25 +71882,25 @@
           "open": 79.2,
           "high": 92.46,
           "low": 78.91,
-          "close": 88.39,
-          "volume": 11557782,
-          "ema_f": 85.89,
-          "ema_s": 87.73,
-          "ema_t": 71.54,
-          "rsi": 51.6,
+          "close": 91.56,
+          "volume": 12874103,
+          "ema_f": 86.38,
+          "ema_s": 87.98,
+          "ema_t": 71.57,
+          "rsi": 54.5,
           "adx": 16.4,
-          "macd_h": -0.397,
-          "vol_r": 0.95,
+          "macd_h": -0.182,
+          "vol_r": 1.05,
           "signal": 0,
-          "score": 35
+          "score": 43
         }
       ],
       "alert": null,
       "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.449520",
-      "asset_ema50_ok": false,
-      "asset_ema50_val": 88.48
+      "asset_ema50_ok": true,
+      "asset_ema50_val": 88.6
     },
     "EVGO": {
       "ticker": "EVGO",
@@ -73800,7 +73800,7 @@
           "high": 1.83,
           "low": 1.74,
           "close": 1.77,
-          "volume": 3170600,
+          "volume": 3171700,
           "ema_f": 1.86,
           "ema_s": 2.09,
           "ema_t": 2.8,
@@ -73816,15 +73816,15 @@
           "open": 1.72,
           "high": 1.75,
           "low": 1.69,
-          "close": 1.72,
-          "volume": 2671639,
+          "close": 1.71,
+          "volume": 3166658,
           "ema_f": 1.84,
           "ema_s": 2.07,
           "ema_t": 2.78,
-          "rsi": 30.4,
+          "rsi": 30.1,
           "adx": 53.0,
           "macd_h": 0.009,
-          "vol_r": 0.52,
+          "vol_r": 0.61,
           "signal": 0,
           "score": 30
         }
@@ -78620,7 +78620,7 @@
           "high": 0.38,
           "low": 0.36,
           "close": 0.36,
-          "volume": 7048672,
+          "volume": 7062672,
           "ema_f": 2.78,
           "ema_s": 2.79,
           "ema_t": 2.77,
@@ -78665,17 +78665,17 @@
         "days_to_exp": 42,
         "days_remaining": 7,
         "trade_expiring_soon": false,
-        "proxy_price": 54.82,
+        "proxy_price": 54.78,
         "pcr": 3.38,
         "pcr_source": "oi",
         "max_pain": 0.36,
-        "max_pain_pct": -3.3,
+        "max_pain_pct": -3.2,
         "max_pain_valid": true,
         "implied_move_pct": null,
         "implied_up": null,
         "implied_down": null,
         "tp_in_range": null,
-        "skew": 12.2,
+        "skew": 15.9,
         "skew_detail": {
           "put_strike": 0.35,
           "call_strike": 0.38,
@@ -78747,11 +78747,11 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +12.2% — puts OTM (0.35) más caras que calls OTM (0.38). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew moderado +15.9% — puts OTM (0.35) más caras que calls OTM (0.38). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
           },
           {
             "type": "bearish",
-            "msg": "Max Pain en 0.36 (-3.3% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 0.36."
+            "msg": "Max Pain en 0.36 (-3.2% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 0.36."
           },
           {
             "type": "warning",
@@ -81186,10 +81186,10 @@
     }
   },
   "macro_filter": {
-    "spy_price": 654.67,
-    "spy_ema50": 668.29,
+    "spy_price": 654.59,
+    "spy_ema50": 668.28,
     "spy_above": false,
-    "distance_pct": -2.04,
+    "distance_pct": -2.05,
     "filter_active": true,
     "n_blocked": 0
   }
