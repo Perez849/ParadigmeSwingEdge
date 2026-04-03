@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-02T20:32:22.999814",
+  "generated_at": "2026-04-03T08:01:09.447464",
   "alerts": [
     {
       "ticker": "GLDM.PA",
@@ -71,7 +71,7 @@
       "score": 81,
       "rsi": 60.0,
       "adx": 35.4,
-      "vol_ratio": 0.91,
+      "vol_ratio": 0.92,
       "max_days": 15,
       "trail_act": 5.0,
       "trail_atr": 1.5,
@@ -132,32 +132,6 @@
       "ema50_val": 34.06
     },
     {
-      "ticker": "IBEXA.MC",
-      "name": "Amundi IBEX 35 Doble UCIT ETF",
-      "date": "2026-04-02",
-      "urgency": "HOY",
-      "days_ago": 0,
-      "price": 64.24,
-      "current_price": 64.24,
-      "current_pnl": -0.0,
-      "stop_loss": 57.26,
-      "take_profit": 69.38,
-      "stop_pct": 10.87,
-      "tp_pct": 8.0,
-      "rr_ratio": 0.74,
-      "score_now": 73,
-      "score": 73,
-      "rsi": 64.5,
-      "adx": 29.4,
-      "vol_ratio": 0.62,
-      "max_days": 12,
-      "trail_act": 5.0,
-      "trail_atr": 1.2,
-      "trail_sl": 61.02,
-      "ema50_ok": true,
-      "ema50_val": 63.35
-    },
-    {
       "ticker": "WTIF.DE",
       "name": "WisdomTree Japan Equity EUR Hedged UCIT",
       "date": "2026-03-26",
@@ -197,7 +171,7 @@
       "stop_pct": 12.87,
       "tp_pct": 6.0,
       "rr_ratio": 0.47,
-      "score_now": 70,
+      "score_now": 73,
       "score": 88,
       "rsi": 52.5,
       "adx": 42.3,
@@ -295,7 +269,7 @@
       "days_ago": 1,
       "price": 0.37,
       "current_price": 0.36,
-      "current_pnl": 1.14,
+      "current_pnl": 0.78,
       "stop_loss": -0.11,
       "take_profit": 0.38,
       "stop_pct": 129.73,
@@ -2426,7 +2400,7 @@
         "options_ticker": "GLD",
         "is_proxy": true,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 11,
         "trade_expiring_soon": false,
         "proxy_price": 429.41,
@@ -2435,19 +2409,19 @@
         "max_pain": 68.11,
         "max_pain_pct": 1.3,
         "max_pain_valid": true,
-        "implied_move_pct": 4.9,
-        "implied_up": 70.52,
-        "implied_down": 63.94,
+        "implied_move_pct": 5.0,
+        "implied_up": 70.59,
+        "implied_down": 63.87,
         "tp_in_range": false,
-        "skew": 12.8,
+        "skew": 12.3,
         "skew_detail": {
           "put_strike": 63.88,
           "call_strike": 70.61,
           "put_price": 6.85,
-          "call_price": 6.12
+          "call_price": 6.15
         },
-        "iv_rank": 56.0,
-        "atm_iv": 35.5,
+        "iv_rank": 58.0,
+        "atm_iv": 36.4,
         "hv_252": 28.0,
         "hv_21": 36.4,
         "oi_map": [
@@ -2599,11 +2573,11 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +12.8% — puts OTM (63.88) más caras que calls OTM (70.61). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew moderado +12.3% — puts OTM (63.88) más caras que calls OTM (70.61). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+12.0%) está FUERA del implied move ±4.9% para los 11d restantes (IV anualizada: 35.5%). El mercado solo descuenta ±4.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+12.0%) está FUERA del implied move ±5.0% para los 11d restantes (IV anualizada: 36.4%). El mercado solo descuenta ±5.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
@@ -2611,7 +2585,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 56% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 58% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -5004,7 +4978,7 @@
           "high": 37.99,
           "low": 35.96,
           "close": 37.56,
-          "volume": 216906,
+          "volume": 217014,
           "ema_f": 36.86,
           "ema_s": 37.37,
           "ema_t": 35.78,
@@ -5046,7 +5020,7 @@
         "options_ticker": "GDX",
         "is_proxy": true,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 15,
         "trade_expiring_soon": false,
         "proxy_price": 94.59,
@@ -5055,9 +5029,9 @@
         "max_pain": 35.97,
         "max_pain_pct": -4.9,
         "max_pain_valid": true,
-        "implied_move_pct": 9.3,
-        "implied_up": 41.32,
-        "implied_down": 34.28,
+        "implied_move_pct": 9.7,
+        "implied_up": 41.47,
+        "implied_down": 34.13,
         "tp_in_range": true,
         "skew": -12.1,
         "skew_detail": {
@@ -5066,8 +5040,8 @@
           "put_price": 3.23,
           "call_price": 3.53
         },
-        "iv_rank": 71.0,
-        "atm_iv": 57.5,
+        "iv_rank": 77.0,
+        "atm_iv": 60.0,
         "hv_252": 46.4,
         "hv_21": 59.6,
         "oi_map": [
@@ -5215,7 +5189,7 @@
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+4.0%) está dentro del implied move ±9.3% calculado para los 15d restantes del trade (IV anualizada: 57.5%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-22.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+4.0%) está dentro del implied move ±9.7% calculado para los 15d restantes del trade (IV anualizada: 60.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-22.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bearish",
@@ -5223,7 +5197,7 @@
           },
           {
             "type": "warning",
-            "msg": "IV Rank 71% — la volatilidad implícita está en el percentil 71 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
+            "msg": "IV Rank 77% — la volatilidad implícita está en el percentil 77 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
           },
           {
             "type": "neutral",
@@ -7446,14 +7420,14 @@
           "high": 38.6,
           "low": 36.2,
           "close": 38.28,
-          "volume": 379955,
+          "volume": 384717,
           "ema_f": 36.42,
           "ema_s": 37.67,
           "ema_t": 36.6,
           "rsi": 60.0,
           "adx": 35.4,
           "macd_h": 0.08,
-          "vol_r": 0.91,
+          "vol_r": 0.92,
           "signal": 0,
           "score": 81
         }
@@ -7476,7 +7450,7 @@
         "score": 81,
         "rsi": 60.0,
         "adx": 35.4,
-        "vol_ratio": 0.91,
+        "vol_ratio": 0.92,
         "max_days": 15,
         "trail_act": 5.0,
         "trail_atr": 1.5,
@@ -7488,7 +7462,7 @@
         "options_ticker": "SLV",
         "is_proxy": true,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 15,
         "trade_expiring_soon": false,
         "proxy_price": 65.79,
@@ -7497,19 +7471,19 @@
         "max_pain": 41.07,
         "max_pain_pct": 6.4,
         "max_pain_valid": true,
-        "implied_move_pct": 10.7,
-        "implied_up": 42.73,
-        "implied_down": 34.47,
+        "implied_move_pct": 11.0,
+        "implied_up": 42.85,
+        "implied_down": 34.35,
         "tp_in_range": true,
-        "skew": 16.5,
+        "skew": 14.5,
         "skew_detail": {
           "put_strike": 36.96,
           "call_strike": 40.48,
-          "put_price": 2.88,
-          "call_price": 2.84
+          "put_price": 2.86,
+          "call_price": 2.88
         },
-        "iv_rank": 39.0,
-        "atm_iv": 66.4,
+        "iv_rank": 40.0,
+        "atm_iv": 68.0,
         "hv_252": 57.0,
         "hv_21": 59.2,
         "oi_map": [
@@ -7661,11 +7635,11 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +16.5% — puts OTM (36.96) más caras que calls OTM (40.48). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew moderado +14.5% — puts OTM (36.96) más caras que calls OTM (40.48). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+10.0%) está dentro del implied move ±10.7% calculado para los 15d restantes del trade (IV anualizada: 66.4%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.3%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+10.0%) está dentro del implied move ±11.0% calculado para los 15d restantes del trade (IV anualizada: 68.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.3%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bullish",
@@ -7673,7 +7647,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 39% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 40% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -9726,7 +9700,7 @@
           "high": 15.23,
           "low": 14.55,
           "close": 15.0,
-          "volume": 145095,
+          "volume": 145731,
           "ema_f": 14.83,
           "ema_s": 14.97,
           "ema_t": 14.84,
@@ -9768,7 +9742,7 @@
         "options_ticker": "REMX",
         "is_proxy": true,
         "expiration": "2026-05-15",
-        "days_to_exp": 42,
+        "days_to_exp": 41,
         "days_remaining": 15,
         "trade_expiring_soon": false,
         "proxy_price": 88.9,
@@ -9777,9 +9751,9 @@
         "max_pain": 12.85,
         "max_pain_pct": -15.6,
         "max_pain_valid": true,
-        "implied_move_pct": 8.9,
-        "implied_up": 16.59,
-        "implied_down": 13.87,
+        "implied_move_pct": 9.0,
+        "implied_up": 16.6,
+        "implied_down": 13.86,
         "tp_in_range": false,
         "skew": 45.5,
         "skew_detail": {
@@ -9788,8 +9762,8 @@
           "put_price": 4.65,
           "call_price": 5.0
         },
-        "iv_rank": 65.0,
-        "atm_iv": 55.1,
+        "iv_rank": 66.0,
+        "atm_iv": 55.7,
         "hv_252": 48.2,
         "hv_21": 52.1,
         "oi_map": [
@@ -9904,7 +9878,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+12.0%) está FUERA del implied move ±8.9% para los 15d restantes (IV anualizada: 55.1%). El mercado solo descuenta ±8.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+12.0%) está FUERA del implied move ±9.0% para los 15d restantes (IV anualizada: 55.7%). El mercado solo descuenta ±9.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "bearish",
@@ -9912,7 +9886,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 65% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 66% — volatilidad en rango normal. Ni cara ni barata."
           }
         ],
         "verdict": "CONTRADICE",
@@ -12199,7 +12173,7 @@
           "high": 59.63,
           "low": 57.18,
           "close": 59.27,
-          "volume": 179812,
+          "volume": 179862,
           "ema_f": 58.9,
           "ema_s": 59.3,
           "ema_t": 56.56,
@@ -14422,14 +14396,14 @@
           "high": 11.05,
           "low": 10.59,
           "close": 10.94,
-          "volume": 220412,
+          "volume": 221327,
           "ema_f": 10.83,
           "ema_s": 11.05,
           "ema_t": 10.94,
           "rsi": 48.3,
           "adx": 30.2,
           "macd_h": -0.066,
-          "vol_r": 0.92,
+          "vol_r": 0.93,
           "signal": 0,
           "score": 43
         }
@@ -21796,23 +21770,6 @@
       ],
       "price_history": [
         {
-          "date": "2025-11-19",
-          "open": 240.1,
-          "high": 245.15,
-          "low": 239.65,
-          "close": 241.55,
-          "volume": 14038,
-          "ema_f": 249.4,
-          "ema_s": 249.13,
-          "ema_t": 245.75,
-          "rsi": 43.5,
-          "adx": 22.7,
-          "macd_h": -2.53,
-          "vol_r": 1.11,
-          "signal": 0,
-          "score": 0
-        },
-        {
           "date": "2025-11-20",
           "open": 248.7,
           "high": 252.2,
@@ -23309,21 +23266,38 @@
           "score": 15
         },
         {
+          "date": "2026-04-01",
+          "open": 270.01,
+          "high": 270.01,
+          "low": 270.01,
+          "close": 270.01,
+          "volume": 0,
+          "ema_f": 238.98,
+          "ema_s": 242.53,
+          "ema_t": 245.51,
+          "rsi": 67.7,
+          "adx": 51.7,
+          "macd_h": 2.283,
+          "vol_r": 0.0,
+          "signal": 0,
+          "score": 50
+        },
+        {
           "date": "2026-04-02",
           "open": 228.35,
           "high": 235.5,
           "low": 226.9,
           "close": 233.9,
           "volume": 7909,
-          "ema_f": 234.47,
-          "ema_s": 240.2,
-          "ema_t": 244.09,
-          "rsi": 44.1,
-          "adx": 45.9,
-          "macd_h": -0.829,
-          "vol_r": 0.41,
+          "ema_f": 238.34,
+          "ema_s": 241.98,
+          "ema_t": 245.05,
+          "rsi": 46.5,
+          "adx": 46.9,
+          "macd_h": 1.643,
+          "vol_r": 0.45,
           "signal": 0,
-          "score": 15
+          "score": 27
         }
       ],
       "alert": null,
@@ -23331,7 +23305,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.446958",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 244.09
+      "asset_ema50_val": 245.05
     },
     "ZPDE.DE": {
       "ticker": "ZPDE.DE",
@@ -30204,7 +30178,7 @@
           "high": 33.92,
           "low": 33.17,
           "close": 33.82,
-          "volume": 193287,
+          "volume": 193387,
           "ema_f": 33.18,
           "ema_s": 33.38,
           "ema_t": 34.06,
@@ -30246,7 +30220,7 @@
         "options_ticker": "EUFN",
         "is_proxy": true,
         "expiration": "2026-05-15",
-        "days_to_exp": 42,
+        "days_to_exp": 41,
         "days_remaining": 7,
         "trade_expiring_soon": false,
         "proxy_price": 35.27,
@@ -31169,23 +31143,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-19",
-          "open": 28.55,
-          "high": 28.85,
-          "low": 28.55,
-          "close": 28.74,
-          "volume": 47707,
-          "ema_f": 29.0,
-          "ema_s": 29.04,
-          "ema_t": 26.38,
-          "rsi": 45.2,
-          "adx": 19.7,
-          "macd_h": -0.134,
-          "vol_r": 0.71,
-          "signal": 0,
-          "score": 17
-        },
         {
           "date": "2025-11-20",
           "open": 29.16,
@@ -32683,21 +32640,38 @@
           "score": 25
         },
         {
+          "date": "2026-04-01",
+          "open": 37.75,
+          "high": 37.75,
+          "low": 37.75,
+          "close": 37.75,
+          "volume": 0,
+          "ema_f": 33.42,
+          "ema_s": 33.26,
+          "ema_t": 29.83,
+          "rsi": 74.8,
+          "adx": 37.0,
+          "macd_h": 0.338,
+          "vol_r": 0.0,
+          "signal": 0,
+          "score": 42
+        },
+        {
           "date": "2026-04-02",
           "open": 31.9,
           "high": 32.47,
           "low": 31.69,
           "close": 32.36,
-          "volume": 122549,
-          "ema_f": 32.22,
-          "ema_s": 32.74,
-          "ema_t": 29.78,
-          "rsi": 45.8,
-          "adx": 32.1,
-          "macd_h": -0.074,
-          "vol_r": 1.13,
+          "volume": 122552,
+          "ema_f": 33.19,
+          "ema_s": 33.17,
+          "ema_t": 29.86,
+          "rsi": 46.9,
+          "adx": 34.0,
+          "macd_h": 0.178,
+          "vol_r": 1.2,
           "signal": 0,
-          "score": 35
+          "score": 54
         }
       ],
       "alert": null,
@@ -32705,7 +32679,7 @@
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447458",
       "asset_ema50_ok": false,
-      "asset_ema50_val": 32.71
+      "asset_ema50_val": 32.9
     },
     "IBEXA.MC": {
       "ticker": "IBEXA.MC",
@@ -34840,158 +34814,23 @@
         {
           "date": "2026-04-02",
           "open": 62.41,
-          "high": 64.34,
+          "high": 64.16,
           "low": 62.17,
-          "close": 64.24,
+          "close": 64.38,
           "volume": 29370,
-          "ema_f": 61.8,
-          "ema_s": 62.56,
+          "ema_f": 61.82,
+          "ema_s": 62.57,
           "ema_t": 63.35,
-          "rsi": 64.5,
+          "rsi": 65.4,
           "adx": 29.4,
-          "macd_h": 0.801,
+          "macd_h": 0.813,
           "vol_r": 0.62,
-          "signal": 1,
-          "score": 73
+          "signal": 0,
+          "score": 50
         }
       ],
-      "alert": {
-        "ticker": "IBEXA.MC",
-        "name": "Amundi IBEX 35 Doble UCIT ETF",
-        "date": "2026-04-02",
-        "urgency": "HOY",
-        "days_ago": 0,
-        "price": 64.24,
-        "current_price": 64.24,
-        "current_pnl": -0.0,
-        "stop_loss": 57.26,
-        "take_profit": 69.38,
-        "stop_pct": 10.87,
-        "tp_pct": 8.0,
-        "rr_ratio": 0.74,
-        "score_now": 73,
-        "score": 73,
-        "rsi": 64.5,
-        "adx": 29.4,
-        "vol_ratio": 0.62,
-        "max_days": 12,
-        "trail_act": 5.0,
-        "trail_atr": 1.2,
-        "trail_sl": 61.02,
-        "ema50_ok": true,
-        "ema50_val": 63.35
-      },
-      "options": {
-        "options_ticker": "EWP",
-        "is_proxy": true,
-        "expiration": "2026-05-15",
-        "days_to_exp": 42,
-        "days_remaining": 12,
-        "trade_expiring_soon": false,
-        "proxy_price": 54.86,
-        "pcr": 3.38,
-        "pcr_source": "oi",
-        "max_pain": 62.06,
-        "max_pain_pct": -3.4,
-        "max_pain_valid": true,
-        "implied_move_pct": null,
-        "implied_up": null,
-        "implied_down": null,
-        "tp_in_range": null,
-        "skew": 8.6,
-        "skew_detail": {
-          "put_strike": 60.89,
-          "call_strike": 66.75,
-          "put_price": 1.51,
-          "call_price": 1.04
-        },
-        "iv_rank": 81.0,
-        "atm_iv": null,
-        "hv_252": 21.6,
-        "hv_21": 27.1,
-        "oi_map": [
-          {
-            "strike_proxy": 45.0,
-            "strike_asset": 52.69,
-            "call_oi": 0,
-            "put_oi": 1,
-            "total_oi": 1,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 52.0,
-            "strike_asset": 60.89,
-            "call_oi": 1,
-            "put_oi": 7,
-            "total_oi": 8,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 53.0,
-            "strike_asset": 62.06,
-            "call_oi": 0,
-            "put_oi": 79,
-            "total_oi": 79,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 56.0,
-            "strike_asset": 65.57,
-            "call_oi": 0,
-            "put_oi": 1,
-            "total_oi": 1,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 57.0,
-            "strike_asset": 66.75,
-            "call_oi": 25,
-            "put_oi": 0,
-            "total_oi": 25,
-            "dominant": "CALL"
-          }
-        ],
-        "oi_using_volume": false,
-        "call_walls": [],
-        "put_walls": [
-          {
-            "strike_proxy": 53.0,
-            "strike_asset": 62.06,
-            "call_oi": 0,
-            "put_oi": 79,
-            "total_oi": 79,
-            "dominant": "PUT"
-          }
-        ],
-        "signals": [
-          {
-            "type": "neutral",
-            "msg": "PCR 3.38 — ALTO ESTRUCTURAL para EWP. ETF España/IBEX — mercado pequeño, PCR poco representativo. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
-          },
-          {
-            "type": "neutral",
-            "msg": "Skew equilibrado 8.6% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
-          },
-          {
-            "type": "bearish",
-            "msg": "Max Pain en 62.06 (-3.4% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 62.06."
-          },
-          {
-            "type": "warning",
-            "msg": "IV Rank 81% — la volatilidad implícita está en el percentil 81 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
-          },
-          {
-            "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 62.06 (OI 79). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
-          }
-        ],
-        "verdict": "CONTRADICE",
-        "verdict_color": "red",
-        "verdict_msg": "Opciones muestran sesgo bajista (1 señales negativas). Considera reducir tamaño o esperar confirmación adicional.",
-        "data_quality": "media",
-        "total_call_oi": 26,
-        "total_put_oi": 88
-      },
+      "alert": null,
+      "options": null,
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-03-11T10:10:10.447575",
       "asset_ema50_ok": true,
@@ -37328,7 +37167,7 @@
         "options_ticker": "EWJ",
         "is_proxy": true,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 8,
         "trade_expiring_soon": false,
         "proxy_price": 85.29,
@@ -37337,9 +37176,9 @@
         "max_pain": 48.47,
         "max_pain_pct": -2.1,
         "max_pain_valid": true,
-        "implied_move_pct": 3.8,
-        "implied_up": 51.39,
-        "implied_down": 47.63,
+        "implied_move_pct": 3.9,
+        "implied_up": 51.44,
+        "implied_down": 47.58,
         "tp_in_range": false,
         "skew": 81.5,
         "skew_detail": {
@@ -37349,7 +37188,7 @@
           "call_price": 1.06
         },
         "iv_rank": 100.0,
-        "atm_iv": 32.4,
+        "atm_iv": 33.2,
         "hv_252": 21.7,
         "hv_21": 30.7,
         "oi_map": [
@@ -37497,7 +37336,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.8% para los 8d restantes (IV anualizada: 32.4%). El mercado solo descuenta ±3.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+8.0%) está FUERA del implied move ±3.9% para los 8d restantes (IV anualizada: 33.2%). El mercado solo descuenta ±3.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
@@ -39983,7 +39822,7 @@
           "high": 60.81,
           "low": 58.7,
           "close": 60.45,
-          "volume": 144668,
+          "volume": 144685,
           "ema_f": 59.29,
           "ema_s": 59.83,
           "ema_t": 59.49,
@@ -42308,16 +42147,16 @@
           "high": 137.38,
           "low": 129.23,
           "close": 135.56,
-          "volume": 1563894,
+          "volume": 1991300,
           "ema_f": 130.86,
           "ema_s": 133.71,
           "ema_t": 115.8,
           "rsi": 51.4,
           "adx": 36.9,
           "macd_h": 1.779,
-          "vol_r": 0.56,
+          "vol_r": 0.7,
           "signal": 0,
-          "score": 70
+          "score": 73
         }
       ],
       "alert": {
@@ -42334,7 +42173,7 @@
         "stop_pct": 12.87,
         "tp_pct": 6.0,
         "rr_ratio": 0.47,
-        "score_now": 70,
+        "score_now": 73,
         "score": 88,
         "rsi": 52.5,
         "adx": 42.3,
@@ -42350,7 +42189,7 @@
         "options_ticker": "WPM",
         "is_proxy": false,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 9,
         "trade_expiring_soon": false,
         "proxy_price": 135.56,
@@ -42359,19 +42198,19 @@
         "max_pain": 140.0,
         "max_pain_pct": 3.3,
         "max_pain_valid": true,
-        "implied_move_pct": 6.6,
-        "implied_up": 144.71,
-        "implied_down": 126.79,
+        "implied_move_pct": 6.8,
+        "implied_up": 144.98,
+        "implied_down": 126.52,
         "tp_in_range": true,
-        "skew": 15.8,
+        "skew": 17.2,
         "skew_detail": {
           "put_strike": 130.0,
           "call_strike": 142.0,
           "put_price": 4.4,
-          "call_price": 4.4
+          "call_price": 4.35
         },
-        "iv_rank": 63.0,
-        "atm_iv": 52.8,
+        "iv_rank": 66.0,
+        "atm_iv": 54.1,
         "hv_252": 44.8,
         "hv_21": 56.7,
         "oi_map": [
@@ -42532,11 +42371,11 @@
           },
           {
             "type": "bearish",
-            "msg": "Skew moderado +15.8% — puts OTM (130.0) más caras que calls OTM (142.0). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
+            "msg": "Skew moderado +17.2% — puts OTM (130.0) más caras que calls OTM (142.0). Situación habitual: los inversores pagan más por cobertura que por apalancamiento alcista. No es alarma pero confirma sesgo defensivo."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+6.0%) está dentro del implied move ±6.6% calculado para los 9d restantes del trade (IV anualizada: 52.8%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-12.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+6.0%) está dentro del implied move ±6.8% calculado para los 9d restantes del trade (IV anualizada: 54.1%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-12.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bullish",
@@ -42544,7 +42383,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 63% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 66% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -44819,17 +44658,17 @@
         {
           "date": "2026-04-02",
           "open": 106.75,
-          "high": 112.73,
+          "high": 112.74,
           "low": 106.01,
           "close": 112.57,
-          "volume": 2045664,
+          "volume": 2346800,
           "ema_f": 108.59,
           "ema_s": 110.46,
           "ema_t": 105.54,
           "rsi": 61.1,
           "adx": 25.4,
           "macd_h": 0.602,
-          "vol_r": 0.57,
+          "vol_r": 0.65,
           "signal": 0,
           "score": 73
         }
@@ -44864,7 +44703,7 @@
         "options_ticker": "CCJ",
         "is_proxy": false,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 11,
         "trade_expiring_soon": false,
         "proxy_price": 112.57,
@@ -44873,9 +44712,9 @@
         "max_pain": 107.0,
         "max_pain_pct": -4.9,
         "max_pain_valid": true,
-        "implied_move_pct": 8.3,
-        "implied_up": 122.71,
-        "implied_down": 103.91,
+        "implied_move_pct": 8.5,
+        "implied_up": 122.94,
+        "implied_down": 103.68,
         "tp_in_range": true,
         "skew": -4.3,
         "skew_detail": {
@@ -44884,8 +44723,8 @@
           "put_price": 3.92,
           "call_price": 4.0
         },
-        "iv_rank": 45.0,
-        "atm_iv": 59.6,
+        "iv_rank": 47.0,
+        "atm_iv": 61.0,
         "hv_252": 54.7,
         "hv_21": 57.1,
         "oi_map": [
@@ -45033,7 +44872,7 @@
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+4.0%) está dentro del implied move ±8.3% calculado para los 11d restantes del trade (IV anualizada: 59.6%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+4.0%) está dentro del implied move ±8.5% calculado para los 11d restantes del trade (IV anualizada: 61.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-8.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bearish",
@@ -45041,7 +44880,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 45% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 47% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -47519,14 +47358,14 @@
           "high": 154.56,
           "low": 150.12,
           "close": 151.18,
-          "volume": 2433254,
+          "volume": 2946700,
           "ema_f": 154.88,
           "ema_s": 158.03,
           "ema_t": 165.74,
           "rsi": 44.0,
           "adx": 23.6,
           "macd_h": -0.545,
-          "vol_r": 0.55,
+          "vol_r": 0.66,
           "signal": 0,
           "score": 22
         }
@@ -49895,7 +49734,7 @@
           "high": 422.61,
           "low": 403.03,
           "close": 412.81,
-          "volume": 1071034,
+          "volume": 1071400,
           "ema_f": 457.39,
           "ema_s": 479.26,
           "ema_t": 579.0,
@@ -52012,18 +51851,18 @@
         },
         {
           "date": "2026-04-02",
-          "open": 21.93,
-          "high": 23.33,
+          "open": 21.98,
+          "high": 23.34,
           "low": 21.87,
           "close": 23.22,
-          "volume": 29843361,
+          "volume": 30409000,
           "ema_f": 23.18,
           "ema_s": 25.66,
           "ema_t": 32.11,
           "rsi": 42.7,
           "adx": 39.2,
           "macd_h": -0.332,
-          "vol_r": 0.63,
+          "vol_r": 0.65,
           "signal": 0,
           "score": 15
         }
@@ -54103,14 +53942,14 @@
           "high": 34.17,
           "low": 33.09,
           "close": 34.08,
-          "volume": 5014366,
+          "volume": 5174600,
           "ema_f": 36.34,
           "ema_s": 39.17,
           "ema_t": 46.43,
           "rsi": 26.3,
           "adx": 45.9,
           "macd_h": -0.307,
-          "vol_r": 0.75,
+          "vol_r": 0.78,
           "signal": 0,
           "score": 15
         }
@@ -56307,14 +56146,14 @@
           "date": "2026-04-02",
           "open": 271.79,
           "high": 280.29,
-          "low": 266.44,
+          "low": 266.1,
           "close": 273.59,
-          "volume": 2238774,
+          "volume": 2241900,
           "ema_f": 275.67,
           "ema_s": 280.61,
           "ema_t": 290.17,
           "rsi": 48.7,
-          "adx": 22.3,
+          "adx": 22.4,
           "macd_h": 1.284,
           "vol_r": 0.86,
           "signal": 0,
@@ -58617,14 +58456,14 @@
           "high": 11.62,
           "low": 11.36,
           "close": 11.6,
-          "volume": 26438671,
+          "volume": 31067600,
           "ema_f": 11.67,
           "ema_s": 12.18,
           "ema_t": 12.64,
           "rsi": 45.1,
           "adx": 35.0,
           "macd_h": 0.045,
-          "vol_r": 0.52,
+          "vol_r": 0.61,
           "signal": 0,
           "score": 37
         }
@@ -61061,7 +60900,7 @@
           "high": 150.7,
           "low": 142.65,
           "close": 149.7,
-          "volume": 2238233,
+          "volume": 2239488,
           "ema_f": 148.64,
           "ema_s": 150.13,
           "ema_t": 147.72,
@@ -61103,7 +60942,7 @@
         "options_ticker": "XLE",
         "is_proxy": true,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 2,
         "trade_expiring_soon": true,
         "proxy_price": 59.25,
@@ -61116,15 +60955,15 @@
         "implied_up": 161.25,
         "implied_down": 155.55,
         "tp_in_range": false,
-        "skew": -4.6,
+        "skew": -0.7,
         "skew_detail": {
           "put_strike": 151.05,
           "call_strike": 165.75,
-          "put_price": 0.72,
-          "call_price": 0.76
+          "put_price": 0.74,
+          "call_price": 0.75
         },
         "iv_rank": 100.0,
-        "atm_iv": 30.3,
+        "atm_iv": 31.1,
         "hv_252": 24.0,
         "hv_21": 22.1,
         "oi_map": [
@@ -61268,11 +61107,11 @@
           },
           {
             "type": "neutral",
-            "msg": "Skew equilibrado -4.6% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
+            "msg": "Skew equilibrado -0.7% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+12.0%) está FUERA del implied move ±1.8% para los 2d restantes (IV anualizada: 30.3%). El mercado solo descuenta ±1.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+12.0%) está FUERA del implied move ±1.8% para los 2d restantes (IV anualizada: 31.1%). El mercado solo descuenta ±1.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
@@ -65418,16 +65257,16 @@
           "date": "2026-04-02",
           "open": 5.97,
           "high": 6.3,
-          "low": 6.0,
+          "low": 5.97,
           "close": 6.3,
-          "volume": 32677972,
+          "volume": 33865200,
           "ema_f": 5.86,
           "ema_s": 5.59,
           "ema_t": 5.36,
           "rsi": 66.2,
-          "adx": 26.1,
+          "adx": 25.7,
           "macd_h": 0.034,
-          "vol_r": 0.65,
+          "vol_r": 0.67,
           "signal": 0,
           "score": 42
         }
@@ -65462,7 +65301,7 @@
         "options_ticker": "NIO",
         "is_proxy": false,
         "expiration": "2026-04-24",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 11,
         "trade_expiring_soon": false,
         "proxy_price": 6.3,
@@ -65471,19 +65310,19 @@
         "max_pain": 6.0,
         "max_pain_pct": -4.8,
         "max_pain_valid": true,
-        "implied_move_pct": 8.8,
-        "implied_up": 6.66,
-        "implied_down": 5.58,
+        "implied_move_pct": 9.2,
+        "implied_up": 6.68,
+        "implied_down": 5.56,
         "tp_in_range": false,
-        "skew": -43.7,
+        "skew": -45.6,
         "skew_detail": {
           "put_strike": 6.0,
           "call_strike": 6.5,
           "put_price": 0.24,
-          "call_price": 0.29
+          "call_price": 0.3
         },
-        "iv_rank": 47.0,
-        "atm_iv": 63.7,
+        "iv_rank": 52.0,
+        "atm_iv": 66.4,
         "hv_252": 62.5,
         "hv_21": 82.9,
         "oi_map": [
@@ -65546,11 +65385,11 @@
           },
           {
             "type": "bullish",
-            "msg": "Skew invertido -43.7% — calls OTM (6.5, precio 0.29) más caras que puts OTM (6.0, precio 0.24). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+            "msg": "Skew invertido -45.6% — calls OTM (6.5, precio 0.3) más caras que puts OTM (6.0, precio 0.24). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+11.9%) está FUERA del implied move ±8.8% para los 11d restantes (IV anualizada: 63.7%). El mercado solo descuenta ±8.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+11.9%) está FUERA del implied move ±9.2% para los 11d restantes (IV anualizada: 66.4%). El mercado solo descuenta ±9.2% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "bearish",
@@ -65558,7 +65397,7 @@
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 47% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 52% — volatilidad en rango normal. Ni cara ni barata."
           }
         ],
         "verdict": "CONFIRMA CON CAUTELA",
@@ -67624,14 +67463,14 @@
           "high": 11.94,
           "low": 11.29,
           "close": 11.92,
-          "volume": 3546550,
+          "volume": 4368000,
           "ema_f": 11.81,
           "ema_s": 12.77,
           "ema_t": 14.4,
           "rsi": 46.2,
           "adx": 33.8,
           "macd_h": -0.039,
-          "vol_r": 0.55,
+          "vol_r": 0.67,
           "signal": 0,
           "score": 22
         }
@@ -70017,14 +69856,14 @@
           "high": 122.85,
           "low": 120.14,
           "close": 122.05,
-          "volume": 8186559,
+          "volume": 8815600,
           "ema_f": 124.62,
           "ema_s": 129.79,
           "ema_t": 140.35,
           "rsi": 34.9,
           "adx": 36.1,
           "macd_h": 0.37,
-          "vol_r": 0.7,
+          "vol_r": 0.76,
           "signal": 0,
           "score": 22
         }
@@ -71883,14 +71722,14 @@
           "high": 92.94,
           "low": 78.91,
           "close": 92.62,
-          "volume": 16463280,
+          "volume": 16893000,
           "ema_f": 86.55,
           "ema_s": 88.06,
           "ema_t": 71.58,
           "rsi": 55.4,
           "adx": 16.8,
           "macd_h": -0.11,
-          "vol_r": 1.33,
+          "vol_r": 1.36,
           "signal": 0,
           "score": 49
         }
@@ -73817,14 +73656,14 @@
           "high": 1.75,
           "low": 1.69,
           "close": 1.71,
-          "volume": 3617129,
+          "volume": 3624800,
           "ema_f": 1.84,
           "ema_s": 2.07,
           "ema_t": 2.78,
           "rsi": 30.1,
           "adx": 53.0,
           "macd_h": 0.009,
-          "vol_r": 0.69,
+          "vol_r": 0.7,
           "signal": 0,
           "score": 33
         }
@@ -74725,23 +74564,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2025-11-19",
-          "open": 0.17,
-          "high": 0.17,
-          "low": 0.17,
-          "close": 0.17,
-          "volume": 6160019,
-          "ema_f": 0.65,
-          "ema_s": 0.65,
-          "ema_t": 0.65,
-          "rsi": 38.9,
-          "adx": 19.5,
-          "macd_h": -0.001,
-          "vol_r": 0.31,
-          "signal": 0,
-          "score": 0
-        },
         {
           "date": "2025-11-20",
           "open": 0.17,
@@ -76239,21 +76061,38 @@
           "score": 20
         },
         {
+          "date": "2026-04-01",
+          "open": 0.21,
+          "high": 0.21,
+          "low": 0.21,
+          "close": 0.21,
+          "volume": 0,
+          "ema_f": 0.63,
+          "ema_s": 0.64,
+          "ema_t": 0.65,
+          "rsi": 19.4,
+          "adx": 55.1,
+          "macd_h": -0.002,
+          "vol_r": 0.0,
+          "signal": 0,
+          "score": 0
+        },
+        {
           "date": "2026-04-02",
           "open": 0.18,
           "high": 0.19,
           "low": 0.18,
           "close": 0.18,
           "volume": 4598283,
-          "ema_f": 0.64,
+          "ema_f": 0.63,
           "ema_s": 0.64,
           "ema_t": 0.65,
-          "rsi": 47.9,
-          "adx": 46.0,
+          "rsi": 51.0,
+          "adx": 49.2,
           "macd_h": -0.0,
-          "vol_r": 0.5,
+          "vol_r": 0.52,
           "signal": 0,
-          "score": 25
+          "score": 43
         }
       ],
       "alert": null,
@@ -78624,7 +78463,7 @@
           "ema_f": 2.78,
           "ema_s": 2.79,
           "ema_t": 2.77,
-          "rsi": 56.0,
+          "rsi": 56.6,
           "adx": 31.5,
           "macd_h": 0.003,
           "vol_r": 0.94,
@@ -78640,7 +78479,7 @@
         "days_ago": 1,
         "price": 0.37,
         "current_price": 0.36,
-        "current_pnl": 1.14,
+        "current_pnl": 0.78,
         "stop_loss": -0.11,
         "take_profit": 0.38,
         "stop_pct": 129.73,
@@ -78662,7 +78501,7 @@
         "options_ticker": "EWP",
         "is_proxy": true,
         "expiration": "2026-05-15",
-        "days_to_exp": 42,
+        "days_to_exp": 41,
         "days_remaining": 7,
         "trade_expiring_soon": false,
         "proxy_price": 54.86,
