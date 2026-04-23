@@ -2190,9 +2190,26 @@
         "entry_rsi": 52.8,
         "entry_adx": 31.9,
         "source": "backtest"
+      },
+      {
+        "ticker": "SLVR.DE",
+        "entry_date": "2026-04-01",
+        "exit_date": "2026-04-23",
+        "entry_price": 39.15,
+        "exit_price": 38.5,
+        "stop_loss": 38.64,
+        "take_profit": 43.07,
+        "pnl": -1.67,
+        "peak_pnl": 5.47,
+        "days": 14,
+        "reason": "Stop Loss",
+        "score": 73,
+        "entry_rsi": 63.6,
+        "entry_adx": 35.7,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.446038",
+    "trades_updated_at": "2026-04-23T10:19:12.213126",
     "metrics_oos_optimizer": {
       "n": 38,
       "wr": 55.263,
@@ -2204,14 +2221,6 @@
       "avg_w": 9.007,
       "avg_l": -4.873,
       "total": 106.31
-    },
-    "open_alert": {
-      "date": "2026-04-01",
-      "price": 39.15,
-      "stop_loss": 35.87,
-      "take_profit": 43.07,
-      "stop_pct": 8.38,
-      "rr_ratio": 1.19
     }
   },
   "VVMX.DE": {
