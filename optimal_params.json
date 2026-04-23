@@ -2221,14 +2221,6 @@
       "avg_w": 9.007,
       "avg_l": -4.873,
       "total": 106.31
-    },
-    "open_alert": {
-      "date": "2026-04-01",
-      "price": 39.15,
-      "stop_loss": 38.64,
-      "take_profit": 43.07,
-      "stop_pct": 1.3,
-      "rr_ratio": 7.68
     }
   },
   "VVMX.DE": {
@@ -5121,9 +5113,26 @@
         "entry_rsi": 56.7,
         "entry_adx": 16.6,
         "source": "backtest"
+      },
+      {
+        "ticker": "NDXH.PA",
+        "entry_date": "2026-04-08",
+        "exit_date": "2026-04-23",
+        "entry_price": 565.4,
+        "exit_price": 612.0,
+        "stop_loss": 599.05,
+        "take_profit": 610.63,
+        "pnl": 8.24,
+        "peak_pnl": 8.24,
+        "days": 11,
+        "reason": "Take Profit \u2705",
+        "score": 83,
+        "entry_rsi": 67.9,
+        "entry_adx": 34.4,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.446555",
+    "trades_updated_at": "2026-04-23T15:49:20.371160",
     "metrics_oos_optimizer": {
       "n": 42,
       "wr": 69.048,
@@ -5135,14 +5144,6 @@
       "avg_w": 2.809,
       "avg_l": -2.548,
       "total": 48.33
-    },
-    "open_alert": {
-      "date": "2026-04-08",
-      "price": 567.8,
-      "stop_loss": 536.28,
-      "take_profit": 613.22,
-      "stop_pct": 5.55,
-      "rr_ratio": 1.44
     }
   },
   "LQQ.PA": {
