@@ -18412,9 +18412,26 @@
         "entry_rsi": 65.7,
         "entry_adx": 36.0,
         "source": "backtest"
+      },
+      {
+        "ticker": "RCL",
+        "entry_date": "2026-04-13",
+        "exit_date": "2026-04-27",
+        "entry_price": 282.41,
+        "exit_price": 261.42,
+        "stop_loss": 252.22,
+        "take_profit": 310.65,
+        "pnl": -7.43,
+        "peak_pnl": 1.09,
+        "days": 10,
+        "reason": "Tiempo (10d)",
+        "score": 71,
+        "entry_rsi": 58.5,
+        "entry_adx": 20.6,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.448696",
+    "trades_updated_at": "2026-04-27T13:44:50.653882",
     "metrics_oos_optimizer": {
       "n": 37,
       "wr": 75.676,
@@ -18426,14 +18443,6 @@
       "avg_w": 7.167,
       "avg_l": -5.27,
       "total": 153.25
-    },
-    "open_alert": {
-      "date": "2026-04-13",
-      "price": 282.41,
-      "stop_loss": 252.22,
-      "take_profit": 310.65,
-      "stop_pct": 10.69,
-      "rr_ratio": 0.94
     }
   },
   "F": {
