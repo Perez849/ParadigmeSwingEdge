@@ -3696,14 +3696,6 @@
       "avg_w": 5.523,
       "avg_l": -4.634,
       "total": 94.41
-    },
-    "open_alert": {
-      "date": "2026-05-15",
-      "price": 87.42,
-      "stop_loss": 87.67,
-      "take_profit": 94.41,
-      "stop_pct": 0.29,
-      "rr_ratio": 27.97
     }
   },
   "SEC0.DE": {
@@ -18239,9 +18231,26 @@
         "entry_rsi": 74.0,
         "entry_adx": 48.6,
         "source": "backtest"
+      },
+      {
+        "ticker": "CELH",
+        "entry_date": "2026-05-27",
+        "exit_date": "2026-05-28",
+        "entry_price": 31.65,
+        "exit_price": 33.03,
+        "stop_loss": 26.83,
+        "take_profit": 32.92,
+        "pnl": 4.36,
+        "peak_pnl": 4.36,
+        "days": 1,
+        "reason": "Take Profit \u2705",
+        "score": 71,
+        "entry_rsi": 60.7,
+        "entry_adx": 26.0,
+        "source": "live"
       }
     ],
-    "trades_updated_at": "2026-03-11T10:10:10.448580",
+    "trades_updated_at": "2026-05-28T18:07:34.771961",
     "metrics_oos_optimizer": {
       "n": 30,
       "wr": 66.667,
@@ -18253,14 +18262,6 @@
       "avg_w": 5.514,
       "avg_l": -8.999,
       "total": 20.29
-    },
-    "open_alert": {
-      "date": "2026-05-27",
-      "price": 31.65,
-      "stop_loss": 26.83,
-      "take_profit": 32.92,
-      "stop_pct": 15.23,
-      "rr_ratio": 0.26
     }
   },
   "RCL": {
