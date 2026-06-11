@@ -1,21 +1,21 @@
 {
-  "generated_at": "2026-06-10T20:24:46.809839",
+  "generated_at": "2026-06-11T11:20:35.410605",
   "alerts": [
     {
       "ticker": "SEC0.DE",
       "name": "iShares MSCI Global Semiconductors UCIT",
       "date": "2026-06-08",
-      "urgency": "HACE 2d",
-      "days_ago": 2,
+      "urgency": "HACE 3d",
+      "days_ago": 3,
       "price": 18.28,
-      "current_price": 17.47,
-      "current_pnl": -4.09,
+      "current_price": 17.89,
+      "current_pnl": -1.83,
       "stop_loss": 16.61,
       "take_profit": 19.75,
       "stop_pct": 9.14,
       "tp_pct": 8.0,
       "rr_ratio": 0.88,
-      "score_now": 44,
+      "score_now": 38,
       "score": 60,
       "rsi": 57.4,
       "adx": 40.2,
@@ -23,7 +23,7 @@
       "max_days": 15,
       "trail_act": 5.0,
       "trail_atr": 2.0,
-      "trail_sl": 16.01,
+      "trail_sl": 16.39,
       "ema50_ok": true,
       "ema50_val": null
     },
@@ -31,17 +31,17 @@
       "ticker": "ZPDE.DE",
       "name": "SPDR S&P US Energy Select Sector UCIT",
       "date": "2026-06-03",
-      "urgency": "HACE 5d",
-      "days_ago": 5,
+      "urgency": "HACE 6d",
+      "days_ago": 6,
       "price": 40.63,
-      "current_price": 40.51,
-      "current_pnl": -0.31,
+      "current_price": 40.56,
+      "current_pnl": -0.16,
       "stop_loss": 38.55,
       "take_profit": 44.7,
       "stop_pct": 5.12,
       "tp_pct": 10.0,
       "rr_ratio": 1.95,
-      "score_now": 62,
+      "score_now": 65,
       "score": 65,
       "rsi": 60.5,
       "adx": 20.0,
@@ -49,7 +49,33 @@
       "max_days": 15,
       "trail_act": 3.5,
       "trail_atr": 1.2,
-      "trail_sl": 39.37,
+      "trail_sl": 39.43,
+      "ema50_ok": true,
+      "ema50_val": null
+    },
+    {
+      "ticker": "EXV1.DE",
+      "name": "iShares STOXX Europe 600 Banks UCIT ETF",
+      "date": "2026-06-11",
+      "urgency": "HOY",
+      "days_ago": 0,
+      "price": 37.06,
+      "current_price": 37.06,
+      "current_pnl": -0.01,
+      "stop_loss": 35.35,
+      "take_profit": 40.76,
+      "stop_pct": 4.61,
+      "tp_pct": 10.0,
+      "rr_ratio": 2.17,
+      "score_now": 65,
+      "score": 65,
+      "rsi": 48.1,
+      "adx": 24.7,
+      "vol_ratio": 0.41,
+      "max_days": 8,
+      "trail_act": 5.0,
+      "trail_atr": 1.5,
+      "trail_sl": 36.07,
       "ema50_ok": true,
       "ema50_val": null
     },
@@ -57,17 +83,17 @@
       "ticker": "IBEXA.MC",
       "name": "Amundi IBEX 35 Doble UCIT ETF",
       "date": "2026-05-28",
-      "urgency": "HACE 9d",
-      "days_ago": 9,
+      "urgency": "HACE 10d",
+      "days_ago": 10,
       "price": 70.83,
-      "current_price": 69.43,
-      "current_pnl": -1.63,
+      "current_price": 70.97,
+      "current_pnl": 0.55,
       "stop_loss": 66.47,
       "take_profit": 76.5,
       "stop_pct": 6.16,
       "tp_pct": 8.0,
       "rr_ratio": 1.3,
-      "score_now": 33,
+      "score_now": 52,
       "score": 78,
       "rsi": 61.4,
       "adx": 27.2,
@@ -75,7 +101,7 @@
       "max_days": 12,
       "trail_act": 5.0,
       "trail_atr": 1.2,
-      "trail_sl": 67.39,
+      "trail_sl": 68.89,
       "ema50_ok": true,
       "ema50_val": null
     },
@@ -161,17 +187,17 @@
       "ticker": "KRW.PA",
       "name": "Amundi MSCI Korea UCITS ETF",
       "date": "2026-06-04",
-      "urgency": "HACE 4d",
-      "days_ago": 4,
+      "urgency": "HACE 5d",
+      "days_ago": 5,
       "price": 195.0,
-      "current_price": 175.74,
-      "current_pnl": -9.88,
+      "current_price": 179.85,
+      "current_pnl": -7.77,
       "stop_loss": 174.72,
       "take_profit": 206.7,
       "stop_pct": 10.4,
       "tp_pct": 6.0,
       "rr_ratio": 0.58,
-      "score_now": 15,
+      "score_now": 27,
       "score": 82,
       "rsi": 56.5,
       "adx": 40.5,
@@ -179,7 +205,7 @@
       "max_days": 10,
       "trail_act": 5.0,
       "trail_atr": 2.0,
-      "trail_sl": 161.68,
+      "trail_sl": 165.46,
       "ema50_ok": true,
       "ema50_val": null
     }
@@ -769,23 +795,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 68.75,
-          "high": 70.09,
-          "low": 64.63,
-          "close": 66.93,
-          "volume": 43323,
-          "ema_f": 71.16,
-          "ema_s": 66.34,
-          "ema_t": 62.85,
-          "rsi": 37.8,
-          "adx": 39.0,
-          "macd_h": -0.288,
-          "vol_r": 1.49,
-          "signal": 0,
-          "score": 33
-        },
         {
           "date": "2026-02-02",
           "open": 60.58,
@@ -2298,6 +2307,23 @@
           "vol_r": 1.11,
           "signal": 0,
           "score": 0
+        },
+        {
+          "date": "2026-06-11",
+          "open": 53.3,
+          "high": 53.73,
+          "low": 53.09,
+          "close": 53.51,
+          "volume": 2838,
+          "ema_f": 56.77,
+          "ema_s": 61.03,
+          "ema_t": 62.72,
+          "rsi": 19.3,
+          "adx": 40.0,
+          "macd_h": -0.693,
+          "vol_r": 0.15,
+          "signal": 0,
+          "score": 0
         }
       ],
       "alert": null,
@@ -3196,23 +3222,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 38.77,
-          "high": 39.5,
-          "low": 36.81,
-          "close": 37.49,
-          "volume": 1123607,
-          "ema_f": 39.85,
-          "ema_s": 37.97,
-          "ema_t": 32.23,
-          "rsi": 38.2,
-          "adx": 37.5,
-          "macd_h": -0.265,
-          "vol_r": 2.29,
-          "signal": 0,
-          "score": 20
-        },
         {
           "date": "2026-02-02",
           "open": 34.6,
@@ -4715,14 +4724,31 @@
           "high": 30.55,
           "low": 29.69,
           "close": 29.89,
-          "volume": 606324,
+          "volume": 608335,
           "ema_f": 32.56,
           "ema_s": 34.01,
           "ema_t": 35.4,
           "rsi": 19.7,
           "adx": 38.2,
           "macd_h": -0.506,
-          "vol_r": 3.31,
+          "vol_r": 3.32,
+          "signal": 0,
+          "score": 0
+        },
+        {
+          "date": "2026-06-11",
+          "open": 29.75,
+          "high": 30.04,
+          "low": 29.72,
+          "close": 29.84,
+          "volume": 73706,
+          "ema_f": 32.07,
+          "ema_s": 33.69,
+          "ema_t": 35.29,
+          "rsi": 19.5,
+          "adx": 42.3,
+          "macd_h": -0.55,
+          "vol_r": 0.4,
           "signal": 0,
           "score": 0
         }
@@ -5487,23 +5513,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 41.37,
-          "high": 42.08,
-          "low": 38.24,
-          "close": 40.45,
-          "volume": 1861071,
-          "ema_f": 43.3,
-          "ema_s": 41.39,
-          "ema_t": 32.46,
-          "rsi": 39.5,
-          "adx": 40.7,
-          "macd_h": -0.237,
-          "vol_r": 3.4,
-          "signal": 0,
-          "score": 15
-        },
         {
           "date": "2026-02-02",
           "open": 36.13,
@@ -7006,7 +7015,7 @@
           "high": 31.81,
           "low": 30.78,
           "close": 31.0,
-          "volume": 563282,
+          "volume": 563582,
           "ema_f": 34.39,
           "ema_s": 35.75,
           "ema_t": 37.04,
@@ -7014,6 +7023,23 @@
           "adx": 39.0,
           "macd_h": -0.642,
           "vol_r": 2.09,
+          "signal": 0,
+          "score": 0
+        },
+        {
+          "date": "2026-06-11",
+          "open": 31.04,
+          "high": 31.38,
+          "low": 31.02,
+          "close": 31.18,
+          "volume": 75303,
+          "ema_f": 33.81,
+          "ema_s": 35.32,
+          "ema_t": 36.92,
+          "rsi": 19.3,
+          "adx": 43.2,
+          "macd_h": -0.657,
+          "vol_r": 0.29,
           "signal": 0,
           "score": 0
         }
@@ -7591,23 +7617,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 14.4,
-          "high": 14.6,
-          "low": 14.22,
-          "close": 14.34,
-          "volume": 736886,
-          "ema_f": 15.3,
-          "ema_s": 14.87,
-          "ema_t": 13.67,
-          "rsi": 47.9,
-          "adx": 36.4,
-          "macd_h": -0.232,
-          "vol_r": 1.32,
-          "signal": 0,
-          "score": 18
-        },
         {
           "date": "2026-02-02",
           "open": 13.75,
@@ -9110,16 +9119,33 @@
           "high": 14.87,
           "low": 14.51,
           "close": 14.57,
-          "volume": 495515,
+          "volume": 499672,
           "ema_f": 15.7,
           "ema_s": 16.12,
           "ema_t": 16.2,
           "rsi": 31.7,
           "adx": 30.2,
           "macd_h": -0.28,
-          "vol_r": 1.46,
+          "vol_r": 1.47,
           "signal": 0,
           "score": 0
+        },
+        {
+          "date": "2026-06-11",
+          "open": 15.1,
+          "high": 15.21,
+          "low": 15.09,
+          "close": 15.15,
+          "volume": 56562,
+          "ema_f": 15.6,
+          "ema_s": 16.03,
+          "ema_t": 16.16,
+          "rsi": 39.5,
+          "adx": 30.7,
+          "macd_h": -0.228,
+          "vol_r": 0.17,
+          "signal": 0,
+          "score": 3
         }
       ],
       "alert": null,
@@ -9950,23 +9976,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 60.73,
-          "high": 61.97,
-          "low": 60.5,
-          "close": 61.22,
-          "volume": 128086,
-          "ema_f": 59.62,
-          "ema_s": 58.3,
-          "ema_t": 52.21,
-          "rsi": 63.8,
-          "adx": 28.0,
-          "macd_h": -0.08,
-          "vol_r": 0.81,
-          "signal": 0,
-          "score": 50
-        },
         {
           "date": "2026-02-02",
           "open": 58.97,
@@ -11469,16 +11478,33 @@
           "high": 95.79,
           "low": 90.69,
           "close": 92.18,
-          "volume": 362665,
+          "volume": 366119,
           "ema_f": 93.63,
           "ema_s": 90.51,
           "ema_t": 73.77,
           "rsi": 49.3,
           "adx": 32.3,
           "macd_h": -1.318,
-          "vol_r": 1.0,
+          "vol_r": 1.01,
           "signal": 0,
           "score": 36
+        },
+        {
+          "date": "2026-06-11",
+          "open": 92.98,
+          "high": 94.5,
+          "low": 92.98,
+          "close": 93.9,
+          "volume": 75880,
+          "ema_f": 93.67,
+          "ema_s": 90.77,
+          "ema_t": 74.17,
+          "rsi": 53.3,
+          "adx": 28.6,
+          "macd_h": -1.317,
+          "vol_r": 0.21,
+          "signal": 0,
+          "score": 53
         }
       ],
       "alert": null,
@@ -12224,23 +12250,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 11.17,
-          "high": 11.37,
-          "low": 11.14,
-          "close": 11.27,
-          "volume": 437352,
-          "ema_f": 11.08,
-          "ema_s": 10.47,
-          "ema_t": 10.07,
-          "rsi": 67.0,
-          "adx": 34.1,
-          "macd_h": 0.005,
-          "vol_r": 1.19,
-          "signal": 0,
-          "score": 55
-        },
         {
           "date": "2026-02-02",
           "open": 10.82,
@@ -13743,33 +13752,50 @@
           "high": 18.15,
           "low": 17.29,
           "close": 17.47,
-          "volume": 1354992,
+          "volume": 1366524,
           "ema_f": 18.03,
           "ema_s": 16.89,
           "ema_t": 15.74,
           "rsi": 48.5,
           "adx": 31.5,
           "macd_h": -0.21,
-          "vol_r": 1.14,
+          "vol_r": 1.15,
           "signal": 0,
           "score": 44
+        },
+        {
+          "date": "2026-06-11",
+          "open": 17.73,
+          "high": 17.98,
+          "low": 17.72,
+          "close": 17.89,
+          "volume": 160320,
+          "ema_f": 18.0,
+          "ema_s": 16.95,
+          "ema_t": 15.82,
+          "rsi": 53.3,
+          "adx": 28.1,
+          "macd_h": -0.216,
+          "vol_r": 0.14,
+          "signal": 0,
+          "score": 38
         }
       ],
       "alert": {
         "ticker": "SEC0.DE",
         "name": "iShares MSCI Global Semiconductors UCIT",
         "date": "2026-06-08",
-        "urgency": "HACE 2d",
-        "days_ago": 2,
+        "urgency": "HACE 3d",
+        "days_ago": 3,
         "price": 18.28,
-        "current_price": 17.47,
-        "current_pnl": -4.09,
+        "current_price": 17.89,
+        "current_pnl": -1.83,
         "stop_loss": 16.61,
         "take_profit": 19.75,
         "stop_pct": 9.14,
         "tp_pct": 8.0,
         "rr_ratio": 0.88,
-        "score_now": 44,
+        "score_now": 38,
         "score": 60,
         "rsi": 57.4,
         "adx": 40.2,
@@ -13777,7 +13803,7 @@
         "max_days": 15,
         "trail_act": 5.0,
         "trail_atr": 2.0,
-        "trail_sl": 16.01,
+        "trail_sl": 16.39,
         "ema50_ok": true,
         "ema50_val": null
       },
@@ -13785,141 +13811,141 @@
         "options_ticker": "SMH",
         "is_proxy": true,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
-        "days_remaining": 13,
+        "days_to_exp": 20,
+        "days_remaining": 12,
         "trade_expiring_soon": false,
         "proxy_price": 570.91,
-        "pcr": 2.98,
+        "pcr": 2.97,
         "pcr_source": "oi",
         "max_pain": 19.69,
         "max_pain_pct": 7.7,
         "max_pain_valid": true,
-        "implied_move_pct": 9.0,
-        "implied_up": 19.93,
-        "implied_down": 16.63,
+        "implied_move_pct": 9.6,
+        "implied_up": 20.03,
+        "implied_down": 16.53,
         "tp_in_range": true,
-        "skew": -7.8,
+        "skew": -3.7,
         "skew_detail": {
           "put_strike": 17.37,
           "call_strike": 19.21,
-          "put_price": 19.0,
-          "call_price": 21.1
+          "put_price": 19.33,
+          "call_price": 20.56
         },
         "iv_rank": 100.0,
-        "atm_iv": 59.6,
+        "atm_iv": 66.4,
         "hv_252": 32.7,
         "hv_21": 51.9,
         "oi_map": [
           {
+            "strike_proxy": 430.0,
+            "strike_asset": 13.77,
+            "call_oi": 0,
+            "put_oi": 245,
+            "total_oi": 245,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 480.0,
+            "strike_asset": 15.37,
+            "call_oi": 4,
+            "put_oi": 300,
+            "total_oi": 304,
+            "dominant": "PUT"
+          },
+          {
             "strike_proxy": 500.0,
             "strike_asset": 16.01,
-            "call_oi": 22,
-            "put_oi": 328,
-            "total_oi": 350,
+            "call_oi": 21,
+            "put_oi": 349,
+            "total_oi": 370,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 515.0,
             "strike_asset": 16.49,
             "call_oi": 1,
-            "put_oi": 259,
-            "total_oi": 260,
+            "put_oi": 257,
+            "total_oi": 258,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 520.0,
             "strike_asset": 16.65,
             "call_oi": 4,
-            "put_oi": 491,
-            "total_oi": 495,
+            "put_oi": 506,
+            "total_oi": 510,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 525.0,
             "strike_asset": 16.81,
-            "call_oi": 3,
-            "put_oi": 584,
-            "total_oi": 587,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 530.0,
-            "strike_asset": 16.97,
             "call_oi": 2,
-            "put_oi": 183,
-            "total_oi": 185,
+            "put_oi": 586,
+            "total_oi": 588,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 550.0,
             "strike_asset": 17.61,
             "call_oi": 22,
-            "put_oi": 974,
-            "total_oi": 996,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 585.0,
-            "strike_asset": 18.73,
-            "call_oi": 35,
-            "put_oi": 126,
-            "total_oi": 161,
+            "put_oi": 981,
+            "total_oi": 1003,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 590.0,
             "strike_asset": 18.89,
-            "call_oi": 46,
-            "put_oi": 573,
-            "total_oi": 619,
+            "call_oi": 76,
+            "put_oi": 465,
+            "total_oi": 541,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 600.0,
             "strike_asset": 19.21,
-            "call_oi": 516,
-            "put_oi": 156,
-            "total_oi": 672,
+            "call_oi": 520,
+            "put_oi": 155,
+            "total_oi": 675,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 605.0,
             "strike_asset": 19.37,
             "call_oi": 49,
-            "put_oi": 2287,
-            "total_oi": 2336,
+            "put_oi": 2282,
+            "total_oi": 2331,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 610.0,
             "strike_asset": 19.53,
-            "call_oi": 66,
-            "put_oi": 153,
-            "total_oi": 219,
+            "call_oi": 75,
+            "put_oi": 140,
+            "total_oi": 215,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 615.0,
             "strike_asset": 19.69,
-            "call_oi": 67,
-            "put_oi": 1825,
-            "total_oi": 1892,
+            "call_oi": 68,
+            "put_oi": 1827,
+            "total_oi": 1895,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 620.0,
             "strike_asset": 19.85,
-            "call_oi": 241,
+            "call_oi": 239,
             "put_oi": 27,
-            "total_oi": 268,
+            "total_oi": 266,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 635.0,
             "strike_asset": 20.33,
-            "call_oi": 101,
+            "call_oi": 141,
             "put_oi": 64,
-            "total_oi": 165,
+            "total_oi": 205,
             "dominant": "CALL"
           },
           {
@@ -13938,31 +13964,31 @@
             "strike_proxy": 605.0,
             "strike_asset": 19.37,
             "call_oi": 49,
-            "put_oi": 2287,
-            "total_oi": 2336,
+            "put_oi": 2282,
+            "total_oi": 2331,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 615.0,
             "strike_asset": 19.69,
-            "call_oi": 67,
-            "put_oi": 1825,
-            "total_oi": 1892,
+            "call_oi": 68,
+            "put_oi": 1827,
+            "total_oi": 1895,
             "dominant": "PUT"
           }
         ],
         "signals": [
           {
             "type": "neutral",
-            "msg": "PCR 2.98 — ALTO ESTRUCTURAL para SMH. ETF semiconductores — muy usado para cubrir posiciones tech. PCR >1.5 normal. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
+            "msg": "PCR 2.97 — ALTO ESTRUCTURAL para SMH. ETF semiconductores — muy usado para cubrir posiciones tech. PCR >1.5 normal. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
           },
           {
             "type": "neutral",
-            "msg": "Skew equilibrado -7.8% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
+            "msg": "Skew equilibrado -3.7% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+8.0%) está dentro del implied move ±9.0% calculado para los 13d restantes del trade (IV anualizada: 59.6%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-9.1%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Tu TP (+8.0%) está dentro del implied move ±9.6% calculado para los 12d restantes del trade (IV anualizada: 66.4%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-9.1%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "bullish",
@@ -13981,8 +14007,8 @@
         "verdict_color": "green",
         "verdict_msg": "Opciones confirman sesgo alcista (2 señales positivas vs 0 negativas). Convicción alta.",
         "data_quality": "alta",
-        "total_call_oi": 3467,
-        "total_put_oi": 10325
+        "total_call_oi": 3636,
+        "total_put_oi": 10797
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-05-25T11:07:25.628328",
@@ -14793,23 +14819,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 576.9,
-          "high": 588.9,
-          "low": 576.7,
-          "close": 588.9,
-          "volume": 1539,
-          "ema_f": 586.12,
-          "ema_s": 585.46,
-          "ema_t": 550.1,
-          "rsi": 55.2,
-          "adx": 23.2,
-          "macd_h": 0.304,
-          "vol_r": 0.65,
-          "signal": 0,
-          "score": 82
-        },
         {
           "date": "2026-02-03",
           "open": 591.8,
@@ -16322,6 +16331,23 @@
           "vol_r": 2.55,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-06-11",
+          "open": 650.4,
+          "high": 653.5,
+          "low": 650.3,
+          "close": 652.1,
+          "volume": 1144,
+          "ema_f": 666.75,
+          "ema_s": 664.47,
+          "ema_t": 586.99,
+          "rsi": 28.2,
+          "adx": 42.9,
+          "macd_h": -7.143,
+          "vol_r": 0.77,
+          "signal": 0,
+          "score": 5
         }
       ],
       "alert": null,
@@ -17237,23 +17263,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 1437.8,
-          "high": 1505.0,
-          "low": 1436.6,
-          "close": 1504.4,
-          "volume": 5237,
-          "ema_f": 1491.66,
-          "ema_s": 1490.54,
-          "ema_t": 1368.81,
-          "rsi": 52.6,
-          "adx": 23.7,
-          "macd_h": -0.015,
-          "vol_r": 1.2,
-          "signal": 1,
-          "score": 71
-        },
         {
           "date": "2026-02-03",
           "open": 1516.4,
@@ -18766,6 +18775,23 @@
           "vol_r": 1.57,
           "signal": 0,
           "score": 22
+        },
+        {
+          "date": "2026-06-11",
+          "open": 1858.8,
+          "high": 1877.2,
+          "low": 1855.4,
+          "close": 1867.0,
+          "volume": 1191,
+          "ema_f": 1949.5,
+          "ema_s": 1914.65,
+          "ema_t": 1534.9,
+          "rsi": 45.6,
+          "adx": 43.0,
+          "macd_h": -31.773,
+          "vol_r": 0.39,
+          "signal": 0,
+          "score": 20
         }
       ],
       "alert": null,
@@ -19596,23 +19622,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 143.01,
-          "high": 144.1,
-          "low": 142.67,
-          "close": 143.53,
-          "volume": 25035,
-          "ema_f": 143.56,
-          "ema_s": 143.13,
-          "ema_t": 135.22,
-          "rsi": 51.8,
-          "adx": 19.4,
-          "macd_h": -0.059,
-          "vol_r": 1.08,
-          "signal": 0,
-          "score": 48
-        },
         {
           "date": "2026-02-02",
           "open": 142.3,
@@ -21115,7 +21124,7 @@
           "high": 151.83,
           "low": 150.07,
           "close": 150.52,
-          "volume": 28703,
+          "volume": 28719,
           "ema_f": 153.04,
           "ema_s": 152.48,
           "ema_t": 141.67,
@@ -21125,6 +21134,23 @@
           "vol_r": 2.18,
           "signal": 0,
           "score": 27
+        },
+        {
+          "date": "2026-06-11",
+          "open": 150.32,
+          "high": 150.71,
+          "low": 150.22,
+          "close": 150.59,
+          "volume": 3889,
+          "ema_f": 152.5,
+          "ema_s": 152.33,
+          "ema_t": 141.76,
+          "rsi": 34.7,
+          "adx": 43.1,
+          "macd_h": -1.073,
+          "vol_r": 0.31,
+          "signal": 0,
+          "score": 17
         }
       ],
       "alert": null,
@@ -21547,23 +21573,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 251.6,
-          "high": 256.4,
-          "low": 251.2,
-          "close": 254.85,
-          "volume": 29841,
-          "ema_f": 256.03,
-          "ema_s": 255.7,
-          "ema_t": 254.1,
-          "rsi": 48.4,
-          "adx": 31.7,
-          "macd_h": -0.912,
-          "vol_r": 2.44,
-          "signal": 0,
-          "score": 42
-        },
         {
           "date": "2026-02-02",
           "open": 250.85,
@@ -23066,7 +23075,7 @@
           "high": 292.15,
           "low": 286.1,
           "close": 286.95,
-          "volume": 4541,
+          "volume": 4591,
           "ema_f": 297.08,
           "ema_s": 291.17,
           "ema_t": 282.77,
@@ -23074,6 +23083,23 @@
           "adx": 43.7,
           "macd_h": -4.15,
           "vol_r": 0.81,
+          "signal": 0,
+          "score": 5
+        },
+        {
+          "date": "2026-06-11",
+          "open": 286.65,
+          "high": 288.5,
+          "low": 286.35,
+          "close": 287.6,
+          "volume": 1124,
+          "ema_f": 295.89,
+          "ema_s": 290.94,
+          "ema_t": 282.96,
+          "rsi": 44.4,
+          "adx": 44.8,
+          "macd_h": -4.384,
+          "vol_r": 0.22,
           "signal": 0,
           "score": 5
         }
@@ -23702,23 +23728,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 33.43,
-          "high": 34.22,
-          "low": 33.28,
-          "close": 34.22,
-          "volume": 55552,
-          "ema_f": 33.56,
-          "ema_s": 32.36,
-          "ema_t": 31.07,
-          "rsi": 74.7,
-          "adx": 41.6,
-          "macd_h": 0.07,
-          "vol_r": 1.32,
-          "signal": 0,
-          "score": 67
-        },
         {
           "date": "2026-02-02",
           "open": 33.71,
@@ -25231,23 +25240,40 @@
           "vol_r": 0.81,
           "signal": 1,
           "score": 62
+        },
+        {
+          "date": "2026-06-11",
+          "open": 40.26,
+          "high": 40.62,
+          "low": 40.26,
+          "close": 40.56,
+          "volume": 18541,
+          "ema_f": 40.22,
+          "ema_s": 39.95,
+          "ema_t": 38.22,
+          "rsi": 57.8,
+          "adx": 14.4,
+          "macd_h": 0.046,
+          "vol_r": 0.36,
+          "signal": 0,
+          "score": 65
         }
       ],
       "alert": {
         "ticker": "ZPDE.DE",
         "name": "SPDR S&P US Energy Select Sector UCIT",
         "date": "2026-06-03",
-        "urgency": "HACE 5d",
-        "days_ago": 5,
+        "urgency": "HACE 6d",
+        "days_ago": 6,
         "price": 40.63,
-        "current_price": 40.51,
-        "current_pnl": -0.31,
+        "current_price": 40.56,
+        "current_pnl": -0.16,
         "stop_loss": 38.55,
         "take_profit": 44.7,
         "stop_pct": 5.12,
         "tp_pct": 10.0,
         "rr_ratio": 1.95,
-        "score_now": 62,
+        "score_now": 65,
         "score": 65,
         "rsi": 60.5,
         "adx": 20.0,
@@ -25255,7 +25281,7 @@
         "max_days": 15,
         "trail_act": 3.5,
         "trail_atr": 1.2,
-        "trail_sl": 39.37,
+        "trail_sl": 39.43,
         "ema50_ok": true,
         "ema50_val": null
       },
@@ -25263,28 +25289,28 @@
         "options_ticker": "XLE",
         "is_proxy": true,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
-        "days_remaining": 10,
+        "days_to_exp": 20,
+        "days_remaining": 9,
         "trade_expiring_soon": false,
         "proxy_price": 58.25,
-        "pcr": 0.31,
+        "pcr": 0.33,
         "pcr_source": "oi",
         "max_pain": 41.5,
         "max_pain_pct": 2.1,
         "max_pain_valid": true,
-        "implied_move_pct": 3.9,
-        "implied_up": 42.21,
-        "implied_down": 39.05,
+        "implied_move_pct": 3.8,
+        "implied_up": 42.17,
+        "implied_down": 39.09,
         "tp_in_range": false,
-        "skew": -14.4,
+        "skew": -27.8,
         "skew_detail": {
           "put_strike": 38.71,
           "call_strike": 42.55,
           "put_price": 0.57,
-          "call_price": 0.66
+          "call_price": 0.79
         },
         "iv_rank": 100.0,
-        "atm_iv": 29.3,
+        "atm_iv": 30.0,
         "hv_252": 20.5,
         "hv_21": 24.1,
         "oi_map": [
@@ -25300,24 +25326,16 @@
             "strike_proxy": 52.0,
             "strike_asset": 36.27,
             "call_oi": 1,
-            "put_oi": 74,
-            "total_oi": 75,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 53.0,
-            "strike_asset": 36.97,
-            "call_oi": 0,
-            "put_oi": 58,
-            "total_oi": 58,
+            "put_oi": 75,
+            "total_oi": 76,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 54.0,
             "strike_asset": 37.67,
             "call_oi": 4,
-            "put_oi": 76,
-            "total_oi": 80,
+            "put_oi": 229,
+            "total_oi": 233,
             "dominant": "PUT"
           },
           {
@@ -25331,73 +25349,81 @@
           {
             "strike_proxy": 56.0,
             "strike_asset": 39.06,
-            "call_oi": 33,
-            "put_oi": 82,
-            "total_oi": 115,
+            "call_oi": 32,
+            "put_oi": 84,
+            "total_oi": 116,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 57.5,
             "strike_asset": 40.11,
-            "call_oi": 25,
-            "put_oi": 73,
-            "total_oi": 98,
+            "call_oi": 21,
+            "put_oi": 67,
+            "total_oi": 88,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 58.0,
             "strike_asset": 40.46,
-            "call_oi": 96,
+            "call_oi": 64,
             "put_oi": 12,
-            "total_oi": 108,
+            "total_oi": 76,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 58.5,
             "strike_asset": 40.8,
-            "call_oi": 238,
+            "call_oi": 247,
             "put_oi": 112,
-            "total_oi": 350,
+            "total_oi": 359,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 59.0,
             "strike_asset": 41.15,
-            "call_oi": 132,
-            "put_oi": 72,
-            "total_oi": 204,
+            "call_oi": 131,
+            "put_oi": 76,
+            "total_oi": 207,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 59.5,
             "strike_asset": 41.5,
-            "call_oi": 182,
+            "call_oi": 183,
             "put_oi": 6,
-            "total_oi": 188,
+            "total_oi": 189,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 60.0,
             "strike_asset": 41.85,
-            "call_oi": 159,
-            "put_oi": 119,
-            "total_oi": 278,
+            "call_oi": 181,
+            "put_oi": 109,
+            "total_oi": 290,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 60.5,
+            "strike_asset": 42.2,
+            "call_oi": 100,
+            "put_oi": 0,
+            "total_oi": 100,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 63.0,
             "strike_asset": 43.94,
-            "call_oi": 4152,
+            "call_oi": 4156,
             "put_oi": 0,
-            "total_oi": 4152,
+            "total_oi": 4156,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 65.5,
             "strike_asset": 45.69,
-            "call_oi": 15,
+            "call_oi": 23,
             "put_oi": 500,
-            "total_oi": 515,
+            "total_oi": 523,
             "dominant": "PUT"
           },
           {
@@ -25414,9 +25440,9 @@
           {
             "strike_proxy": 63.0,
             "strike_asset": 43.94,
-            "call_oi": 4152,
+            "call_oi": 4156,
             "put_oi": 0,
-            "total_oi": 4152,
+            "total_oi": 4156,
             "dominant": "CALL"
           }
         ],
@@ -25424,15 +25450,15 @@
         "signals": [
           {
             "type": "bullish",
-            "msg": "PCR 0.31 — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."
+            "msg": "PCR 0.33 — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."
           },
           {
             "type": "bullish",
-            "msg": "Skew invertido -14.4% — calls OTM (42.55, precio 0.66) más caras que puts OTM (38.71, precio 0.57). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+            "msg": "Skew invertido -27.8% — calls OTM (42.55, precio 0.79) más caras que puts OTM (38.71, precio 0.57). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+10.0%) está FUERA del implied move ±3.9% para los 10d restantes (IV anualizada: 29.3%). El mercado solo descuenta ±3.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+10.0%) está FUERA del implied move ±3.8% para los 9d restantes (IV anualizada: 30.0%). El mercado solo descuenta ±3.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
@@ -25451,8 +25477,8 @@
         "verdict_color": "yellow",
         "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
-        "total_call_oi": 5378,
-        "total_put_oi": 1653
+        "total_call_oi": 5501,
+        "total_put_oi": 1813
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-05-22T13:28:33.193673",
@@ -26263,23 +26289,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 66.46,
-          "high": 66.83,
-          "low": 66.44,
-          "close": 66.83,
-          "volume": 1791,
-          "ema_f": 66.44,
-          "ema_s": 66.2,
-          "ema_t": 61.35,
-          "rsi": 57.7,
-          "adx": 21.8,
-          "macd_h": -0.168,
-          "vol_r": 0.27,
-          "signal": 0,
-          "score": 57
-        },
         {
           "date": "2026-02-02",
           "open": 66.35,
@@ -27792,6 +27801,23 @@
           "vol_r": 1.06,
           "signal": 0,
           "score": 20
+        },
+        {
+          "date": "2026-06-11",
+          "open": 72.24,
+          "high": 72.6,
+          "low": 72.22,
+          "close": 72.6,
+          "volume": 2347,
+          "ema_f": 73.22,
+          "ema_s": 73.01,
+          "ema_t": 66.95,
+          "rsi": 42.0,
+          "adx": 28.2,
+          "macd_h": -0.291,
+          "vol_r": 0.37,
+          "signal": 0,
+          "score": 17
         }
       ],
       "alert": null,
@@ -28826,23 +28852,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 36.38,
-          "high": 37.54,
-          "low": 36.36,
-          "close": 37.54,
-          "volume": 275591,
-          "ema_f": 36.58,
-          "ema_s": 35.93,
-          "ema_t": 34.5,
-          "rsi": 74.6,
-          "adx": 25.8,
-          "macd_h": 0.029,
-          "vol_r": 1.04,
-          "signal": 0,
-          "score": 83
-        },
         {
           "date": "2026-02-03",
           "open": 37.92,
@@ -30345,7 +30354,7 @@
           "high": 37.04,
           "low": 36.28,
           "close": 36.58,
-          "volume": 1849485,
+          "volume": 1849530,
           "ema_f": 37.13,
           "ema_s": 37.03,
           "ema_t": 36.34,
@@ -30355,10 +30364,235 @@
           "vol_r": 1.95,
           "signal": 0,
           "score": 27
+        },
+        {
+          "date": "2026-06-11",
+          "open": 36.8,
+          "high": 37.1,
+          "low": 36.8,
+          "close": 37.06,
+          "volume": 360357,
+          "ema_f": 37.11,
+          "ema_s": 37.03,
+          "ema_t": 36.37,
+          "rsi": 48.1,
+          "adx": 24.7,
+          "macd_h": -0.134,
+          "vol_r": 0.41,
+          "signal": 1,
+          "score": 65
         }
       ],
-      "alert": null,
-      "options": null,
+      "alert": {
+        "ticker": "EXV1.DE",
+        "name": "iShares STOXX Europe 600 Banks UCIT ETF",
+        "date": "2026-06-11",
+        "urgency": "HOY",
+        "days_ago": 0,
+        "price": 37.06,
+        "current_price": 37.06,
+        "current_pnl": -0.01,
+        "stop_loss": 35.35,
+        "take_profit": 40.76,
+        "stop_pct": 4.61,
+        "tp_pct": 10.0,
+        "rr_ratio": 2.17,
+        "score_now": 65,
+        "score": 65,
+        "rsi": 48.1,
+        "adx": 24.7,
+        "vol_ratio": 0.41,
+        "max_days": 8,
+        "trail_act": 5.0,
+        "trail_atr": 1.5,
+        "trail_sl": 36.07,
+        "ema50_ok": true,
+        "ema50_val": null
+      },
+      "options": {
+        "options_ticker": "EUFN",
+        "is_proxy": true,
+        "expiration": "2026-07-17",
+        "days_to_exp": 35,
+        "days_remaining": 8,
+        "trade_expiring_soon": false,
+        "proxy_price": 37.09,
+        "pcr": 0.47,
+        "pcr_source": "oi",
+        "max_pain": 34.97,
+        "max_pain_pct": -5.6,
+        "max_pain_valid": true,
+        "implied_move_pct": 4.8,
+        "implied_up": 38.84,
+        "implied_down": 35.28,
+        "tp_in_range": false,
+        "skew": -15.6,
+        "skew_detail": {
+          "put_strike": 34.97,
+          "call_strike": 38.97,
+          "put_price": 0.6,
+          "call_price": 0.65
+        },
+        "iv_rank": 100.0,
+        "atm_iv": 40.5,
+        "hv_252": 19.9,
+        "hv_21": 20.8,
+        "oi_map": [
+          {
+            "strike_proxy": 28.0,
+            "strike_asset": 27.98,
+            "call_oi": 0,
+            "put_oi": 46,
+            "total_oi": 46,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 31.0,
+            "strike_asset": 30.97,
+            "call_oi": 1,
+            "put_oi": 61,
+            "total_oi": 62,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 32.0,
+            "strike_asset": 31.97,
+            "call_oi": 18,
+            "put_oi": 0,
+            "total_oi": 18,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 33.0,
+            "strike_asset": 32.97,
+            "call_oi": 0,
+            "put_oi": 46,
+            "total_oi": 46,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 34.0,
+            "strike_asset": 33.97,
+            "call_oi": 4,
+            "put_oi": 250,
+            "total_oi": 254,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 35.0,
+            "strike_asset": 34.97,
+            "call_oi": 837,
+            "put_oi": 0,
+            "total_oi": 837,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 36.0,
+            "strike_asset": 35.97,
+            "call_oi": 3,
+            "put_oi": 0,
+            "total_oi": 3,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 38.0,
+            "strike_asset": 37.97,
+            "call_oi": 0,
+            "put_oi": 20,
+            "total_oi": 20,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 39.0,
+            "strike_asset": 38.97,
+            "call_oi": 0,
+            "put_oi": 2,
+            "total_oi": 2,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 40.0,
+            "strike_asset": 39.97,
+            "call_oi": 0,
+            "put_oi": 1,
+            "total_oi": 1,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 41.0,
+            "strike_asset": 40.97,
+            "call_oi": 22,
+            "put_oi": 1,
+            "total_oi": 23,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 44.0,
+            "strike_asset": 43.96,
+            "call_oi": 46,
+            "put_oi": 11,
+            "total_oi": 57,
+            "dominant": "CALL"
+          }
+        ],
+        "oi_using_volume": false,
+        "call_walls": [
+          {
+            "strike_proxy": 35.0,
+            "strike_asset": 34.97,
+            "call_oi": 837,
+            "put_oi": 0,
+            "total_oi": 837,
+            "dominant": "CALL"
+          }
+        ],
+        "put_walls": [
+          {
+            "strike_proxy": 34.0,
+            "strike_asset": 33.97,
+            "call_oi": 4,
+            "put_oi": 250,
+            "total_oi": 254,
+            "dominant": "PUT"
+          }
+        ],
+        "signals": [
+          {
+            "type": "bullish",
+            "msg": "PCR 0.47 — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."
+          },
+          {
+            "type": "bullish",
+            "msg": "Skew invertido -15.6% — calls OTM (38.97, precio 0.65) más caras que puts OTM (34.97, precio 0.6). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+          },
+          {
+            "type": "warning",
+            "msg": "Tu TP (+10.0%) está FUERA del implied move ±4.8% para los 8d restantes (IV anualizada: 40.5%). El mercado solo descuenta ±4.8% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+          },
+          {
+            "type": "bearish",
+            "msg": "Max Pain en 34.97 (-5.6% bajo precio actual). El precio tiende a gravitar hacia Max Pain antes del vencimiento — en este caso implica presión bajista hacia 34.97."
+          },
+          {
+            "type": "warning",
+            "msg": "IV Rank 100% — la volatilidad implícita está en el percentil 100 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
+          },
+          {
+            "type": "neutral",
+            "msg": "Muros de calls (resistencia gamma): 34.97 (OI 837). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
+          },
+          {
+            "type": "neutral",
+            "msg": "Muros de puts (soporte gamma): 33.97 (OI 250). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+          }
+        ],
+        "verdict": "CONFIRMA CON CAUTELA",
+        "verdict_color": "yellow",
+        "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
+        "data_quality": "alta",
+        "total_call_oi": 931,
+        "total_put_oi": 438
+      },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-06-08T11:53:26.421151",
       "asset_ema50_ok": true,
@@ -31202,23 +31436,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 32.35,
-          "high": 32.6,
-          "low": 32.31,
-          "close": 32.44,
-          "volume": 76876,
-          "ema_f": 32.32,
-          "ema_s": 31.7,
-          "ema_t": 27.88,
-          "rsi": 67.2,
-          "adx": 43.2,
-          "macd_h": -0.036,
-          "vol_r": 0.78,
-          "signal": 0,
-          "score": 50
-        },
         {
           "date": "2026-02-02",
           "open": 31.72,
@@ -32731,6 +32948,23 @@
           "vol_r": 0.95,
           "signal": 0,
           "score": 5
+        },
+        {
+          "date": "2026-06-11",
+          "open": 39.46,
+          "high": 39.78,
+          "low": 39.38,
+          "close": 39.71,
+          "volume": 13476,
+          "ema_f": 40.2,
+          "ema_s": 40.05,
+          "ema_t": 33.09,
+          "rsi": 45.8,
+          "adx": 27.6,
+          "macd_h": -0.404,
+          "vol_r": 0.15,
+          "signal": 0,
+          "score": 39
         }
       ],
       "alert": null,
@@ -33408,23 +33642,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 67.24,
-          "high": 69.6,
-          "low": 67.04,
-          "close": 69.49,
-          "volume": 24613,
-          "ema_f": 66.56,
-          "ema_s": 65.26,
-          "ema_t": 62.58,
-          "rsi": 73.2,
-          "adx": 23.8,
-          "macd_h": 0.058,
-          "vol_r": 0.92,
-          "signal": 0,
-          "score": 63
-        },
         {
           "date": "2026-02-03",
           "open": 69.78,
@@ -34926,34 +35143,51 @@
           "open": 70.25,
           "high": 70.35,
           "low": 67.93,
-          "close": 69.43,
+          "close": 69.44,
           "volume": 35031,
           "ema_f": 69.87,
           "ema_s": 69.16,
           "ema_t": 68.01,
           "rsi": 45.7,
           "adx": 16.5,
-          "macd_h": -0.208,
+          "macd_h": -0.207,
           "vol_r": 0.9,
           "signal": 0,
           "score": 33
+        },
+        {
+          "date": "2026-06-11",
+          "open": 69.44,
+          "high": 71.15,
+          "low": 69.44,
+          "close": 70.97,
+          "volume": 12630,
+          "ema_f": 70.04,
+          "ema_s": 69.3,
+          "ema_t": 68.12,
+          "rsi": 59.4,
+          "adx": 15.8,
+          "macd_h": -0.128,
+          "vol_r": 0.33,
+          "signal": 0,
+          "score": 52
         }
       ],
       "alert": {
         "ticker": "IBEXA.MC",
         "name": "Amundi IBEX 35 Doble UCIT ETF",
         "date": "2026-05-28",
-        "urgency": "HACE 9d",
-        "days_ago": 9,
+        "urgency": "HACE 10d",
+        "days_ago": 10,
         "price": 70.83,
-        "current_price": 69.43,
-        "current_pnl": -1.63,
+        "current_price": 70.97,
+        "current_pnl": 0.55,
         "stop_loss": 66.47,
         "take_profit": 76.5,
         "stop_pct": 6.16,
         "tp_pct": 8.0,
         "rr_ratio": 1.3,
-        "score_now": 33,
+        "score_now": 52,
         "score": 78,
         "rsi": 61.4,
         "adx": 27.2,
@@ -34961,7 +35195,7 @@
         "max_days": 12,
         "trail_act": 5.0,
         "trail_atr": 1.2,
-        "trail_sl": 67.39,
+        "trail_sl": 68.89,
         "ema50_ok": true,
         "ema50_val": null
       },
@@ -34969,18 +35203,18 @@
         "options_ticker": "EWP",
         "is_proxy": true,
         "expiration": "2026-07-17",
-        "days_to_exp": 36,
-        "days_remaining": 3,
-        "trade_expiring_soon": false,
+        "days_to_exp": 35,
+        "days_remaining": 2,
+        "trade_expiring_soon": true,
         "proxy_price": 56.25,
-        "pcr": 1.98,
+        "pcr": 3.94,
         "pcr_source": "oi",
         "max_pain": 70.52,
         "max_pain_pct": -0.4,
         "max_pain_valid": true,
-        "implied_move_pct": 2.5,
-        "implied_up": 72.6,
-        "implied_down": 69.06,
+        "implied_move_pct": 2.0,
+        "implied_up": 72.25,
+        "implied_down": 69.41,
         "tp_in_range": false,
         "skew": -3.8,
         "skew_detail": {
@@ -34990,24 +35224,24 @@
           "call_price": 1.1
         },
         "iv_rank": 100.0,
-        "atm_iv": 33.9,
+        "atm_iv": 34.4,
         "hv_252": 18.9,
         "hv_21": 17.7,
         "oi_map": [
           {
-            "strike_proxy": 45.0,
-            "strike_asset": 56.66,
-            "call_oi": 6,
+            "strike_proxy": 44.0,
+            "strike_asset": 55.4,
+            "call_oi": 1,
             "put_oi": 0,
-            "total_oi": 6,
+            "total_oi": 1,
             "dominant": "CALL"
           },
           {
-            "strike_proxy": 48.0,
-            "strike_asset": 60.44,
-            "call_oi": 3,
-            "put_oi": 35,
-            "total_oi": 38,
+            "strike_proxy": 47.0,
+            "strike_asset": 59.18,
+            "call_oi": 2,
+            "put_oi": 2,
+            "total_oi": 4,
             "dominant": "PUT"
           },
           {
@@ -35021,10 +35255,10 @@
           {
             "strike_proxy": 50.0,
             "strike_asset": 62.96,
-            "call_oi": 4,
-            "put_oi": 76,
-            "total_oi": 80,
-            "dominant": "PUT"
+            "call_oi": 3,
+            "put_oi": 0,
+            "total_oi": 3,
+            "dominant": "CALL"
           },
           {
             "strike_proxy": 51.0,
@@ -35038,25 +35272,25 @@
             "strike_proxy": 52.0,
             "strike_asset": 65.48,
             "call_oi": 10,
-            "put_oi": 102,
-            "total_oi": 112,
-            "dominant": "PUT"
+            "put_oi": 0,
+            "total_oi": 10,
+            "dominant": "CALL"
           },
           {
             "strike_proxy": 53.0,
             "strike_asset": 66.74,
-            "call_oi": 7,
+            "call_oi": 0,
             "put_oi": 280,
-            "total_oi": 287,
+            "total_oi": 280,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 54.0,
             "strike_asset": 68.0,
             "call_oi": 3,
-            "put_oi": 76,
-            "total_oi": 79,
-            "dominant": "PUT"
+            "put_oi": 0,
+            "total_oi": 3,
+            "dominant": "CALL"
           },
           {
             "strike_proxy": 55.0,
@@ -35069,10 +35303,10 @@
           {
             "strike_proxy": 56.0,
             "strike_asset": 70.52,
-            "call_oi": 111,
+            "call_oi": 0,
             "put_oi": 66,
-            "total_oi": 177,
-            "dominant": "CALL"
+            "total_oi": 66,
+            "dominant": "PUT"
           },
           {
             "strike_proxy": 57.0,
@@ -35085,10 +35319,10 @@
           {
             "strike_proxy": 58.0,
             "strike_asset": 73.03,
-            "call_oi": 145,
+            "call_oi": 0,
             "put_oi": 3,
-            "total_oi": 148,
-            "dominant": "CALL"
+            "total_oi": 3,
+            "dominant": "PUT"
           },
           {
             "strike_proxy": 59.0,
@@ -35102,8 +35336,8 @@
             "strike_proxy": 60.0,
             "strike_asset": 75.55,
             "call_oi": 33,
-            "put_oi": 13,
-            "total_oi": 46,
+            "put_oi": 0,
+            "total_oi": 33,
             "dominant": "CALL"
           },
           {
@@ -35116,30 +35350,21 @@
           }
         ],
         "oi_using_volume": false,
-        "call_walls": [
-          {
-            "strike_proxy": 56.0,
-            "strike_asset": 70.52,
-            "call_oi": 111,
-            "put_oi": 66,
-            "total_oi": 177,
-            "dominant": "CALL"
-          }
-        ],
+        "call_walls": [],
         "put_walls": [
           {
             "strike_proxy": 53.0,
             "strike_asset": 66.74,
-            "call_oi": 7,
+            "call_oi": 0,
             "put_oi": 280,
-            "total_oi": 287,
+            "total_oi": 280,
             "dominant": "PUT"
           }
         ],
         "signals": [
           {
             "type": "neutral",
-            "msg": "PCR 1.98 — ALTO ESTRUCTURAL para EWP. ETF España/IBEX — mercado pequeño, PCR poco representativo. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
+            "msg": "PCR 3.94 — ALTO ESTRUCTURAL para EWP. ETF España/IBEX — mercado pequeño, PCR poco representativo. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
           },
           {
             "type": "neutral",
@@ -35147,7 +35372,7 @@
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+8.0%) está FUERA del implied move ±2.5% para los 3d restantes (IV anualizada: 33.9%). El mercado solo descuenta ±2.5% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+8.0%) está FUERA del implied move ±2.0% para los 2d restantes (IV anualizada: 34.4%). El mercado solo descuenta ±2.0% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "neutral",
@@ -35159,10 +35384,6 @@
           },
           {
             "type": "neutral",
-            "msg": "Muros de calls (resistencia gamma): 70.52 (OI 111). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
-          },
-          {
-            "type": "neutral",
             "msg": "Muros de puts (soporte gamma): 66.74 (OI 280). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
@@ -35170,8 +35391,8 @@
         "verdict_color": "yellow",
         "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
-        "total_call_oi": 393,
-        "total_put_oi": 779
+        "total_call_oi": 121,
+        "total_put_oi": 477
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-05-22T10:21:53.299184",
@@ -36016,23 +36237,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 47.58,
-          "high": 47.85,
-          "low": 47.4,
-          "close": 47.64,
-          "volume": 5571,
-          "ema_f": 47.4,
-          "ema_s": 46.93,
-          "ema_t": 45.73,
-          "rsi": 56.7,
-          "adx": 34.0,
-          "macd_h": -0.259,
-          "vol_r": 0.54,
-          "signal": 0,
-          "score": 65
-        },
         {
           "date": "2026-02-02",
           "open": 47.5,
@@ -37545,6 +37749,23 @@
           "vol_r": 0.31,
           "signal": 0,
           "score": 7
+        },
+        {
+          "date": "2026-06-11",
+          "open": 51.91,
+          "high": 52.23,
+          "low": 51.91,
+          "close": 52.13,
+          "volume": 547,
+          "ema_f": 52.77,
+          "ema_s": 52.59,
+          "ema_t": 51.9,
+          "rsi": 46.2,
+          "adx": 29.0,
+          "macd_h": -0.256,
+          "vol_r": 0.13,
+          "signal": 0,
+          "score": 24
         }
       ],
       "alert": null,
@@ -38545,23 +38766,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 60.12,
-          "high": 60.89,
-          "low": 59.83,
-          "close": 59.96,
-          "volume": 421259,
-          "ema_f": 61.08,
-          "ema_s": 60.07,
-          "ema_t": 57.02,
-          "rsi": 48.3,
-          "adx": 27.5,
-          "macd_h": -0.697,
-          "vol_r": 0.93,
-          "signal": 0,
-          "score": 30
-        },
         {
           "date": "2026-02-02",
           "open": 59.14,
@@ -40064,16 +40268,33 @@
           "high": 53.06,
           "low": 52.2,
           "close": 52.39,
-          "volume": 189116,
+          "volume": 190196,
           "ema_f": 53.68,
           "ema_s": 54.25,
           "ema_t": 55.63,
           "rsi": 35.6,
           "adx": 35.4,
           "macd_h": -0.29,
-          "vol_r": 1.18,
+          "vol_r": 1.19,
           "signal": 0,
           "score": 10
+        },
+        {
+          "date": "2026-06-11",
+          "open": 52.52,
+          "high": 53.06,
+          "low": 52.49,
+          "close": 52.9,
+          "volume": 46335,
+          "ema_f": 53.54,
+          "ema_s": 54.13,
+          "ema_t": 55.52,
+          "rsi": 40.4,
+          "adx": 37.1,
+          "macd_h": -0.233,
+          "vol_r": 0.3,
+          "signal": 0,
+          "score": 15
         }
       ],
       "alert": null,
@@ -41438,7 +41659,7 @@
           "low": 135.48,
           "close": 138.76,
           "volume": 2507700,
-          "ema_f": 147.21,
+          "ema_f": 147.2,
           "ema_s": 146.61,
           "ema_t": 114.24,
           "rsi": 42.1,
@@ -42440,7 +42661,7 @@
           "high": 116.52,
           "low": 109.18,
           "close": 112.58,
-          "volume": 2936400,
+          "volume": 2940600,
           "ema_f": 124.65,
           "ema_s": 127.52,
           "ema_t": 121.96,
@@ -42457,14 +42678,14 @@
           "high": 111.3,
           "low": 106.82,
           "close": 107.52,
-          "volume": 2443901,
+          "volume": 2935500,
           "ema_f": 122.51,
           "ema_s": 125.98,
           "ema_t": 121.81,
           "rsi": 30.4,
           "adx": 39.1,
           "macd_h": -2.752,
-          "vol_r": 1.34,
+          "vol_r": 1.59,
           "signal": 0,
           "score": 0
         }
@@ -44799,7 +45020,7 @@
           "high": 106.87,
           "low": 98.57,
           "close": 102.27,
-          "volume": 4455300,
+          "volume": 4456800,
           "ema_f": 108.59,
           "ema_s": 110.9,
           "ema_t": 110.38,
@@ -44813,17 +45034,17 @@
         {
           "date": "2026-06-10",
           "open": 99.93,
-          "high": 101.57,
-          "low": 93.85,
+          "high": 101.58,
+          "low": 93.83,
           "close": 95.03,
-          "volume": 6608840,
+          "volume": 6956100,
           "ema_f": 106.13,
           "ema_s": 109.68,
           "ema_t": 110.07,
           "rsi": 25.6,
           "adx": 37.6,
           "macd_h": -1.016,
-          "vol_r": 2.0,
+          "vol_r": 2.09,
           "signal": 0,
           "score": 0
         }
@@ -47328,14 +47549,14 @@
           "high": 150.3,
           "low": 141.54,
           "close": 146.22,
-          "volume": 4056800,
+          "volume": 4059000,
           "ema_f": 151.81,
           "ema_s": 152.76,
           "ema_t": 158.48,
           "rsi": 42.8,
           "adx": 24.2,
           "macd_h": -0.543,
-          "vol_r": 0.78,
+          "vol_r": 0.79,
           "signal": 0,
           "score": 0
         },
@@ -47345,14 +47566,14 @@
           "high": 144.0,
           "low": 137.91,
           "close": 138.54,
-          "volume": 4439581,
+          "volume": 5165300,
           "ema_f": 150.15,
           "ema_s": 151.84,
           "ema_t": 158.09,
           "rsi": 36.5,
           "adx": 26.5,
           "macd_h": -1.213,
-          "vol_r": 0.86,
+          "vol_r": 1.0,
           "signal": 0,
           "score": 0
         }
@@ -49755,7 +49976,7 @@
           "high": 479.47,
           "low": 436.36,
           "close": 452.51,
-          "volume": 965300,
+          "volume": 966100,
           "ema_f": 449.95,
           "ema_s": 433.6,
           "ema_t": 517.15,
@@ -49772,14 +49993,14 @@
           "high": 462.99,
           "low": 437.98,
           "close": 447.59,
-          "volume": 713328,
+          "volume": 726600,
           "ema_f": 449.65,
           "ema_s": 434.5,
           "ema_t": 516.45,
           "rsi": 51.4,
           "adx": 38.2,
           "macd_h": 0.541,
-          "vol_r": 0.6,
+          "vol_r": 0.61,
           "signal": 0,
           "score": 47
         }
@@ -49814,28 +50035,28 @@
         "options_ticker": "AXON",
         "is_proxy": false,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 9,
         "trade_expiring_soon": false,
         "proxy_price": 447.59,
-        "pcr": 2.32,
+        "pcr": 3.58,
         "pcr_source": "oi",
         "max_pain": 460.0,
         "max_pain_pct": 2.8,
         "max_pain_valid": true,
-        "implied_move_pct": 8.8,
-        "implied_up": 492.33,
-        "implied_down": 412.69,
+        "implied_move_pct": 11.0,
+        "implied_up": 502.29,
+        "implied_down": 402.73,
         "tp_in_range": true,
-        "skew": 26.8,
+        "skew": -12.9,
         "skew_detail": {
           "put_strike": 430.0,
           "call_strike": 470.0,
-          "put_price": 20.6,
-          "call_price": 20.7
+          "put_price": 16.3,
+          "call_price": 23.83
         },
-        "iv_rank": 87.0,
-        "atm_iv": 70.0,
+        "iv_rank": 100.0,
+        "atm_iv": 87.8,
         "hv_252": 55.9,
         "hv_21": 65.3,
         "oi_map": [
@@ -49851,16 +50072,16 @@
             "strike_proxy": 360.0,
             "strike_asset": 360.0,
             "call_oi": 0,
-            "put_oi": 24,
-            "total_oi": 24,
+            "put_oi": 25,
+            "total_oi": 25,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 365.0,
             "strike_asset": 365.0,
             "call_oi": 0,
-            "put_oi": 24,
-            "total_oi": 24,
+            "put_oi": 25,
+            "total_oi": 25,
             "dominant": "PUT"
           },
           {
@@ -49888,14 +50109,6 @@
             "dominant": "PUT"
           },
           {
-            "strike_proxy": 385.0,
-            "strike_asset": 385.0,
-            "call_oi": 0,
-            "put_oi": 7,
-            "total_oi": 7,
-            "dominant": "PUT"
-          },
-          {
             "strike_proxy": 400.0,
             "strike_asset": 400.0,
             "call_oi": 0,
@@ -49912,11 +50125,19 @@
             "dominant": "PUT"
           },
           {
-            "strike_proxy": 430.0,
-            "strike_asset": 430.0,
+            "strike_proxy": 440.0,
+            "strike_asset": 440.0,
             "call_oi": 1,
-            "put_oi": 7,
-            "total_oi": 8,
+            "put_oi": 15,
+            "total_oi": 16,
+            "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 445.0,
+            "strike_asset": 445.0,
+            "call_oi": 0,
+            "put_oi": 170,
+            "total_oi": 170,
             "dominant": "PUT"
           },
           {
@@ -49928,14 +50149,6 @@
             "dominant": "CALL"
           },
           {
-            "strike_proxy": 465.0,
-            "strike_asset": 465.0,
-            "call_oi": 7,
-            "put_oi": 0,
-            "total_oi": 7,
-            "dominant": "CALL"
-          },
-          {
             "strike_proxy": 470.0,
             "strike_asset": 470.0,
             "call_oi": 21,
@@ -49944,19 +50157,27 @@
             "dominant": "CALL"
           },
           {
-            "strike_proxy": 485.0,
-            "strike_asset": 485.0,
-            "call_oi": 5,
-            "put_oi": 2,
-            "total_oi": 7,
+            "strike_proxy": 500.0,
+            "strike_asset": 500.0,
+            "call_oi": 13,
+            "put_oi": 0,
+            "total_oi": 13,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 510.0,
+            "strike_asset": 510.0,
+            "call_oi": 9,
+            "put_oi": 0,
+            "total_oi": 9,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 540.0,
             "strike_asset": 540.0,
-            "call_oi": 9,
+            "call_oi": 10,
             "put_oi": 0,
-            "total_oi": 9,
+            "total_oi": 10,
             "dominant": "CALL"
           }
         ],
@@ -49964,26 +50185,26 @@
         "call_walls": [],
         "put_walls": [
           {
-            "strike_proxy": 345.0,
-            "strike_asset": 345.0,
+            "strike_proxy": 445.0,
+            "strike_asset": 445.0,
             "call_oi": 0,
-            "put_oi": 62,
-            "total_oi": 62,
+            "put_oi": 170,
+            "total_oi": 170,
             "dominant": "PUT"
           }
         ],
         "signals": [
           {
             "type": "bearish",
-            "msg": "PCR 2.32 (alto) — hay 2.3x más puts que calls. El mercado está pagando por protección bajista. Si el PCR sube más puede ser señal contrarian (todo el mundo ya cubierto = posible suelo), pero de momento confirma presión vendedora."
-          },
-          {
-            "type": "bearish",
-            "msg": "Skew muy pronunciado +26.8% — las puts OTM (430.0, precio 20.6) cuestan bastante más que las calls OTM (470.0, precio 20.7). El mercado está pagando fuerte por protección bajista. Señal de miedo real o anticipación de caída."
+            "msg": "PCR 3.58 (alto) — hay 3.6x más puts que calls. El mercado está pagando por protección bajista. Si el PCR sube más puede ser señal contrarian (todo el mundo ya cubierto = posible suelo), pero de momento confirma presión vendedora."
           },
           {
             "type": "bullish",
-            "msg": "Tu TP (+6.0%) está dentro del implied move ±8.8% calculado para los 9d restantes del trade (IV anualizada: 70.0%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-17.9%) también está dentro del rango — el trade tiene sentido temporalmente."
+            "msg": "Skew invertido -12.9% — calls OTM (470.0, precio 23.83) más caras que puts OTM (430.0, precio 16.3). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+          },
+          {
+            "type": "bullish",
+            "msg": "Tu TP (+6.0%) está dentro del implied move ±11.0% calculado para los 9d restantes del trade (IV anualizada: 87.8%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-17.9%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "neutral",
@@ -49991,19 +50212,19 @@
           },
           {
             "type": "warning",
-            "msg": "IV Rank 87% — la volatilidad implícita está en el percentil 87 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
+            "msg": "IV Rank 100% — la volatilidad implícita está en el percentil 100 de su rango anual. Las opciones están CARAS. Comprar opciones aquí es caro — si vas a operar opciones, mejor vender premium que comprarlo."
           },
           {
             "type": "neutral",
-            "msg": "Muros de puts (soporte gamma): 345.00 (OI 62). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
+            "msg": "Muros de puts (soporte gamma): 445.00 (OI 170). Concentración alta de puts vendidas — los market makers deben comprar el subyacente si el precio cae hacia esos strikes (fuerza natural de soporte)."
           }
         ],
-        "verdict": "CONTRADICE",
-        "verdict_color": "red",
-        "verdict_msg": "Opciones muestran sesgo bajista (2 señales negativas). Considera reducir tamaño o esperar confirmación adicional.",
+        "verdict": "CONFIRMA CON CAUTELA",
+        "verdict_color": "yellow",
+        "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
-        "total_call_oi": 115,
-        "total_put_oi": 267
+        "total_call_oi": 125,
+        "total_put_oi": 448
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-06-04T19:21:36.271284",
@@ -52129,31 +52350,31 @@
           "high": 44.95,
           "low": 38.04,
           "close": 40.64,
-          "volume": 50125300,
+          "volume": 51851100,
           "ema_f": 43.09,
           "ema_s": 39.76,
           "ema_t": 33.43,
           "rsi": 46.2,
           "adx": 40.7,
           "macd_h": -0.016,
-          "vol_r": 1.19,
+          "vol_r": 1.23,
           "signal": 0,
-          "score": 33
+          "score": 36
         },
         {
           "date": "2026-06-10",
           "open": 35.6,
-          "high": 36.5,
+          "high": 36.51,
           "low": 29.14,
           "close": 29.27,
-          "volume": 183952846,
+          "volume": 189998900,
           "ema_f": 40.02,
           "ema_s": 38.76,
           "ema_t": 33.35,
           "rsi": 26.4,
           "adx": 41.7,
           "macd_h": -1.055,
-          "vol_r": 3.71,
+          "vol_r": 3.8,
           "signal": 0,
           "score": 5
         }
@@ -54233,14 +54454,14 @@
           "high": 29.56,
           "low": 27.76,
           "close": 28.19,
-          "volume": 9124300,
+          "volume": 9166500,
           "ema_f": 29.31,
           "ema_s": 30.15,
           "ema_t": 41.06,
           "rsi": 35.3,
           "adx": 29.5,
           "macd_h": -0.181,
-          "vol_r": 0.88,
+          "vol_r": 0.89,
           "signal": 0,
           "score": 3
         },
@@ -54250,14 +54471,14 @@
           "high": 29.48,
           "low": 27.74,
           "close": 28.37,
-          "volume": 7330214,
+          "volume": 7464000,
           "ema_f": 29.14,
           "ema_s": 29.98,
           "ema_t": 40.93,
           "rsi": 37.7,
           "adx": 28.0,
           "macd_h": -0.137,
-          "vol_r": 0.72,
+          "vol_r": 0.73,
           "signal": 0,
           "score": 3
         }
@@ -56524,7 +56745,7 @@
           "high": 284.12,
           "low": 269.81,
           "close": 282.26,
-          "volume": 2677500,
+          "volume": 2678600,
           "ema_f": 276.72,
           "ema_s": 273.78,
           "ema_t": 277.64,
@@ -56538,17 +56759,17 @@
         {
           "date": "2026-06-10",
           "open": 277.69,
-          "high": 278.1,
+          "high": 278.13,
           "low": 266.01,
           "close": 268.73,
-          "volume": 1485616,
+          "volume": 1686300,
           "ema_f": 275.72,
           "ema_s": 273.39,
           "ema_t": 277.46,
           "rsi": 42.1,
           "adx": 20.4,
           "macd_h": -0.318,
-          "vol_r": 0.5,
+          "vol_r": 0.56,
           "signal": 0,
           "score": 0
         }
@@ -56583,28 +56804,28 @@
         "options_ticker": "RCL",
         "is_proxy": false,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 9,
         "trade_expiring_soon": false,
         "proxy_price": 268.73,
-        "pcr": 3.27,
+        "pcr": 4.53,
         "pcr_source": "oi",
-        "max_pain": 275.0,
-        "max_pain_pct": 2.3,
+        "max_pain": 280.0,
+        "max_pain_pct": 4.2,
         "max_pain_valid": true,
-        "implied_move_pct": 6.9,
-        "implied_up": 301.74,
-        "implied_down": 262.78,
+        "implied_move_pct": 7.2,
+        "implied_up": 302.58,
+        "implied_down": 261.94,
         "tp_in_range": false,
-        "skew": -22.7,
+        "skew": -48.8,
         "skew_detail": {
           "put_strike": 255.0,
           "call_strike": 280.0,
-          "put_price": 8.85,
-          "call_price": 9.4
+          "put_price": 5.3,
+          "call_price": 8.5
         },
-        "iv_rank": 56.0,
-        "atm_iv": 55.4,
+        "iv_rank": 60.0,
+        "atm_iv": 57.3,
         "hv_252": 46.1,
         "hv_21": 43.9,
         "oi_map": [
@@ -56617,35 +56838,27 @@
             "dominant": "PUT"
           },
           {
-            "strike_proxy": 210.0,
-            "strike_asset": 210.0,
+            "strike_proxy": 225.0,
+            "strike_asset": 225.0,
             "call_oi": 0,
-            "put_oi": 26,
-            "total_oi": 26,
+            "put_oi": 4,
+            "total_oi": 4,
             "dominant": "PUT"
           },
           {
-            "strike_proxy": 230.0,
-            "strike_asset": 230.0,
+            "strike_proxy": 235.0,
+            "strike_asset": 235.0,
             "call_oi": 0,
-            "put_oi": 23,
-            "total_oi": 23,
+            "put_oi": 62,
+            "total_oi": 62,
             "dominant": "PUT"
           },
           {
-            "strike_proxy": 240.0,
-            "strike_asset": 240.0,
+            "strike_proxy": 245.0,
+            "strike_asset": 245.0,
             "call_oi": 0,
-            "put_oi": 14,
-            "total_oi": 14,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 250.0,
-            "strike_asset": 250.0,
-            "call_oi": 0,
-            "put_oi": 14,
-            "total_oi": 14,
+            "put_oi": 6,
+            "total_oi": 6,
             "dominant": "PUT"
           },
           {
@@ -56659,73 +56872,81 @@
           {
             "strike_proxy": 260.0,
             "strike_asset": 260.0,
-            "call_oi": 2,
+            "call_oi": 8,
             "put_oi": 244,
-            "total_oi": 246,
+            "total_oi": 252,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 265.0,
             "strike_asset": 265.0,
-            "call_oi": 12,
+            "call_oi": 0,
             "put_oi": 20,
-            "total_oi": 32,
+            "total_oi": 20,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 270.0,
             "strike_asset": 270.0,
-            "call_oi": 2,
+            "call_oi": 8,
             "put_oi": 54,
-            "total_oi": 56,
-            "dominant": "PUT"
-          },
-          {
-            "strike_proxy": 275.0,
-            "strike_asset": 275.0,
-            "call_oi": 2,
-            "put_oi": 16,
-            "total_oi": 18,
+            "total_oi": 62,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 280.0,
             "strike_asset": 280.0,
-            "call_oi": 17,
+            "call_oi": 0,
             "put_oi": 10,
-            "total_oi": 27,
-            "dominant": "CALL"
+            "total_oi": 10,
+            "dominant": "PUT"
           },
           {
             "strike_proxy": 285.0,
             "strike_asset": 285.0,
-            "call_oi": 15,
-            "put_oi": 2,
-            "total_oi": 17,
-            "dominant": "CALL"
+            "call_oi": 0,
+            "put_oi": 7,
+            "total_oi": 7,
+            "dominant": "PUT"
           },
           {
             "strike_proxy": 295.0,
             "strike_asset": 295.0,
-            "call_oi": 38,
+            "call_oi": 37,
             "put_oi": 1,
-            "total_oi": 39,
+            "total_oi": 38,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 300.0,
             "strike_asset": 300.0,
-            "call_oi": 39,
+            "call_oi": 41,
             "put_oi": 1,
-            "total_oi": 40,
+            "total_oi": 42,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 305.0,
+            "strike_asset": 305.0,
+            "call_oi": 11,
+            "put_oi": 0,
+            "total_oi": 11,
+            "dominant": "CALL"
+          },
+          {
+            "strike_proxy": 310.0,
+            "strike_asset": 310.0,
+            "call_oi": 11,
+            "put_oi": 0,
+            "total_oi": 11,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 315.0,
             "strike_asset": 315.0,
-            "call_oi": 21,
+            "call_oi": 20,
             "put_oi": 0,
-            "total_oi": 21,
+            "total_oi": 20,
             "dominant": "CALL"
           }
         ],
@@ -56735,9 +56956,9 @@
           {
             "strike_proxy": 260.0,
             "strike_asset": 260.0,
-            "call_oi": 2,
+            "call_oi": 8,
             "put_oi": 244,
-            "total_oi": 246,
+            "total_oi": 252,
             "dominant": "PUT"
           },
           {
@@ -56752,23 +56973,23 @@
         "signals": [
           {
             "type": "bearish",
-            "msg": "PCR 3.27 (alto) — hay 3.3x más puts que calls. El mercado está pagando por protección bajista. Si el PCR sube más puede ser señal contrarian (todo el mundo ya cubierto = posible suelo), pero de momento confirma presión vendedora."
+            "msg": "PCR 4.53 (alto) — hay 4.5x más puts que calls. El mercado está pagando por protección bajista. Si el PCR sube más puede ser señal contrarian (todo el mundo ya cubierto = posible suelo), pero de momento confirma presión vendedora."
           },
           {
             "type": "bullish",
-            "msg": "Skew invertido -22.7% — calls OTM (280.0, precio 9.4) más caras que puts OTM (255.0, precio 8.85). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+            "msg": "Skew invertido -48.8% — calls OTM (280.0, precio 8.5) más caras que puts OTM (255.0, precio 5.3). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+10.0%) está FUERA del implied move ±6.9% para los 9d restantes (IV anualizada: 55.4%). El mercado solo descuenta ±6.9% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+10.0%) está FUERA del implied move ±7.2% para los 9d restantes (IV anualizada: 57.3%). El mercado solo descuenta ±7.2% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+          },
+          {
+            "type": "bullish",
+            "msg": "Max Pain en 280.0 (+4.2% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
           },
           {
             "type": "neutral",
-            "msg": "Max Pain en 275.0 (+2.3% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
-          },
-          {
-            "type": "neutral",
-            "msg": "IV Rank 56% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 60% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
@@ -56779,8 +57000,8 @@
         "verdict_color": "yellow",
         "verdict_msg": "Dirección confirmada pero con advertencias — principalmente que tu TP puede ser ambicioso para el vencimiento actual.",
         "data_quality": "alta",
-        "total_call_oi": 206,
-        "total_put_oi": 674
+        "total_call_oi": 137,
+        "total_put_oi": 621
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-06-10T10:53:36.097083",
@@ -59127,7 +59348,7 @@
           "high": 15.39,
           "low": 14.49,
           "close": 14.95,
-          "volume": 51024400,
+          "volume": 51032600,
           "ema_f": 15.19,
           "ema_s": 14.28,
           "ema_t": 13.16,
@@ -59144,14 +59365,14 @@
           "high": 14.84,
           "low": 14.23,
           "close": 14.3,
-          "volume": 42008157,
+          "volume": 50708300,
           "ema_f": 15.05,
           "ema_s": 14.28,
           "ema_t": 13.19,
           "rsi": 36.5,
           "adx": 30.7,
           "macd_h": -0.198,
-          "vol_r": 0.48,
+          "vol_r": 0.58,
           "signal": 0,
           "score": 23
         }
@@ -59186,133 +59407,133 @@
         "options_ticker": "F",
         "is_proxy": false,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
+        "days_to_exp": 20,
         "days_remaining": 2,
         "trade_expiring_soon": true,
         "proxy_price": 14.3,
-        "pcr": 0.62,
+        "pcr": 0.59,
         "pcr_source": "oi",
-        "max_pain": 15.5,
-        "max_pain_pct": 8.4,
+        "max_pain": 15.0,
+        "max_pain_pct": 4.9,
         "max_pain_valid": true,
-        "implied_move_pct": 2.6,
-        "implied_up": 16.59,
-        "implied_down": 15.75,
+        "implied_move_pct": 2.5,
+        "implied_up": 16.57,
+        "implied_down": 15.77,
         "tp_in_range": false,
-        "skew": -35.3,
+        "skew": -31.1,
         "skew_detail": {
           "put_strike": 13.5,
           "call_strike": 15.0,
           "put_price": 0.26,
-          "call_price": 0.34
+          "call_price": 0.33
         },
-        "iv_rank": 48.0,
-        "atm_iv": 43.9,
+        "iv_rank": 46.0,
+        "atm_iv": 42.8,
         "hv_252": 37.5,
         "hv_21": 79.1,
         "oi_map": [
           {
             "strike_proxy": 11.0,
             "strike_asset": 11.0,
-            "call_oi": 10,
-            "put_oi": 16,
-            "total_oi": 26,
+            "call_oi": 11,
+            "put_oi": 26,
+            "total_oi": 37,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 11.5,
             "strike_asset": 11.5,
-            "call_oi": 1,
-            "put_oi": 67,
-            "total_oi": 68,
+            "call_oi": 2,
+            "put_oi": 69,
+            "total_oi": 71,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 12.0,
             "strike_asset": 12.0,
             "call_oi": 8,
-            "put_oi": 215,
-            "total_oi": 223,
+            "put_oi": 214,
+            "total_oi": 222,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 12.5,
             "strike_asset": 12.5,
             "call_oi": 47,
-            "put_oi": 207,
-            "total_oi": 254,
+            "put_oi": 196,
+            "total_oi": 243,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 13.0,
             "strike_asset": 13.0,
             "call_oi": 59,
-            "put_oi": 265,
-            "total_oi": 324,
+            "put_oi": 277,
+            "total_oi": 336,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 13.5,
             "strike_asset": 13.5,
-            "call_oi": 138,
-            "put_oi": 265,
-            "total_oi": 403,
+            "call_oi": 145,
+            "put_oi": 282,
+            "total_oi": 427,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 14.0,
             "strike_asset": 14.0,
-            "call_oi": 248,
-            "put_oi": 473,
-            "total_oi": 721,
+            "call_oi": 235,
+            "put_oi": 471,
+            "total_oi": 706,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 14.5,
             "strike_asset": 14.5,
-            "call_oi": 283,
-            "put_oi": 300,
-            "total_oi": 583,
+            "call_oi": 280,
+            "put_oi": 296,
+            "total_oi": 576,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 15.0,
             "strike_asset": 15.0,
-            "call_oi": 338,
-            "put_oi": 820,
-            "total_oi": 1158,
+            "call_oi": 446,
+            "put_oi": 796,
+            "total_oi": 1242,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 15.5,
             "strike_asset": 15.5,
-            "call_oi": 327,
-            "put_oi": 208,
-            "total_oi": 535,
+            "call_oi": 323,
+            "put_oi": 206,
+            "total_oi": 529,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 16.0,
             "strike_asset": 16.0,
-            "call_oi": 1016,
-            "put_oi": 548,
-            "total_oi": 1564,
+            "call_oi": 1151,
+            "put_oi": 549,
+            "total_oi": 1700,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 16.5,
             "strike_asset": 16.5,
-            "call_oi": 2577,
+            "call_oi": 2558,
             "put_oi": 137,
-            "total_oi": 2714,
+            "total_oi": 2695,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 17.0,
             "strike_asset": 17.0,
-            "call_oi": 778,
-            "put_oi": 55,
-            "total_oi": 833,
+            "call_oi": 811,
+            "put_oi": 53,
+            "total_oi": 864,
             "dominant": "CALL"
           },
           {
@@ -59329,17 +59550,17 @@
           {
             "strike_proxy": 16.5,
             "strike_asset": 16.5,
-            "call_oi": 2577,
+            "call_oi": 2558,
             "put_oi": 137,
-            "total_oi": 2714,
+            "total_oi": 2695,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 16.0,
             "strike_asset": 16.0,
-            "call_oi": 1016,
-            "put_oi": 548,
-            "total_oi": 1564,
+            "call_oi": 1151,
+            "put_oi": 549,
+            "total_oi": 1700,
             "dominant": "CALL"
           }
         ],
@@ -59347,35 +59568,35 @@
         "signals": [
           {
             "type": "bullish",
-            "msg": "PCR 0.62 — leve sesgo alcista. El mercado no está comprando protección, coherente con una señal de compra."
+            "msg": "PCR 0.59 — pocas puts relativas a calls. El mercado está posicionado alcista, sin miedo visible. Confirma la señal técnica de compra."
           },
           {
             "type": "bullish",
-            "msg": "Skew invertido -35.3% — calls OTM (15.0, precio 0.34) más caras que puts OTM (13.5, precio 0.26). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+            "msg": "Skew invertido -31.1% — calls OTM (15.0, precio 0.33) más caras que puts OTM (13.5, precio 0.26). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
           },
           {
             "type": "warning",
-            "msg": "Tu TP (+4.0%) está FUERA del implied move ±2.6% para los 2d restantes (IV anualizada: 43.9%). El mercado solo descuenta ±2.6% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
+            "msg": "Tu TP (+4.0%) está FUERA del implied move ±2.5% para los 2d restantes (IV anualizada: 42.8%). El mercado solo descuenta ±2.5% en ese plazo. Considera ajustar el TP o ampliar el horizonte temporal."
           },
           {
             "type": "bullish",
-            "msg": "Max Pain en 15.5 (+8.4% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
+            "msg": "Max Pain en 15.0 (+4.9% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
           },
           {
             "type": "neutral",
-            "msg": "IV Rank 48% — volatilidad en rango normal. Ni cara ni barata."
+            "msg": "IV Rank 46% — volatilidad en rango normal. Ni cara ni barata."
           },
           {
             "type": "neutral",
-            "msg": "Muros de calls (resistencia gamma): 16.50 (OI 2.6K), 16.00 (OI 1K). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
+            "msg": "Muros de calls (resistencia gamma): 16.50 (OI 2.6K), 16.00 (OI 1.2K). Concentración alta de calls vendidas — los market makers deben vender el subyacente si el precio sube hacia esos strikes (fuerza natural de resistencia)."
           }
         ],
         "verdict": "CONFIRMA",
         "verdict_color": "green",
         "verdict_msg": "Opciones confirman sesgo alcista (3 señales positivas vs 0 negativas). Convicción alta.",
         "data_quality": "alta",
-        "total_call_oi": 6224,
-        "total_put_oi": 3843
+        "total_call_oi": 6470,
+        "total_put_oi": 3839
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-06-10T10:53:36.583247",
@@ -60339,23 +60560,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 137.81,
-          "high": 148.42,
-          "low": 137.46,
-          "close": 147.32,
-          "volume": 2314201,
-          "ema_f": 139.3,
-          "ema_s": 133.27,
-          "ema_t": 125.46,
-          "rsi": 78.8,
-          "adx": 53.0,
-          "macd_h": 0.73,
-          "vol_r": 1.03,
-          "signal": 0,
-          "score": 71
-        },
         {
           "date": "2026-02-03",
           "open": 151.21,
@@ -61858,7 +62062,7 @@
           "high": 149.18,
           "low": 138.68,
           "close": 138.68,
-          "volume": 5090250,
+          "volume": 5097741,
           "ema_f": 157.98,
           "ema_s": 163.86,
           "ema_t": 164.46,
@@ -61868,6 +62072,23 @@
           "vol_r": 2.01,
           "signal": 0,
           "score": 0
+        },
+        {
+          "date": "2026-06-11",
+          "open": 140.64,
+          "high": 144.74,
+          "low": 140.3,
+          "close": 142.9,
+          "volume": 969284,
+          "ema_f": 155.66,
+          "ema_s": 162.25,
+          "ema_t": 163.61,
+          "rsi": 26.9,
+          "adx": 50.5,
+          "macd_h": -2.749,
+          "vol_r": 0.39,
+          "signal": 0,
+          "score": 3
         }
       ],
       "alert": null,
@@ -62579,23 +62800,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 110.85,
-          "high": 115.03,
-          "low": 110.46,
-          "close": 115.03,
-          "volume": 12471,
-          "ema_f": 110.79,
-          "ema_s": 106.68,
-          "ema_t": 90.45,
-          "rsi": 62.2,
-          "adx": 44.8,
-          "macd_h": 0.067,
-          "vol_r": 2.42,
-          "signal": 1,
-          "score": 82
-        },
         {
           "date": "2026-02-03",
           "open": 119.96,
@@ -64108,23 +64312,40 @@
           "vol_r": 1.73,
           "signal": 0,
           "score": 15
+        },
+        {
+          "date": "2026-06-11",
+          "open": 176.86,
+          "high": 180.64,
+          "low": 176.76,
+          "close": 179.85,
+          "volume": 2618,
+          "ema_f": 183.88,
+          "ema_s": 179.87,
+          "ema_t": 147.63,
+          "rsi": 42.0,
+          "adx": 30.7,
+          "macd_h": -2.927,
+          "vol_r": 0.18,
+          "signal": 0,
+          "score": 27
         }
       ],
       "alert": {
         "ticker": "KRW.PA",
         "name": "Amundi MSCI Korea UCITS ETF",
         "date": "2026-06-04",
-        "urgency": "HACE 4d",
-        "days_ago": 4,
+        "urgency": "HACE 5d",
+        "days_ago": 5,
         "price": 195.0,
-        "current_price": 175.74,
-        "current_pnl": -9.88,
+        "current_price": 179.85,
+        "current_pnl": -7.77,
         "stop_loss": 174.72,
         "take_profit": 206.7,
         "stop_pct": 10.4,
         "tp_pct": 6.0,
         "rr_ratio": 0.58,
-        "score_now": 15,
+        "score_now": 27,
         "score": 82,
         "rsi": 56.5,
         "adx": 40.5,
@@ -64132,7 +64353,7 @@
         "max_days": 10,
         "trail_act": 5.0,
         "trail_atr": 2.0,
-        "trail_sl": 161.68,
+        "trail_sl": 165.46,
         "ema50_ok": true,
         "ema50_val": null
       },
@@ -64140,28 +64361,28 @@
         "options_ticker": "EWY",
         "is_proxy": true,
         "expiration": "2026-07-02",
-        "days_to_exp": 21,
-        "days_remaining": 6,
+        "days_to_exp": 20,
+        "days_remaining": 5,
         "trade_expiring_soon": false,
         "proxy_price": 178.45,
-        "pcr": 1.76,
+        "pcr": 1.52,
         "pcr_source": "oi",
-        "max_pain": 201.06,
-        "max_pain_pct": 3.1,
+        "max_pain": 193.42,
+        "max_pain_pct": -0.8,
         "max_pain_valid": true,
-        "implied_move_pct": 9.4,
-        "implied_up": 213.33,
-        "implied_down": 176.67,
+        "implied_move_pct": 10.1,
+        "implied_up": 214.7,
+        "implied_down": 175.3,
         "tp_in_range": true,
-        "skew": -3.4,
+        "skew": -70.4,
         "skew_detail": {
           "put_strike": 185.77,
           "call_strike": 204.89,
-          "put_price": 11.05,
-          "call_price": 12.25
+          "put_price": 10.61,
+          "call_price": 38.4
         },
         "iv_rank": 100.0,
-        "atm_iv": 91.4,
+        "atm_iv": 108.7,
         "hv_252": 45.3,
         "hv_21": 85.0,
         "oi_map": [
@@ -64169,121 +64390,121 @@
             "strike_proxy": 135.0,
             "strike_asset": 147.52,
             "call_oi": 118,
-            "put_oi": 78,
-            "total_oi": 196,
+            "put_oi": 0,
+            "total_oi": 118,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 140.0,
             "strike_asset": 152.98,
-            "call_oi": 113,
-            "put_oi": 1686,
-            "total_oi": 1799,
+            "call_oi": 109,
+            "put_oi": 1687,
+            "total_oi": 1796,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 150.0,
             "strike_asset": 163.91,
             "call_oi": 152,
-            "put_oi": 361,
-            "total_oi": 513,
-            "dominant": "PUT"
+            "put_oi": 0,
+            "total_oi": 152,
+            "dominant": "CALL"
           },
           {
-            "strike_proxy": 160.0,
-            "strike_asset": 174.84,
-            "call_oi": 39,
-            "put_oi": 248,
-            "total_oi": 287,
+            "strike_proxy": 165.0,
+            "strike_asset": 180.3,
+            "call_oi": 0,
+            "put_oi": 113,
+            "total_oi": 113,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 169.0,
             "strike_asset": 184.67,
-            "call_oi": 55,
-            "put_oi": 102,
-            "total_oi": 157,
+            "call_oi": 0,
+            "put_oi": 103,
+            "total_oi": 103,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 170.0,
             "strike_asset": 185.77,
-            "call_oi": 110,
-            "put_oi": 336,
-            "total_oi": 446,
+            "call_oi": 0,
+            "put_oi": 330,
+            "total_oi": 330,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 175.0,
             "strike_asset": 191.23,
-            "call_oi": 80,
-            "put_oi": 130,
-            "total_oi": 210,
+            "call_oi": 0,
+            "put_oi": 126,
+            "total_oi": 126,
             "dominant": "PUT"
+          },
+          {
+            "strike_proxy": 176.0,
+            "strike_asset": 192.32,
+            "call_oi": 102,
+            "put_oi": 7,
+            "total_oi": 109,
+            "dominant": "CALL"
           },
           {
             "strike_proxy": 180.0,
             "strike_asset": 196.69,
-            "call_oi": 160,
-            "put_oi": 620,
-            "total_oi": 780,
-            "dominant": "PUT"
+            "call_oi": 163,
+            "put_oi": 0,
+            "total_oi": 163,
+            "dominant": "CALL"
           },
           {
             "strike_proxy": 185.0,
             "strike_asset": 202.16,
             "call_oi": 182,
-            "put_oi": 293,
-            "total_oi": 475,
+            "put_oi": 288,
+            "total_oi": 470,
             "dominant": "PUT"
           },
           {
             "strike_proxy": 187.5,
             "strike_asset": 204.89,
             "call_oi": 196,
-            "put_oi": 38,
-            "total_oi": 234,
+            "put_oi": 0,
+            "total_oi": 196,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 190.0,
             "strike_asset": 207.62,
-            "call_oi": 358,
-            "put_oi": 232,
-            "total_oi": 590,
-            "dominant": "CALL"
-          },
-          {
-            "strike_proxy": 193.0,
-            "strike_asset": 210.9,
-            "call_oi": 131,
-            "put_oi": 92,
-            "total_oi": 223,
+            "call_oi": 247,
+            "put_oi": 0,
+            "total_oi": 247,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 200.0,
             "strike_asset": 218.55,
             "call_oi": 135,
-            "put_oi": 107,
-            "total_oi": 242,
+            "put_oi": 0,
+            "total_oi": 135,
             "dominant": "CALL"
           },
           {
             "strike_proxy": 205.0,
             "strike_asset": 224.01,
-            "call_oi": 299,
+            "call_oi": 0,
             "put_oi": 140,
-            "total_oi": 439,
-            "dominant": "CALL"
+            "total_oi": 140,
+            "dominant": "PUT"
           },
           {
             "strike_proxy": 210.0,
             "strike_asset": 229.48,
-            "call_oi": 112,
-            "put_oi": 258,
-            "total_oi": 370,
-            "dominant": "PUT"
+            "call_oi": 108,
+            "put_oi": 0,
+            "total_oi": 108,
+            "dominant": "CALL"
           }
         ],
         "oi_using_volume": false,
@@ -64292,28 +64513,28 @@
           {
             "strike_proxy": 140.0,
             "strike_asset": 152.98,
-            "call_oi": 113,
-            "put_oi": 1686,
-            "total_oi": 1799,
+            "call_oi": 109,
+            "put_oi": 1687,
+            "total_oi": 1796,
             "dominant": "PUT"
           }
         ],
         "signals": [
           {
             "type": "neutral",
-            "msg": "PCR 1.76 — ALTO ESTRUCTURAL para EWY. ETF Corea — cobertura macro. PCR elevado estructural. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
+            "msg": "PCR 1.52 — ALTO ESTRUCTURAL para EWY. ETF Corea — cobertura macro. PCR elevado estructural. No interpretar como señal bajista — es la naturaleza de este mercado. El skew y el implied move son más relevantes aquí."
+          },
+          {
+            "type": "bullish",
+            "msg": "Skew invertido -70.4% — calls OTM (204.89, precio 38.4) más caras que puts OTM (185.77, precio 10.61). El mercado está pagando por participar al alza. Señal de momentum alcista o anticipación de movimiento fuerte."
+          },
+          {
+            "type": "bullish",
+            "msg": "Tu TP (+6.0%) está dentro del implied move ±10.1% calculado para los 5d restantes del trade (IV anualizada: 108.7%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-10.4%) también está dentro del rango — el trade tiene sentido temporalmente."
           },
           {
             "type": "neutral",
-            "msg": "Skew equilibrado -3.4% — puts OTM y calls OTM tienen precio similar. Sin sesgo direccional desde opciones."
-          },
-          {
-            "type": "bullish",
-            "msg": "Tu TP (+6.0%) está dentro del implied move ±9.4% calculado para los 6d restantes del trade (IV anualizada: 91.4%). El mercado descuenta que ese movimiento es alcanzable. Tu SL (-10.4%) también está dentro del rango — el trade tiene sentido temporalmente."
-          },
-          {
-            "type": "bullish",
-            "msg": "Max Pain en 201.06 (+3.1% sobre precio actual). Los market makers tienen interés en que el precio suba hacia ese nivel antes del vencimiento — actúa como imán alcista. No es garantía pero es una fuerza real en el mercado."
+            "msg": "Max Pain en 193.42 (-0.8% vs precio actual) — muy cerca del precio actual. Sin presión direccional significativa desde este ángulo."
           },
           {
             "type": "warning",
@@ -64328,8 +64549,8 @@
         "verdict_color": "green",
         "verdict_msg": "Opciones confirman sesgo alcista (2 señales positivas vs 0 negativas). Convicción alta.",
         "data_quality": "alta",
-        "total_call_oi": 3117,
-        "total_put_oi": 5485
+        "total_call_oi": 2041,
+        "total_put_oi": 3110
       },
       "optimized_at": "2026-03-05",
       "trades_updated_at": "2026-06-10T10:53:38.195658",
@@ -66353,7 +66574,7 @@
           "high": 5.54,
           "low": 5.2,
           "close": 5.28,
-          "volume": 34417300,
+          "volume": 34661800,
           "ema_f": 5.57,
           "ema_s": 5.74,
           "ema_t": 5.72,
@@ -66370,14 +66591,14 @@
           "high": 5.31,
           "low": 5.15,
           "close": 5.18,
-          "volume": 23921740,
+          "volume": 25047300,
           "ema_f": 5.5,
           "ema_s": 5.7,
           "ema_t": 5.71,
           "rsi": 35.4,
           "adx": 20.7,
           "macd_h": -0.035,
-          "vol_r": 0.53,
+          "vol_r": 0.56,
           "signal": 0,
           "score": 0
         }
@@ -68440,7 +68661,7 @@
           "high": 28.16,
           "low": 26.08,
           "close": 27.22,
-          "volume": 9122400,
+          "volume": 9132000,
           "ema_f": 24.54,
           "ema_s": 21.86,
           "ema_t": 18.15,
@@ -68457,16 +68678,16 @@
           "high": 29.3,
           "low": 27.33,
           "close": 27.85,
-          "volume": 7214116,
+          "volume": 8575400,
           "ema_f": 25.28,
           "ema_s": 22.25,
           "ema_t": 18.34,
           "rsi": 76.8,
           "adx": 41.0,
           "macd_h": 0.314,
-          "vol_r": 0.87,
+          "vol_r": 1.02,
           "signal": 0,
-          "score": 42
+          "score": 45
         }
       ],
       "alert": null,
@@ -70901,7 +71122,7 @@
           "high": 122.42,
           "low": 118.37,
           "close": 119.7,
-          "volume": 11856200,
+          "volume": 11871000,
           "ema_f": 123.82,
           "ema_s": 127.83,
           "ema_t": 131.98,
@@ -70916,16 +71137,16 @@
           "date": "2026-06-10",
           "open": 116.0,
           "high": 118.18,
-          "low": 115.38,
+          "low": 115.37,
           "close": 115.38,
-          "volume": 10684594,
+          "volume": 10802600,
           "ema_f": 121.94,
           "ema_s": 126.64,
           "ema_t": 131.33,
           "rsi": 21.0,
           "adx": 28.5,
           "macd_h": -1.421,
-          "vol_r": 0.84,
+          "vol_r": 0.85,
           "signal": 0,
           "score": 0
         }
@@ -72801,7 +73022,7 @@
           "high": 100.94,
           "low": 85.5,
           "close": 88.71,
-          "volume": 26949000,
+          "volume": 27018700,
           "ema_f": 100.85,
           "ema_s": 97.11,
           "ema_t": 78.41,
@@ -72818,14 +73039,14 @@
           "high": 93.1,
           "low": 87.12,
           "close": 87.32,
-          "volume": 15494377,
+          "volume": 16017800,
           "ema_f": 98.77,
           "ema_s": 96.36,
           "ema_t": 78.5,
           "rsi": 40.8,
           "adx": 27.5,
           "macd_h": -3.316,
-          "vol_r": 0.61,
+          "vol_r": 0.63,
           "signal": 0,
           "score": 5
         }
@@ -74786,7 +75007,7 @@
           "high": 2.12,
           "low": 1.9,
           "close": 1.92,
-          "volume": 7122900,
+          "volume": 7132500,
           "ema_f": 2.14,
           "ema_s": 2.1,
           "ema_t": 2.35,
@@ -74799,11 +75020,11 @@
         },
         {
           "date": "2026-06-10",
-          "open": 1.89,
+          "open": 1.9,
           "high": 1.95,
           "low": 1.87,
           "close": 1.89,
-          "volume": 3195020,
+          "volume": 3206300,
           "ema_f": 2.1,
           "ema_s": 2.08,
           "ema_t": 2.34,
@@ -75762,23 +75983,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 0.16,
-          "high": 0.16,
-          "low": 0.16,
-          "close": 0.16,
-          "volume": 12971763,
-          "ema_f": 0.61,
-          "ema_s": 0.61,
-          "ema_t": 0.6,
-          "rsi": 54.4,
-          "adx": 17.8,
-          "macd_h": 0.0,
-          "vol_r": 0.87,
-          "signal": 0,
-          "score": 67
-        },
         {
           "date": "2026-02-02",
           "open": 0.16,
@@ -77291,6 +77495,23 @@
           "vol_r": 1.38,
           "signal": 0,
           "score": 22
+        },
+        {
+          "date": "2026-06-11",
+          "open": 0.15,
+          "high": 0.15,
+          "low": 0.15,
+          "close": 0.15,
+          "volume": 699024,
+          "ema_f": 0.62,
+          "ema_s": 0.62,
+          "ema_t": 0.62,
+          "rsi": 33.8,
+          "adx": 40.4,
+          "macd_h": -0.002,
+          "vol_r": 0.11,
+          "signal": 0,
+          "score": 5
         }
       ],
       "alert": null,
@@ -78206,23 +78427,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-02-02",
-          "open": 0.36,
-          "high": 0.36,
-          "low": 0.35,
-          "close": 0.35,
-          "volume": 4863628,
-          "ema_f": 2.64,
-          "ema_s": 2.63,
-          "ema_t": 2.58,
-          "rsi": 68.6,
-          "adx": 27.3,
-          "macd_h": -0.0,
-          "vol_r": 2.03,
-          "signal": 0,
-          "score": 72
-        },
         {
           "date": "2026-02-03",
           "open": 0.34,
@@ -79729,12 +79933,29 @@
           "ema_f": 2.68,
           "ema_s": 2.67,
           "ema_t": 2.65,
-          "rsi": 52.9,
+          "rsi": 52.3,
           "adx": 13.7,
           "macd_h": -0.001,
           "vol_r": 2.24,
           "signal": 0,
           "score": 42
+        },
+        {
+          "date": "2026-06-11",
+          "open": 0.33,
+          "high": 0.33,
+          "low": 0.32,
+          "close": 0.32,
+          "volume": 2032043,
+          "ema_f": 2.68,
+          "ema_s": 2.67,
+          "ema_t": 2.65,
+          "rsi": 57.1,
+          "adx": 12.1,
+          "macd_h": -0.001,
+          "vol_r": 0.85,
+          "signal": 0,
+          "score": 47
         }
       ],
       "alert": null,
@@ -80667,23 +80888,6 @@
         }
       ],
       "price_history": [
-        {
-          "date": "2026-01-30",
-          "open": 0.72,
-          "high": 0.72,
-          "low": 0.7,
-          "close": 0.71,
-          "volume": 464377,
-          "ema_f": 3.05,
-          "ema_s": 3.04,
-          "ema_t": 3.02,
-          "rsi": 54.8,
-          "adx": 25.7,
-          "macd_h": -0.002,
-          "vol_r": 0.62,
-          "signal": 0,
-          "score": 45
-        },
         {
           "date": "2026-02-02",
           "open": 0.73,
@@ -82196,6 +82400,23 @@
           "vol_r": 2.75,
           "signal": 0,
           "score": 21
+        },
+        {
+          "date": "2026-06-11",
+          "open": 0.76,
+          "high": 0.76,
+          "low": 0.75,
+          "close": 0.76,
+          "volume": 880175,
+          "ema_f": 3.01,
+          "ema_s": 3.01,
+          "ema_t": 3.0,
+          "rsi": 45.7,
+          "adx": 24.5,
+          "macd_h": -0.002,
+          "vol_r": 1.5,
+          "signal": 0,
+          "score": 4
         }
       ],
       "alert": null,
